@@ -8,11 +8,11 @@ module SGL
     # handle multimedia data
     def movie(u)
       if /\Ahttp:\/\// =~ u || /\Artsp:\/\// =~ u
-	url = OSX::NSURL.URLWithString_(u)
+	url = Cocoa::NSURL.URLWithString_(u)
       else
-	url = OSX::NSURL.fileURLWithPath_(u)
+	url = Cocoa::NSURL.fileURLWithPath_(u)
       end
-      mov = OSX::NSMovie.alloc.initWithURL(url, :byReference, true)
+      mov = Cocoa::NSMovie.alloc.initWithURL(url, :byReference, true)
       # Place the movie on the out of screen.
       obj = NSMovieView.alloc.initWithFrame([-100.0, -100.0, 10.0, 10.0])
       obj.setApp(self)
@@ -38,13 +38,15 @@ module SGL
     end
 
     def sound(file)
-      url = OSX::NSURL.fileURLWithPath_(file)
+      url = Cocoa::NSURL.fileURLWithPath_(file)
       snd = NSSound.alloc.initWithContentsOfURL(url, :byReference, true)
       snd
     end
   end
 
-  class NSMovieView < OSX::NSMovieView
+=begin
+  #class NSMovieView < Cocoa::NSMovieView
+  class NSMovieView < Cocoa::NSMovieView
     include FrameTranslator
 
     def setApp(app)
@@ -82,7 +84,7 @@ module SGL
     def volume=(v)	setVolume(v/100.0);	end
   end
 
-  class NSImage < OSX::NSImage
+  class NSImage < Cocoa::NSImage
     include FrameTranslator
 
     def setApp(app)	@app = app;	end
@@ -94,10 +96,11 @@ module SGL
     def frame(x,y,w,h)
       drawInRect([x,y,w,h],
 		 :fromRect, [0,0,size.width,size.height],
-		 :operation, OSX::NSCompositeSourceOver,
+		 :operation, Cocoa::NSCompositeSourceOver,
 		 :fraction, @app.curcolor[3])
     end
   end
+=end
 
   class NSFont
     def initialize(w, n="Helvetica", s=0.0)
@@ -113,28 +116,28 @@ module SGL
     def text(x, y, str)
       return unless str.is_a? String
       str = NKF.nkf("-m0 -s", str)
-      str = OSX::NSMutableAttributedString.alloc.initWithString(str)
-      str.addAttribute(OSX::NSFontAttributeName(),
-		       :value, OSX::NSFont.fontWithName(@name, :size, @size),
+      str = Cocoa::NSMutableAttributedString.alloc.initWithString(str)
+      str.addAttribute(Cocoa::NSFontAttributeName(),
+		       :value, Cocoa::NSFont.fontWithName(@name, :size, @size),
 		       :range, [0,str.length])
       color = @app.color_cur
-      str.addAttribute(OSX::NSForegroundColorAttributeName(),
+      str.addAttribute(Cocoa::NSForegroundColorAttributeName(),
 		       :value, color,
 		       :range, [0,str.length])
       str.drawAtPoint([x, y])
     end
 
-    def show_fixed()	show(OSX::NSFixedPitchFontMask);	end
+    def show_fixed()	show(Cocoa::NSFixedPitchFontMask);	end
     def show_all()	show;	end
 
     private
     def show(mask=0)
-      fmgr = OSX::NSFontManager.sharedFontManager
+      fmgr = Cocoa::NSFontManager.sharedFontManager
       fonts = fmgr.availableFontNamesWithTraits(mask).to_a.map{|i| i.to_s }.sort
       puts fonts
     end
   end
 
-  class NSSound < OSX::NSSound
+  class NSSound < Cocoa::NSSound
   end
 end

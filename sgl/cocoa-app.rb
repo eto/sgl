@@ -13,11 +13,11 @@ module SGL
   class Application
     def initialize
       # cocoa specific
-      OSX.ruby_thread_switcher_start(0.001, 0.01)
+      #Cocoa.ruby_thread_switcher_start(0.001, 0.01)
       Thread.abort_on_exception = true
 
-      @app = OSX::NSApplication.sharedApplication
-      mainmenu = OSX::NSMenu.alloc.init
+      @app = Cocoa::NSApplication.sharedApplication
+      mainmenu = Cocoa::NSMenu.alloc.init
       @app.setMainMenu(mainmenu)
 
       @win = @bgview = nil
@@ -102,14 +102,15 @@ module SGL
     attr_reader :width, :height
 
     def run
-      OSX.NSApp.run
-      OSX::NSEvent.stopPeriodicEvents
+      #Cocoa.NSApp.run
+      @app.run
+      Cocoa::NSEvent.stopPeriodicEvents
     end
 
     def stop
       close_window
-      OSX.NSApp.stop(nil)
-      OSX::NSEvent.startPeriodicEventsAfterDelay(0.01, :withPeriod, 0.01)
+      Cocoa.NSApp.stop(nil)
+      Cocoa::NSEvent.startPeriodicEventsAfterDelay(0.01, :withPeriod, 0.01)
     end
   end
 end

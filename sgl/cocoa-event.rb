@@ -63,12 +63,12 @@ module SGL
 
     def display_bg(rect)
       set_color(*@bgcolor)
-      OSX::NSRectFill(rect)
+      Cocoa::NSRectFill(rect)
     end
 
     def display_clear_bg(rect)
       set_color(0, 0, 0, 0)	# full transparent
-      OSX::NSRectFill(rect)
+      Cocoa::NSRectFill(rect)
     end
 
     def display_post

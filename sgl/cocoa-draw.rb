@@ -40,7 +40,7 @@ module SGL
     end
 
     def make_color(r, g, b, a)
-      OSX::NSColor.colorWithDeviceRed(r, :green, g, :blue, b, :alpha, a)
+      Cocoa::NSColor.colorWithDeviceRed(r, :green, g, :blue, b, :alpha, a)
     end
     private :set_cur_color, :set_color, :make_color
 
@@ -55,44 +55,44 @@ module SGL
     end
 
     def lineWidth(w)
-      OSX::NSBezierPath.setDefaultLineWidth(w)
+      Cocoa::NSBezierPath.setDefaultLineWidth(w)
     end
 
     def line(a,b,c,d)
-      OSX::NSBezierPath.strokeLineFromPoint(OSX::NSPoint.new(a, b),
-					    :toPoint, OSX::NSPoint.new(c, d))
+      Cocoa::NSBezierPath.strokeLineFromPoint(Cocoa::NSPoint.new(a, b),
+					    :toPoint, Cocoa::NSPoint.new(c, d))
     end
 
     def rect(a,b,c,d)
-      rect = OSX::NSRect.new(*to_xywh(a, b, c, d))
-      OSX::NSBezierPath.bezierPathWithRect(rect).fill
+      rect = Cocoa::NSRect.new(*to_xywh(a, b, c, d))
+      Cocoa::NSBezierPath.bezierPathWithRect(rect).fill
     end
 
     def circle(x, y, r)
-      rect = OSX::NSRect.new(x - r, y - r, 2*r, 2*r)
-      OSX::NSBezierPath.bezierPathWithOvalInRect(rect).fill
+      rect = Cocoa::NSRect.new(x - r, y - r, 2*r, 2*r)
+      Cocoa::NSBezierPath.bezierPathWithOvalInRect(rect).fill
     end
 
     def rotateZ(deg)
-      af = OSX::NSAffineTransform.transform
+      af = Cocoa::NSAffineTransform.transform
       af.rotateByDegrees(deg)
       af.concat
     end
 
     def translate(x, y)
-      af = OSX::NSAffineTransform.transform
+      af = Cocoa::NSAffineTransform.transform
       af.translateXBy(x, :yBy, y)
       af.concat
     end
 
     def scale(x, y=nil)
-      af = OSX::NSAffineTransform.transform
+      af = Cocoa::NSAffineTransform.transform
       y ? af.scaleXBy(x, :yBy, y) : af.scaleBy(x)
       af.concat
     end
 
     def reset
-      OSX::NSAffineTransform.transform.set
+      Cocoa::NSAffineTransform.transform.set
     end
   end
 end
