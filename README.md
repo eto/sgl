@@ -1,0 +1,2 @@
+# sgl
+Simple Generic Library.
