@@ -6,7 +6,7 @@ module SGL
     # setup
     def set_setup(&b)
       return unless block_given?
-      @block[:setup] = Proc.new
+      @block[:setup] = b
     end
 
     def do_setup
@@ -39,12 +39,12 @@ module SGL
 
     def set_display(&b)
       return unless block_given?
-      @block[:display] = Proc.new
+      @block[:display] = b
     end
 
     def set_display_overlay(&b)
       return unless block_given?
-      @block[:display_overlay] = Proc.new
+      @block[:display_overlay] = b
     end
 
     def do_display
@@ -133,7 +133,7 @@ module SGL
     # mouse events
     def set_mousedown(&b)
       return unless block_given?
-      @block[:mousedown] = Proc.new
+      @block[:mousedown] = b
     end
 
     def do_mousedown
@@ -143,7 +143,7 @@ module SGL
 
     def set_mouseup(&b)
       return unless block_given?
-      @block[:mouseup] = Proc.new
+      @block[:mouseup] = b
     end
 
     def do_mouseup
@@ -154,7 +154,7 @@ module SGL
     # key events
     def set_keydown(&b)
       return unless block_given?
-      @block[:keydown] = Proc.new
+      @block[:keydown] = b
     end
 
     def do_keydown(e)
@@ -164,7 +164,7 @@ module SGL
 
     def set_keyup(&b)
       return unless block_given?
-      @block[:keyup] = Proc.new
+      @block[:keyup] = b
     end
 
     def do_keyup(e)
