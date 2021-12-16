@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+      sgl &#x2192; simple generic library
+  </title>
+  <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
+<style>
+
+</style>
+  <script type="text/javascript">
+    window.onload = function() {
+      settings = {
+          tl: { radius: 10 },
+          tr: { radius: 10 },
+          bl: { radius: 10 },
+          br: { radius: 10 },
+          antiAlias: true,
+          autoPad: true,
+          validTags: ["div"]
+      }
+      var versionBox = new curvyCorners(settings, document.getElementById("version"));
+      versionBox.applyCornersToAll();
+    }
+  </script>
+</head>
+<body>
+<div id="main">
+
+    <h1>sgl &#x2192; simple generic library</h1>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/sgl"; return false'>
+      <p>Get Version</p>
+      <a href="http://rubyforge.org/projects/sgl" class="numbers">1.0.1</a>
+    </div>
+    <h2>What is sgl?</h2>
+
+
+	<p>&#8216;sgl&#8217; is a simgple generic library to create a program with graphics and sound.</p>
+
+
+	<h2>Requirement</h2>
+
+
+	<h3>Windows</h3>
+
+
+	<ul>
+	<li>Ruby 1.8.5 or later</li>
+		<li>Ruby/OpenGL</li>
+		<li>Ruby/Math3D</li>
+		<li>Ruby/SDL</li>
+	</ul>
+
+
+	<p>You can see <a href="http://eto.com/d/RubySDLonWindows.html">Ruby/SDL on Windows</a>
+install documnet.</p>
+
+
+	<h3>Mac <span class="caps">OS X</span></h3>
+
+
+	<ul>
+	<li>Mac <span class="caps">OS X 10</span>.3 or later</li>
+		<li>Ruby 1.8.5 or later</li>
+		<li>X Window system</li>
+	</ul>
+
+
+	<h2>Installing</h2>
+
+
+<pre syntax="ruby">sudo gem install sgl</pre>
+
+	<h2>The basics</h2>
+
+
+<pre syntax="ruby">
+# test1.rb
+require "sgl" 
+window 100, 100
+line 0, 0, 100, 100
+wait
+</pre>
+
+<pre syntax="ruby">
+# test2.rb
+require "sgl" 
+window 100, 100
+background 0
+color 100
+line 0, 0, 100, 100
+wait
+</pre>
+
+<pre syntax="ruby">
+# test3.rb
+require "sgl" 
+
+def setup
+  window 100, 100
+end
+
+def display
+  line 0, 0, 100, 100
+end
+
+mainloop
+</pre>
+
+	<h2>Documents</h2>
+
+
+	<ul>
+	<li><a href="rdoc/"><span class="caps">API</span> Reference</a></li>
+		<li><a href="cocoa.html">Description of sgl-cocoa</a></li>
+	</ul>
+
+
+	<ul>
+	<li>Pages below are in Japanese
+	<ul>
+	<li><a href="description.html">Description</a></li>
+		<li><a href="howto.html">How to for Beginner</a></li>
+		<li><a href="sound.html">How to use Sound function</a></li>
+	</ul></li>
+	</ul>
+
+
+	<h2>Classes</h2>
+
+
+	<p>We did some classes using sgl in some art schools.
+You can see some materials for the classes.</p>
+
+
+	<ul>
+	<li>Pages below are in Japanese
+	<ul>
+	<li><a href="exercise1.html">Exercise 1</a></li>
+		<li><a href="exercise2.html">Exercise 2</a></li>
+		<li><a href="exercise3.html">Exercise 3</a></li>
+		<li><a href="exercise4.html">Exercise 4</a></li>
+		<li><a href="exercise5.html">Exercise 5</a></li>
+		<li><a href="challenge1.html">Special Exercise 1</a></li>
+		<li><a href="challenge2.html">Special Exercise 2</a></li>
+		<li><a href="challenge3.html">Final Exercise</a></li>
+	</ul></li>
+	</ul>
+
+
+	<h2>Repositry</h2>
+
+
+	<p>The trunk repository is <code>svn://rubyforge.org/var/svn/sgl/trunk</code> for anonymous access.</p>
+
+
+	<h2>License</h2>
+
+
+	<p>Ruby License.</p>
+
+
+	<h2>Contact</h2>
+
+
+	<p>Comments are welcome. Send an email to Kouichirou Eto &#8220;eto <em>at</em> rubyforge <em>dot</em> org&#8221;.</p>
+    <p class="coda">
+      10th July 2007<br>
+    </p>
+</div>
+
+<!-- insert site tracking codes here, like Google Urchin -->
+
+</body>
+</html>

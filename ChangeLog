@@ -1,0 +1,280 @@
+2007-10-11  Kouichirou Eto  <2007 eto.com>
+
+	* lib/sgl/bass.rb (get_version): New method.
+	* test/test_bass.rb: Add a test case.
+
+2007-08-23  Kouichirou Eto  <2007 eto.com>
+
+	* version: Version up to 1.0.1
+	* sgl-1.0.1 released.
+
+2007-08-23  Kouichirou Eto  <2007 eto.com>
+
+	* Delete cocoa related files.
+	* Delete bin
+
+2007-08-18  Kouichirou Eto  <2007 eto.com>
+
+	* Rakefile: DEBUG: Add require default_task.
+
+2007-07-05  Kouichirou Eto  <2007 eto.com>
+
+	* License.txt: Update license to Ruby license.
+
+	* default_task.rb: New file. Splited from Rakefile.
+	* Rakefile: Follow.
+
+2007-06-30  Kouichirou Eto  <2007 eto.com>
+
+	* Rakefile: Add spec support.
+	* spec/sgl_spec.rb: New spec.
+	* spec/spec_helper.rb: Ditto.
+	* spec/spec.opts: Ditto.
+	* lib/sgl/sgl-color.rb: Delete test case.
+
+2007-06-25  Kouichirou Eto  <2007 eto.com>
+
+	* scripts/lib-txt2html.rb: New file for speeding up txt2html.
+	* scripts/txt2html: Modified.
+	* Rakefile: Ditto.
+
+	* website/exercise?.txt: Split exercise pages.
+
+2007-06-25  Kouichirou Eto  <2007 eto.com>
+
+	* version: Version up to 0.4.0
+
+	* sgl-0.4.0 released.
+
+2007-06-25  Kouichirou Eto  <2007 eto.com>
+
+	* test_bass.rb: Reformat.
+	* test_bass.rb: Ditto.
+
+	* Rakefile: Obfuscate mail address.
+	* Rakefile: Reformat.
+
+	* website/stylesheets/grade.png: Add backgorund image.
+	* website/stylesheets/screen.css: Ditto.
+
+	* lib/sgl/sgl-sound.rb: New function sound.
+	* lib/sgl/opengl-app.rb: Ditto.
+	* lib/sgl/opengl-modules.rb: Ditto.
+	* test/test_sound.rb: Ditto.
+	* examples/sgl-sound1.rb: Ditto.
+	* examples/sgl-sound2.rb: Ditto.
+	* examples/sine.ogg: Sample sound.
+
+2007-06-23  Kouichirou Eto  <2007 eto.com>
+
+	* test_bass.rb: New file. Test case for bass.
+
+	* bin: New directory.
+	
+2007-06-22  Kouichirou Eto  <2007 eto.com>
+
+	* test_helper.rb: Update to include LOAD_PATH.
+
+	* test_opengl_fullscreen.rb: Change runtime to 0.1
+
+	* examples/*: Change sgl/opengl to sgl.
+	* examples/*: Update comment.
+
+	* sgl/sgl.rb: Use sgl/opengl as default sgl_type.
+
+	* sgl/sgl-timer.rb: Refine comment.
+
+	* sgl/sgl-basic.rb: Create test case.
+
+	* sgl/make-release.rb: Remove unused file.
+
+	* bin: Remove unused directory.
+
+	* sgl/bass.rb: Restructuring.
+	* sgl/bass-api.rb: New file.
+	* sgl/bass-sample.rb: New file.
+
+2007-06-21  Kouichirou Eto  <2007 eto.com>
+
+	* test_*: Update require.
+	* test_cocoa_app.rb: Add if.
+	* test_module_ruby16.rb: Add if.
+	* Rakefile: Add rule chmod to clean.
+	* sgl-objlib.rb: Moved to sgl-objs.rb
+	* sgl-objs.rb: New file.
+	* sgl-timer.rb: New file.
+	* sgl-basic.rb: New file.
+
+2007-06-20  Kouichirou Eto  <2007 eto.com>
+
+	* Update documents.
+
+	* Rakefile: Add new task manifest to create Manifest.txt.
+
+	* Remove qp related lines.
+
+	* sgl-bass.rb: Update main not to define always.
+
+	* Update copyright lines to this year 2007.
+	* Update copyright lines again.
+
+	* test_opengl_fullscreen.rb: Change runtime to a second.
+
+	* bass.rb: Renamed from sgl-bass.rb
+	* bass.rb: Reformat.
+
+	* Add license information to each files.
+
+	* Reformat for RDoc.
+
+	* Truncate unused files.
+	* Delete unused files.
+	* Delete unused directories.
+
+	* sgl-objlib.rb: Reformat.
+
+	* test_*: Add license.
+
+2007-06-19  Kouichirou Eto  <2007 eto.com>
+
+	* Restructuring. Adapt to newgem source code tree.
+
+	* Rakefile: Add new task replace for development.
+
+	* Move test files to test dir.
+
+	* Rename test files.
+
+	* Update test code.
+
+2005-07-14  Kouichirou Eto  <2005 eto.com>
+
+	* opengl-event.rb: Bug fix. Do not reentrant mainloop.
+	* opengl-window.rb: Add default size for fullscreen.
+	* sgl-button.rb: Show them near by the buttons.
+
+2005-07-11  Kouichirou Eto  <2005 eto.com>
+
+	* opengl-event.rb: Add fullscreen methods.
+	* test-opengl-fullscreen.rb: Test case.
+	* sgl-spring.rb: Spring object.
+	* sgl-button.rb: Button object.
+	* sgl-bass.rb: Bass object.
+	* sgl-objlib.rb: Obj library.
+
+2005-07-07  Kouichirou Eto  <2005 eto.com>
+
+	* sgl-client.rb: New file for network test.
+	* sgl-server.rb: Ditto.
+	* sgl-connect.rb: Ditto.
+	* samples/sample15.rb, sample16.rb, sample16a.rb: New files.
+
+2005-06-16  Kouichirou Eto  <2005 eto.com>
+
+	* opengl-event.rb: New method process.
+	* doc/style.css: Update.
+	* doc/*: Reformat.
+	* sample/sample*.rb: New files.
+	* README.txt, README-opengl.txt, README-cocoa.txt: New files.
+
+2005-06-01  Kouichirou Eto  <2005 eto.com>
+
+	* opengl-app.rb: delete flip
+	* opengl-event.rb: add flip, wait for novice mode.
+
+2005-05-13  Kouichirou Eto  <2005 eto.com>
+
+	* add documentation.
+
+2005-04-22  Kouichirou Eto  <2005 eto.com>
+
+	* sgl-0.2 released.
+
+2005-04-20  Kouichirou Eto  <2005 eto.com>
+
+	* opengl-window.rb: Add check windows?
+
+2005-04-19  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-app.rb, cocoa-window.rb: Fix bug.
+	* cocoa-window.rb: Add setGLAttr for fix bug.
+	* cocoa-event.rb: Fix bug for keydown.
+
+2005-04-08  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-app.rb: Refactoring.
+	* cocoa-window.rb: New file.
+	* cocoa-event.rb: New method check_runtime_finished
+	* opengl.rb: Refactoring.
+	* opengl-app.rb: Refactoring.
+	* opengl-draw.rb: Refactoring.
+	* opengl-window.rb, opengl-modules.rb, opengl-color.rb: New files.
+	* tests/test-opengl-app.rb: New file.
+	* samples/opengl2-draw.rb, opengl3-affine.rb,
+	opengl11-application.rb: New files.
+	* make.rb: New file. for make dist tarball.
+	* MANIFEST: New file.
+
+2005-04-07  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-draw.rb, cocoa-event.rb, cocoa-media.rb: New
+	files. Splited from cocoa-app.rb
+	* tests/test-cocoa-app.rb: Do not test sound and movies.
+
+2005-04-06  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-app.rb: Add "p" in movie method. Strange bug.
+	* cocoa-app.rb: Check global var.
+
+2005-04-06  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-app.rb: Remove unused classes.
+	* cocoa-functions.rb: Refactoring.
+	* cocoa-notuse.rb: New file. To backup old classes.
+
+2005-04-06  Kouichirou Eto  <2005 eto.com>
+
+	* test-cocoa-app.rb: New file.
+	* test-cocoa-basic.rb, test-cocoa-core.rb, test-cocoa-media.rb:
+	Removed.
+
+2005-04-06  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa-app.rb, cocoa-functions.rb, opengl-app.rb, opengl.rb,
+	opengl-draw.rb, opengl-functions.rb, sgl-functions.rb,
+	test-all.rb, Makefile: New files.
+	* cocoa-win.rb, sgl-core.rb, sgl-video.rb: Removed.
+	* cocoa.rb: Update to small stub library.
+	* sgl-color.rb: Add test code.
+	* sgl.rb: Branch two methods.
+	* sample/cocoa*.rb: New files.
+	* sample/opengl*.rb: New files.
+
+2005-04-05  Kouichirou Eto  <2005 eto.com>
+
+	* README.en.txt, README.ja.txt: Update.
+	* README.txt: Removed.
+
+2005-01-28  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa.rb: Refactoring. Make @block as hash object.
+	* tests/test-cocoaapp.rb: add test for movie overlay,
+	move view, affine translat.
+
+2005-01-25  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa.rb: Refactoring.
+	* cocoa.rb: CocoaReceiver new class
+
+2005-01-21  Kouichirou Eto  <2005 eto.com>
+
+	* cocoa.rb: Refactoring.
+
+2005-01-19  Kouichirou Eto  <2005 eto.com>
+
+	* change directory name from t to samples and tests.
+
+2005-01-05  Kouichirou Eto  <2005 eto.com>
+
+	* change test file name scheme.
+

@@ -1,0 +1,197 @@
+h1. 練習問題1
+
+h2. 課題1: 一本の線を描く
+
+<pre syntax="ruby">
+# kadai1.rb
+require 'sgl'         # プログラムの最初に必ず書く必要がある
+window 100, 100       # windowを開く
+background 0          # 背景を黒にする
+color 100             # 描画する色を白にする
+line 0, 0, 100, 100   # 左下から右上に線を描く
+wait                  # そのまま待つ
+</pre>
+
+h2. 課題2: ある考えの元に3本の線を描く
+
+<pre syntax="ruby">
+# kadai2.rb
+require 'sgl'
+window 100, 100
+background 0
+color 100
+line 0, 0, 100, 100
+line 0, 0, 100,  50
+line 0, 0, 100,  25
+wait
+</pre>
+
+h2. 課題3: 5本以下の直線で「変化」を表現する
+
+<pre syntax="ruby">
+# kadai3.rb
+# 考えてみましょう．
+</pre>
+
+h2. 課題4: 10本以下の直線で「ハーモニー(調和)」を表現する
+
+<pre syntax="ruby">
+# kadai4.rb
+# 考えてみましょう．
+</pre>
+
+h2. 課題5: 一つの変数を使って2本の直線の構成をコントロールする
+
+<pre syntax="ruby">
+# kadai5.rb
+require 'sgl'
+window 100, 100
+a = 50
+line   0, 0, 50, a
+line 100, 0, 50, a
+wait
+</pre>
+
+h2. 課題6: 繰り返しを使った形態を描く
+
+<pre syntax="ruby">
+# kadai6.rb
+require 'sgl'
+window 100, 100
+for a in 20..80
+  color a
+  line a, 0, a, 100
+end
+wait
+</pre>
+
+h2. 課題7: 計算を使った形態を描く
+
+<pre syntax="ruby">
+# kadai7.rb
+require 'sgl'
+window 100, 100
+for a in 20..40
+  color a
+  line(a, 0, a*2, 100)
+end
+wait
+</pre>
+
+h2. 課題8: 半透明を使った形態を描く
+
+<pre syntax="ruby">
+# kadai8.rb
+require 'sgl'
+window 100,100
+color 100, 0, 0       # 赤
+rect 10,10,70,70      # 四角
+color 0,0,100,50      # 半透明の青
+rect 30,30,90,90      # 四角を重ねてかく
+wait
+</pre>
+
+h2. 課題9: 入れ子構造，格子状にひろがる形態を作る
+
+<pre syntax="ruby">
+# kadai9.rb
+require 'sgl'
+window 200,200
+for a in 0..10
+  for b in 0..10
+    color a*10, b*10, b*10
+    rect a*20+5, b*20+5, a*20+15, b*20+15
+  end
+end
+wait
+</pre>
+
+h2. 課題10: 条件分岐，画面の左右で違う形態を描く
+
+<pre syntax="ruby">
+# kadai10.rb
+require 'sgl'
+window 200,200
+for a in 0..200
+  color a/2, 50, 50
+  if a < 100
+    line a, 50, a, 100
+  else
+    line a, 100, a, 150
+  end
+end
+wait
+</pre>
+
+h2. 課題11: 自分なりの命令を作り，それを用いた形態を描く
+
+<pre syntax="ruby">
+# kadai11.rb
+require 'sgl'
+window 100,100
+background 100
+
+def my_rect(x1, y1, x2, y2, outline, fill)
+  color fill
+  rect x1, y1, x2, y2
+  color outline
+  line x1, y1, x2, y1
+  line x2, y1, x2, y2
+  line x2, y2, x1, y2
+  line x1, y2, x1, y1
+end
+
+my_rect(20, 20, 40, 30, 20, 50)
+my_rect(60, 60, 80, 90, 70, 90)
+wait
+</pre>
+
+defというコマンドで命令を定義する．ここでは，枠付きの塗りつぶされた四
+角形を定義している．defの後に続くのが命令の名前となる．アルファベット
+の小文字から始まっている必要がある．
+
+h2. 課題12: flipを使ってアニメーションを作る
+
+<pre syntax="ruby">
+# kadai12.rb
+require 'sgl'
+window 100,100
+loop do
+  for a in 0..100
+    line 20,a,80,a
+    flip
+  end
+end
+wait
+</pre>
+
+flipというところで，ちょうど紙をめくるように次の画面を表示させている．
+@loop do 〜〜〜 end@ で，その間を無限に繰り返す．
+
+h2. 課題13: HSVによる色指定を使り，自分なりの色グラデーションを作る
+
+静止画でもアニメーションでもよい．(colorHSV, backgroundHSV)
+
+<pre syntax="ruby">
+# kadai13.rb
+require 'sgl'
+window 100,100
+background 100
+
+loop do
+  for h in 0..100
+    colorHSV h, 50, 100
+    rect 0, h, 100, h+5
+    flip
+  end
+end
+wait
+</pre>
+
+* colorHSV(h, s, v) → hue, saturation, value
+* hue → 色調
+* saturation → どれだけ原色に近いか
+* value → 明るさ
+
+* 4番目のパラメーターを使って，透明度を設定することもできる．
+* backgroundHSVというコマンドもある．

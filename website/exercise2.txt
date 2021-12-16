@@ -1,0 +1,181 @@
+h1. 練習問題2
+
+h2. 課題14: マウスの位置に反応する形
+
+<pre syntax="ruby">
+# kadai14.rb
+require 'sgl'
+
+window 200,200
+
+loop do
+  x = mouseX
+  y = mouseY
+  rect x-5, y-5, x+5, y+5
+  flip
+end
+</pre>
+
+mouseXとmouseYでマウス位置を取得する．rectで四角形を描画する．
+
+rectの前に@color x, y, 0@をいれてみる．
+
+rectの後に下記をいれてみる．
+<pre syntax="ruby">
+line   0,   0, x, y
+line 200,   0, x, y
+line   0, 200, x, y
+line 200, 200, x, y
+</pre>
+
+h2. 課題15: 複雑な形の描画
+
+<pre syntax="ruby">
+# kadai15.rb
+require 'sgl'
+
+window -200, -200, 200, 200
+
+beginObj(POLYGON)
+vertex 60, 90
+vertex -120, 60
+vertex -90, -90
+vertex 120, -90
+endObj
+
+wait
+</pre>
+
+@window -200, -200, 200, 200@のようにして四つの値を指定できる．
+beginObjとendObjではさまれた領域で形を描く．
+
+<pre syntax="ruby">
+beginObj(POLYGON)
+color 100, 0, 0, 100
+vertex 60, 90
+color 0, 100, 0, 100
+vertex -120, 60
+color 0, 0, 100, 100
+vertex -90, -90
+color 100, 100, 0, 100
+vertex 120, -90
+endObj
+</pre>
+
+頂点ごとに色を指定できる．
+
+<pre syntax="ruby">
+beginObj(POLYGON)
+color 100, 0, 0, 0
+vertex 60, 90
+color 0, 100, 0, 100
+vertex -120, 60
+color 0, 0, 100, 100
+vertex -90, -90
+color 100, 100, 0, 0
+vertex 120, -90
+endObj
+</pre>
+
+頂点ごとに透明度も変えられる．
+
+h2. 課題16: スムースな線の描画
+
+<pre syntax="ruby">
+# kadai16.rb
+require 'sgl'
+
+useSmooth
+
+window -200, -200, 200, 200
+
+beginObj(LINE_LOOP)
+color 100, 0, 0, 100
+vertex 60, 90
+color 0, 100, 0, 50
+vertex -120, 60
+color 0, 0, 100, 50
+vertex -90, -90
+color 100, 100, 0, 100
+vertex 120, -90
+endObj
+
+wait
+</pre>
+
+windowの前にuseSmoothを指定することによって，アンチエイリアスを
+かけることができる．
+
+beginObjの括弧の中は，@POLYGON@または@LINE_LOOP@を指定する．
+この二つがあればほぼ十分であるが，他に下記方法も指定できる．
+
+LINES, POINTS, LINE_STRIP, LINE_LOOP, TRIANGLES, TRIANGLE_STRIP,
+TRIANGLE_FAN, QUADS, QUAD_STRIP, POLYGON,
+
+h2. 課題17: 物体の移動
+
+<pre syntax="ruby">
+# kadai17.rb
+require 'sgl'
+
+useSmooth
+
+window -200, -200, 200, 200
+
+push
+translate 100, 0
+rotateZ 10
+scale 2
+rect -5, -5, 5, 5
+pop
+
+wait
+</pre>
+
+今回でてきた新しいコマンド，
+push, pop, translate, rotateZ, scaleを使って回転移動拡大縮小などができ
+るようになる．pushとpopで囲まれていることが非常に重要である．また襦袢
+として，translate, rotateZ, scaleの順番に指定することが重要．形を描く
+コマンドと，位置，回転角度などの指定を分離できる．
+
+h2. 課題18: ボタンが押された時に
+
+<pre syntax="ruby">
+# kadai18.rb
+require 'sgl'
+
+def setup
+  window -200, -200, 200, 200
+  background 0
+  $x = 0
+  $y = 0
+end
+
+def onMouseDown(x, y)
+  $x = x
+  $y = y
+end
+
+def display
+  line 0, 0, $x, $y
+end
+
+mainloop
+</pre>
+
+いままではプログラムはかかれている順番通りに実行されるものだったが，こ
+こでは違う順序となっている．まず最初にコマンドを登録し，それが後に呼ば
+れて実行されることになる．このようにプログラムの実行順番が違う方式をこ
+れから採用する．
+
+setup, onMouseDown, displayというコマンドを登録する．その後mainloopと
+いうコマンドを呼ぶ．このメインループの中で，全てのプログラムが実行され，
+適宜setup, displayが呼び出される．マウスのボタンが押された瞬間に，
+onMouseDownというコマンドが呼ばれる．
+
+そのonMouseDownの前に，$xという$のついた変数がつかわれている．変数には
+それぞれ使える範囲というのもがあるのだが，通常は一つのコマンドの範囲内
+でしか使うことができなかった．しかし，$のついた変数であれば，プログラ
+ムが動いている間ずっと残る．プログラムの最初の部分で，@$x = 0@のように
+して，あらかじめなんらかの値を代入することで，変数を使うということを示
+す必要がある．

@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+      特別課題2
+  </title>
+  <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
+<style>
+
+</style>
+  <script type="text/javascript">
+    window.onload = function() {
+      settings = {
+          tl: { radius: 10 },
+          tr: { radius: 10 },
+          bl: { radius: 10 },
+          br: { radius: 10 },
+          antiAlias: true,
+          autoPad: true,
+          validTags: ["div"]
+      }
+      var versionBox = new curvyCorners(settings, document.getElementById("version"));
+      versionBox.applyCornersToAll();
+    }
+  </script>
+</head>
+<body>
+<div id="main">
+
+    <h1>特別課題2</h1>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/sgl"; return false'>
+      <p>Get Version</p>
+      <a href="http://rubyforge.org/projects/sgl" class="numbers">1.0.1</a>
+    </div>
+    <h2>マウスの動きに反応するアニメーション</h2>
+
+
+	<ul>
+	<li>課題: ある一つのテーマを選択し，マウスの動きに反応する5個のプログラムで表現する．
+	<ul>
+	<li>前回と違い，マウスを動かすと反応するアニメーションでなくてはならない．</li>
+		<li>テーマ設定は前回と同じテーマを選択してもよい．違うテーマでもよい．</li>
+		<li>前回作成したプログラムを再利用してもかまわない．</li>
+		<li>テーマ設定の例: 奥行感，透明性，虫の動き，色の対比，など．</li>
+	</ul></li>
+	</ul>
+
+
+	<h2>絵コンテ</h2>
+
+
+	<p>次週の授業の最初に絵コンテを提出する．その場で見て返却する．絵コンテは
+その後の授業でもずっともってくること．プレゼンの日には必ず持ってくること．</p>
+
+
+	<p>絵コンテには，学籍番号，名前，選んだテーマ，作品のタイトルを記入する．
+一枚の用紙に一つのアニメーションというフォーマットで描くこと．</p>
+
+
+	<p>マウスを動かすとどう動きに反映されるかを考え，その反応をできるだけ詳細に
+絵コンテに描くこと．</p>
+
+
+	<h2>発表</h2>
+
+
+	<p>課題は，授業時間内にプレゼンテーション形式で発表する．</p>
+
+
+	<p>プレゼンテーション方法は前回と同じ．テーマの説明，最初に考えた絵コンテ，
+プログラムを実行させる(5個を順番に見せる)，プログラムの内容の説明(工夫
+した点など)，という順番．</p>
+
+
+	<h2>ファイル名</h2>
+
+
+	<p><code>sp2a.rb, sp2b.rb, sp2c.rb, sp2d.rb, sp2e.rb</code></p>
+
+
+	<p>指定のファイル名が存在するかどうかで課題(プログラム)提出を判定している
+ため，必ず指定のファイル名を用いること．</p>
+
+
+	<h2>プログラムの注意点</h2>
+
+
+	<ul>
+	<li>windowの大きさは自由だが，最低200&#215;200以上にする．</li>
+		<li>コマンドを定義する機能を最低5個は使うこと．</li>
+		<li>ファイル名は指定のものにすること．</li>
+	</ul>
+
+
+	<h2>作品制作にかかわる注意</h2>
+
+
+	<p>絵コンテで考えた動きを実現するのが基本だが，難しいと思った場合は簡略化
+してよい．絵コンテで考えた動きを実際にプログラムで作りはじめるのが理想
+だが，実際に作り初めてみると，どう作っていいのかわからない，難しすぎて
+作れないということがある．その場合はあきらめるのではなく，いままで学ん
+だことの範囲でどのような動きを実現できるかを考える．とにかく何かを実現
+することが重要である．</p>
+
+
+	<p>必ず作品制作に取り組む前に絵コンテを描き，見せにくることが必要．まずど
+のような動きを作るかを考えてから，プログラミングを開始する．絵コンテを
+見せずにプログラムだけ作成した場合は，課題提出とは見なさない．</p>
+
+
+	<p>必ず5つのプログラムを作る．1つのプログラムで5つのアニメーションにはし
+ない．</p>
+
+
+	<p>命令を定義する機能を最低5個は使う．5つのプログラムで5つの命令でよい．5
+つのプログラムで共通に使いまわせるような命令を作るようにする．一つのテー
+マを5つのプログラムで実現すると，同じ形が複数のプログラムにでてくるこ
+とがある．そのとき，その形を書く命令を定義して，それを使い回すことによっ
+てプログラムを簡略化できる．そのようにプログラムのテクニックとしてのコ
+マンドの使い方を体験することが課題の一つである．コマンド機能を使ってな
+いプログラムの場合は課題提出とは見なさない．</p>
+
+
+	<p>アニメーションの長さは指定しない．短くコンパクトにまとめること．最長で
+も5つで3分以内におさめること．</p>
+
+
+	<h2>採点</h2>
+
+
+	<p>テーマ選び，絵コンテも含め，内容を重視した採点をする．</p>
+    <p class="coda">
+      10th July 2007<br>
+    </p>
+</div>
+
+<!-- insert site tracking codes here, like Google Urchin -->
+
+</body>
+</html>
