@@ -8,4 +8,4 @@ def display
   line 0, 0, 100, 100
 end
 
-mainloop 
+mainloop
