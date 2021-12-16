@@ -31,17 +31,18 @@ module SGL
     end
 
     def initialize_sdl
-      SDL.init(SDL::INIT_VIDEO)
+      SDL2.init(SDL2::INIT_EVERYTHING)
       # Setting color size is important for Mac OS X.
-      SDL.setGLAttr(SDL::GL_RED_SIZE, 5)
-      SDL.setGLAttr(SDL::GL_GREEN_SIZE, 5)
-      SDL.setGLAttr(SDL::GL_BLUE_SIZE, 5)
-      SDL.setGLAttr(SDL::GL_DEPTH_SIZE, 16)
-      SDL.setGLAttr(SDL::GL_DOUBLEBUFFER, 1)
-      if !windows?
-	SDL.setVideoMode(640, 400, 16, SDL::OPENGL)
-      end
-      @sdl_event = SDL::Event.new
+      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)
+      SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 5)
+      SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 5)
+      SDL2::GL.set_attribute(SDL2::GL::DEPTH_SIZE, 16)
+      SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
+#      if !windows?
+#	SDL2.setVideoMode(640, 400, 16, SDL2::OPENGL)
+#      end
+#      @sdl_event = SDL2::Event.new
+      @sdl_event = nil
     end
     private :initialize_window, :initialize_sdl
 
@@ -69,16 +70,16 @@ module SGL
       # Do not initialize twice.
       if ! defined?($__sgl_sdl_window_initialized__)
         # sdl_window_init
-        mode =  SDL::OPENGL
+        mode =  SDL2::OPENGL
         if @options[:fullscreen]
-          mode |= SDL::FULLSCREEN
+          mode |= SDL2::FULLSCREEN
           w, h = @options[:fullscreen]
-          SDL.setVideoMode(w, h, 0, mode)
+          SDL2.setVideoMode(w, h, 0, mode)
         else
-          SDL.setVideoMode(@width, @height + 1, 0, mode) # why +1?
+          SDL2.setVideoMode(@width, @height + 1, 0, mode) # why +1?
         end
         GC.start
-        SDL::WM.setCaption("sgl", "sgl")
+        SDL2::WM.setCaption("sgl", "sgl")
         $__sgl_sdl_window_initialized__ = true
       end
 
@@ -86,8 +87,8 @@ module SGL
       if @options[:cursor]
 	# You can use only black and white for cursor image.
 	file = @options[:cursor]
-	bmp = SDL::Surface.loadBMP(file) # Create surface from bitmap.
-	SDL::Mouse.setCursor(bmp,		# bitmap
+	bmp = SDL2::Surface.loadBMP(file) # Create surface from bitmap.
+	SDL2::Mouse.setCursor(bmp,		# bitmap
 			     [255, 255, 255],	# white
 			     [  0,   0,   0],	# black
 			     [128, 128, 128],	# transparent

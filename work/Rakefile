@@ -1,0 +1,88 @@
+#!/usr/bin/ruby -w
+# coding: utf-8
+
+#task :default => :init
+task :default => :test
+
+require "pathname"
+require "date"
+require "open3"
+
+BREW = %w(
+sdl2
+sdl2_ttf
+sdl2_image
+sdl2_mixer
+)
+
+GEM = %w(
+ruby-sdl2
+opengl-bindings
+)
+#opengl
+
+task :create_gemfile do
+  sh "bundle init"
+end
+
+task :init do
+  check_ruby
+  sh "bundle install"
+  sh "brew bundle"
+end
+
+task :nuinit do
+  check_ruby
+
+  BREW.each {|f|
+    if check_brew(f)
+      puts "Formula #{f} is installed."
+    else
+      puts "Let us install #{f}"
+      sh "brew install #{f}"
+    end
+  }
+
+  GEM.each {|name|
+    if check_gem(name)
+      puts "Gem #{name} is installed."
+    else
+      puts "Let us install gem #{name}"
+      sh "gem install #{name}"
+    end
+  }
+end
+
+def check_ruby
+  cmd = "ruby --version"
+  stdout, _, _ = Open3.capture3(cmd)
+  version = stdout.chomp
+  if version =~ /ruby 3.0/
+    puts "Ruby 3.0 is installed."
+  else
+    puts "You need Ruby 3.0 or higer."
+    exit
+  end
+end
+
+def check_brew(formula)
+  cmd = "brew info #{formula}"
+  stdout, _, _ = Open3.capture3(cmd)
+  info = stdout
+  return false if info =~ /Not installed/
+  return true
+end
+
+def check_gem(name)
+  cmd = "gem info #{name}"
+  stdout, _, _ = Open3.capture3(cmd)
+  return true if stdout =~ /Installed at/
+  return false
+end
+
+task :test do
+  #test = "test7.rb"	# include OpenGLを外せるかどうかテストしてみた。
+  #test = "test6.rb"
+  test = "test4.rb"
+  sh "ruby #{test}"
+end

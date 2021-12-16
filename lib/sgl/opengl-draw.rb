@@ -2,16 +2,16 @@
 # License: Ruby License
 
 module SGL
-  LINES		= GL::LINES
-  POINTS	= GL::POINTS
-  LINE_STRIP	= GL::LINE_STRIP
-  LINE_LOOP	= GL::LINE_LOOP
-  TRIANGLES	= GL::TRIANGLES
-  TRIANGLE_STRIP = GL::TRIANGLE_STRIP
-  TRIANGLE_FAN	= GL::TRIANGLE_FAN
-  QUADS		= GL::QUADS
-  QUAD_STRIP	= GL::QUAD_STRIP
-  POLYGON	= GL::POLYGON
+  LINES		= OpenGL::GL_LINES
+  POINTS	= OpenGL::GL_POINTS
+  LINE_STRIP	= OpenGL::GL_LINE_STRIP
+  LINE_LOOP	= OpenGL::GL_LINE_LOOP
+  TRIANGLES	= OpenGL::GL_TRIANGLES
+  TRIANGLE_STRIP = OpenGL::GL_TRIANGLE_STRIP
+  TRIANGLE_FAN	= OpenGL::GL_TRIANGLE_FAN
+  QUADS		= OpenGL::GL_QUADS
+  QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
+  POLYGON	= OpenGL::GL_POLYGON
 
   # draw
   def beginObj(*a)	$__a__.beginObj(*a)	end
@@ -35,16 +35,16 @@ module SGL
   def cube(*a)		$__a__.cube(*a)		end
 
   class Application
-    LINES	= GL::LINES
-    POINTS	= GL::POINTS
-    LINE_STRIP	= GL::LINE_STRIP
-    LINE_LOOP	= GL::LINE_LOOP
-    TRIANGLES	= GL::TRIANGLES
-    TRIANGLE_STRIP	= GL::TRIANGLE_STRIP
-    TRIANGLE_FAN	= GL::TRIANGLE_FAN
-    QUADS	= GL::QUADS
-    QUAD_STRIP	= GL::QUAD_STRIP
-    POLYGON	= GL::POLYGON
+    LINES	= OpenGL::GL_LINES
+    POINTS	= OpenGL::GL_POINTS
+    LINE_STRIP	= OpenGL::GL_LINE_STRIP
+    LINE_LOOP	= OpenGL::GL_LINE_LOOP
+    TRIANGLES	= OpenGL::GL_TRIANGLES
+    TRIANGLE_STRIP	= OpenGL::GL_TRIANGLE_STRIP
+    TRIANGLE_FAN	= OpenGL::GL_TRIANGLE_FAN
+    QUADS	= OpenGL::GL_QUADS
+    QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
+    POLYGON	= OpenGL::GL_POLYGON
 
     # draw primitive
     def beginObj(mode = POLYGON)
@@ -96,7 +96,7 @@ module SGL
 
     # simple draw
     def point(a, b, c = nil)
-      GL.Begin(GL::POINTS)
+      GL.Begin(OpenGL::GL_POINTS)
       if c
 	GL.Vertex(a, b, c)
       else
@@ -110,7 +110,7 @@ module SGL
     end
 
     def line(a, b, c, d, e = nil, f = nil)
-      GL.Begin(GL::LINES) 
+      GL.Begin(OpenGL::GL_LINES) 
       if e && f
 	GL.Vertex(a, b, c) # 3D
 	GL.Vertex(d, e, f)
@@ -126,7 +126,7 @@ module SGL
     end
 
     def triangle(a, b, c, d, e, f)
-      GL.Begin(GL::TRIANGLES)
+      GL.Begin(OpenGL::GL_TRIANGLES)
       GL.Vertex(a, b)
       GL.Vertex(c, d)
       GL.Vertex(e, f)
@@ -166,7 +166,7 @@ module SGL
 	[x2, y2, z2], # 6 front right top
 	[x1, y2, z2]  # 7 front left top
       ]
-      GL.Begin(GL::QUADS)
+      GL.Begin(OpenGL::GL_QUADS)
       GL.Vertex(box[1]) # back
       GL.Vertex(box[0])
       GL.Vertex(box[3])
@@ -217,16 +217,16 @@ module SGL
     end
 
     def self.make_list
-      GL.NewList(1, GL::COMPILE)
+      GL.NewList(1, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 32)
       GL.EndList()
-      GL.NewList(2, GL::COMPILE)
+      GL.NewList(2, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 32)
       GL.EndList()
-      GL.NewList(3, GL::COMPILE)
+      GL.NewList(3, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 6)
       GL.EndList()
-      GL.NewList(4, GL::COMPILE)
+      GL.NewList(4, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 6)
       GL.EndList()
     end
