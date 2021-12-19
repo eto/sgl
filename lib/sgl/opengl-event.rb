@@ -16,7 +16,9 @@ module SGL
 
   # mainloop
   def mainloop
+    p "setup start at mainloop."
     $__a__.set_setup { setup }
+    p "setup done at mainloop."
     $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
     $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
     $__a__.set_keydown   {|k| onKeyDown(k) }
@@ -85,7 +87,7 @@ module SGL
     # setup
     def set_setup(&b)
       return unless block_given?
-      @block[:setup] = Proc.new
+      @block[:setup] = Proc.new { b }
     end
 
     def setup_pre
@@ -106,12 +108,14 @@ module SGL
     # display
     def set_display(&b)
       return unless block_given?
-      @block[:display] = Proc.new
+      @block[:display] = Proc.new {
+      }
     end
 
     def set_display0(&b)
       return unless block_given?
-      @block[:display0] = Proc.new
+      @block[:display0] = Proc.new {
+      }
     end
 
     def check_display0
@@ -147,7 +151,8 @@ module SGL
     # mouse events
     def set_mousedown(&b)
       return unless block_given?
-      @block[:mousedown] = Proc.new
+      @block[:mousedown] = Proc.new {
+      }
     end
 
     def do_mousedown
@@ -158,7 +163,8 @@ module SGL
 
     def set_mouseup(&b)
       return unless block_given?
-      @block[:mouseup] = Proc.new
+      @block[:mouseup] = Proc.new {
+      }
     end
 
     def do_mouseup
@@ -169,7 +175,8 @@ module SGL
     # mouse events for fullscreen
     def set_mousedown0(&b)
       return unless block_given?
-      @block[:mousedown0] = Proc.new
+      @block[:mousedown0] = Proc.new {
+      }
     end
 
     def check_mousedown0
@@ -179,7 +186,8 @@ module SGL
     # key events
     def set_keydown(&b)
       return unless block_given?
-      @block[:keydown] = Proc.new
+      @block[:keydown] = Proc.new {
+      }
     end
 
     def keydown_pre(key)
@@ -194,7 +202,8 @@ module SGL
 
     def set_keyup(&b)
       return unless block_given?
-      @block[:keyup] = Proc.new
+      @block[:keyup] = Proc.new {
+      }
     end
 
     def do_keyup(key)
@@ -261,7 +270,8 @@ module SGL
     end
 
     def process(&b)
-      block = Proc.new
+      block = Proc.new {
+      }
       @starttime = Time.now
       loop {
 	check_event

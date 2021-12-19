@@ -33,10 +33,17 @@ module SGL
     def initialize_sdl
       SDL2.init(SDL2::INIT_EVERYTHING)
       # Setting color size is important for Mac OS X.
+=begin
       SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::DEPTH_SIZE, 16)
+      SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
+=end
+      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
+      SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 8)
+      SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
+      SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
       SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
 #      if !windows?
 #	SDL2.setVideoMode(640, 400, 16, SDL2::OPENGL)
@@ -70,6 +77,7 @@ module SGL
       # Do not initialize twice.
       if ! defined?($__sgl_sdl_window_initialized__)
         # sdl_window_init
+=begin
         mode =  SDL2::OPENGL
         if @options[:fullscreen]
           mode |= SDL2::FULLSCREEN
@@ -80,6 +88,13 @@ module SGL
         end
         GC.start
         SDL2::WM.setCaption("sgl", "sgl")
+=end
+        @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)
+        p @sdl_window
+        sdl_context = SDL2::GL::Context.create(@sdl_window)
+        printf("OpenGL version %d.%d\n",
+               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
+               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION))
         $__sgl_sdl_window_initialized__ = true
       end
 
@@ -103,9 +118,9 @@ module SGL
 	set_window_position
       end
       set_camera_position
-      GL.Enable(GL::BLEND)
-      GL.BlendFunc(GL::SRC_ALPHA, GL::ONE_MINUS_SRC_ALPHA)
-      GL.ShadeModel(GL::SMOOTH)
+      GL.Enable(GL_BLEND)
+      GL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+      GL.ShadeModel(GL_SMOOTH)
       useDepth(@options[:depth])
       useCulling(@options[:culling])
       useSmooth(@options[:smooth])
@@ -130,18 +145,18 @@ module SGL
 
     def useDepth(a = true)
       @options[:depth] = a
-      @options[:depth] ? GL.Enable(GL::DEPTH_TEST) : GL.Disable(GL::DEPTH_TEST)
+      @options[:depth] ? GL.Enable(GL_DEPTH_TEST) : GL.Disable(GL_DEPTH_TEST)
     end
 
     def useSmooth(a = true)
       @options[:smooth] = a
       @options[:smooth] ?
-      GL.Enable(GL::LINE_SMOOTH) : GL.Disable(GL::LINE_SMOOTH)
+      GL.Enable(GL_LINE_SMOOTH) : GL.Disable(GL_LINE_SMOOTH)
     end
 
     def useCulling(a = true)
       @options[:culling] = a
-      @options[:culling] ? GL.Enable(GL::CULL_FACE) : GL.Disable(GL::CULL_FACE)
+      @options[:culling] ? GL.Enable(GL_CULL_FACE) : GL.Disable(GL_CULL_FACE)
     end
 
     def useFullscreen(w=DEFAULT_FULLSCREEN_WIDTH, h=DEFAULT_FULLSCREEN_HEIGHT)
@@ -176,7 +191,7 @@ module SGL
       @cameraZ = 1.0 +
 	@height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
       GL.Viewport(0, 0, @width, @height)
-      GL.MatrixMode(GL::PROJECTION)
+      GL.MatrixMode(GL_PROJECTION)
       loadIdentity
       GLU.Perspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
@@ -192,7 +207,7 @@ module SGL
       right  = cx + fhw
       top    = cy + fhh
       GL.Viewport(0, 0, w, h)
-      GL.MatrixMode(GL::PROJECTION)
+      GL.MatrixMode(GL_PROJECTION)
       loadIdentity
       fov = @options[:fov]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
@@ -201,15 +216,19 @@ module SGL
     private :set_window_position, :set_fullscreen_position
 
     def set_camera_position
-      GL.MatrixMode(GL::MODELVIEW)
+      pp caller
+      exit
+      glMatrixMode(GL_PROJECTION)
+      exit
       loadIdentity
+      glMatrixMode(GL_MODELVIEW)
       GLU.LookAt(@cameraX, @cameraY, @cameraZ,
 		 @cameraX, @cameraY, 0,
 		 0, 1, 0)
     end
 
     def set_fullscreen_camera_position
-      GL.MatrixMode(GL::MODELVIEW)
+      GL.MatrixMode(GL_MODELVIEW)
       loadIdentity
       GLU.LookAt(0, 0, @cameraZ,
 		 0, 0, 0,
@@ -218,7 +237,7 @@ module SGL
     private :set_camera_position, :set_fullscreen_camera_position
 
     def loadIdentity
-      GL.LoadIdentity
+      glLoadIdentity
     end
     private :loadIdentity
   end

@@ -82,7 +82,6 @@ end
 
 task :test do
   #test = "test7.rb"	# include OpenGLを外せるかどうかテストしてみた。
-  #test = "test6.rb"
-  test = "test4.rb"
+  test = "test6.rb"
   sh "ruby #{test}"
 end

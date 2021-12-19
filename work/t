@@ -1,0 +1,527 @@
+ruby test6.rb
+/usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_command.rb:2073: [BUG] Segmentation fault at 0x0000000000000578
+ruby 3.0.3p157 (2021-11-24 revision 3fb7d2cadc) [x86_64-darwin21]
+
+-- Crash Report log information --------------------------------------------
+   See Crash Report log file under the one of following:
+     * ~/Library/Logs/DiagnosticReports
+     * /Library/Logs/DiagnosticReports
+   for more details.
+Don't forget to include the above Crash Report log file in bug reports.
+
+-- Control frame information -----------------------------------------------
+c:0011 p:---- s:0044 e:000043 CFUNC  :call
+c:0010 p:0021 s:0039 e:000038 METHOD /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_command.rb:2073
+c:0009 p:0012 s:0033 e:000032 METHOD /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-window.rb:204
+c:0008 p:0003 s:0029 e:000028 METHOD /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:125
+c:0007 p:0017 s:0025 e:000024 METHOD /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:134
+c:0006 p:0018 s:0021 e:000020 BLOCK  /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:227 [FINISH]
+c:0005 p:---- s:0018 e:000017 CFUNC  :loop
+c:0004 p:0022 s:0014 e:000013 METHOD /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:225
+c:0003 p:0081 s:0010 E:001710 METHOD /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:32
+c:0002 p:0048 s:0006 e:000005 EVAL   test6.rb:16 [FINISH]
+c:0001 p:0000 s:0003 E:001700 (none) [FINISH]
+
+-- Ruby level backtrace information ----------------------------------------
+test6.rb:16:in `<main>'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:32:in `mainloop'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:225:in `mainloop'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:225:in `loop'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:227:in `block in mainloop'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:134:in `do_display'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb:125:in `display_pre'
+/Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-window.rb:204:in `set_camera_position'
+/usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_command.rb:2073:in `glMatrixMode'
+/usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_command.rb:2073:in `call'
+
+-- Machine register context ------------------------------------------------
+ rax: 0x0000000000000000 rbx: 0x0000000000000001 rcx: 0x000000010e3ff488
+ rdx: 0x00007ff7b20785b0 rdi: 0x0000000000001701 rsi: 0x0000000000001701
+ rbp: 0x00007ff7b20785f0 rsp: 0x00007ff7b20785f0  r8: 0x00000000c0902805
+  r9: 0x0000600002107060 r10: 0x0000000000000000 r11: 0x00007ffa3243b291
+ r12: 0x0000000000000001 r13: 0x00007ff7b2078798 r14: 0x0000000000000001
+ r15: 0xfffffffffffffffc rip: 0x00007ffa3243b2a0 rfl: 0x0000000000010246
+
+-- C level backtrace information -------------------------------------------
+/usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib(rb_vm_bugreport+0x23d) [0x10e426025]
+/usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib(0x10e2ce8b0) [0x10e2ce8b0]
+/usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib(0x10e3b195e) [0x10e3b195e]
+/usr/lib/system/libsystem_platform.dylib(_sigtramp+0x1d) [0x7ff81a7f7e2d]
+/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib(glMatrixMode+0xf) [0x7ffa3243b2a0]
+[0x7ff828bfda05]
+[0x7ff828bfd347]
+[0x10e015124]
+[0x10e3e0921]
+[0x10e014b2f]
+[0x10e41e37c]
+[0x10e41864a]
+[0x10e40567d]
+[0x10e41483d]
+[0x10e4215b4]
+[0x10e421d1f]
+[0x10e2d5b8f]
+[0x10e2d59fb]
+[0x10e41e37c]
+[0x10e41864a]
+[0x10e405622]
+[0x10e41483d]
+[0x10e2d525c]
+[0x10e2d50f0]
+[0x10de89f0a]
+
+-- Other runtime information -----------------------------------------------
+
+* Loaded script: test6.rb
+
+* Loaded features:
+
+    0 enumerator.so
+    1 thread.rb
+    2 rational.so
+    3 complex.so
+    4 ruby2_keywords.rb
+    5 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+    6 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/trans/transdb.bundle
+    7 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/rbconfig.rb
+    8 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/compatibility.rb
+    9 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/defaults.rb
+   10 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/deprecate.rb
+   11 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/errors.rb
+   12 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/exceptions.rb
+   13 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/basic_specification.rb
+   14 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/stub_specification.rb
+   15 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/text.rb
+   16 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/user_interaction.rb
+   17 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/specification_policy.rb
+   18 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/util/list.rb
+   19 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/platform.rb
+   20 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/version.rb
+   21 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/requirement.rb
+   22 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/specification.rb
+   23 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/util.rb
+   24 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/dependency.rb
+   25 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/core_ext/kernel_gem.rb
+   26 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+   27 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/monitor.rb
+   28 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/core_ext/kernel_require.rb
+   29 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/core_ext/kernel_warn.rb
+   30 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/defaults/operating_system.rb
+   31 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems.rb
+   32 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/path_support.rb
+   33 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/version.rb
+   34 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/core_ext/name_error.rb
+   35 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/levenshtein.rb
+   36 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/jaro_winkler.rb
+   37 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checker.rb
+   38 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/name_error_checkers/class_name_checker.rb
+   39 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/name_error_checkers/variable_name_checker.rb
+   40 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/name_error_checkers.rb
+   41 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/method_name_checker.rb
+   42 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/key_error_checker.rb
+   43 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/null_checker.rb
+   44 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/tree_spell_checker.rb
+   45 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/spell_checkers/require_path_checker.rb
+   46 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean/formatters/plain_formatter.rb
+   47 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/did_you_mean.rb
+   48 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/version.rb
+   49 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/rubygems/bundler_version_finder.rb
+   50 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_platform.rb
+   51 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_common.rb
+   52 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_enum.rb
+   53 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+   54 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/closure.rb
+   55 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/function.rb
+   56 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/version.rb
+   57 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle.rb
+   58 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_command.rb
+   59 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl_macosx.rb
+   60 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/opengl.rb
+   61 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/value.rb
+   62 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/pack.rb
+   63 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/struct.rb
+   64 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/cparser.rb
+   65 /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/fiddle/import.rb
+   66 /usr/local/lib/ruby/gems/3.0.0/gems/opengl-bindings-1.6.11/lib/glu.rb
+   67 /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+   68 /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2/version.rb
+   69 /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2.rb
+   70 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/sgl-color.rb
+   71 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-window.rb
+   72 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-color.rb
+   73 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-event.rb
+   74 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-draw.rb
+   75 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl-app.rb
+   76 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/opengl.rb
+   77 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl/sgl.rb
+   78 /Users/eto/Dropbox (個人用)/dev/sgl/lib/sgl.rb
+
+* Process memory map:
+
+10de86000-10de8a000 r-x /usr/local/Cellar/ruby/3.0.3/bin/ruby
+10de8a000-10de8e000 r-- /usr/local/Cellar/ruby/3.0.3/bin/ruby
+10de8e000-10de92000 rw- /usr/local/Cellar/ruby/3.0.3/bin/ruby
+10de92000-10de93000 r-- /usr/local/Cellar/ruby/3.0.3/bin/ruby
+10de93000-10de96000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10de96000-10df96000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10df96000-10df98000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10df98000-10df9a000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10df9a000-10df9b000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10df9b000-10df9f000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10df9f000-10dfa0000 --- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfa0000-10dfab000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfab000-10dfac000 --- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfac000-10dfad000 --- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfad000-10dfb8000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfb8000-10dfb9000 --- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfb9000-10dfba000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfba000-10dfbb000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfbb000-10dfc2000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfc2000-10dfc3000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfc3000-10dfc7000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfc7000-10dfcb000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfcb000-10dfcf000 r-x /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfcf000-10dfd3000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfd3000-10dfd7000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/encdb.bundle
+10dfd7000-10dfdb000 r-x /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/trans/transdb.bundle
+10dfdb000-10dfdf000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/trans/transdb.bundle
+10dfdf000-10dfe3000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/enc/trans/transdb.bundle
+10dfe3000-10dfe4000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfe4000-10dfe5000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfe5000-10dfe6000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfe6000-10dfe7000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfe7000-10dfeb000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfeb000-10dfec000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dfec000-10dff0000 r-x /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dff0000-10dff4000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dff4000-10dff8000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dff8000-10dffc000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/monitor.bundle
+10dffc000-10e008000 r-- /Library/Preferences/Logging/.plist-cache.bUsZmBgO
+10e008000-10e00c000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e00c000-10e00d000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e00d000-10e00e000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e00e000-10e00f000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e00f000-10e010000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e010000-10e018000 r-x /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e018000-10e01c000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e01c000-10e020000 rw- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e020000-10e024000 r-- /usr/local/Cellar/ruby/3.0.3/lib/ruby/3.0.0/x86_64-darwin21/fiddle.bundle
+10e024000-10e02c000 r-x /usr/local/Cellar/sdl2_ttf/2.0.15/lib/libSDL2_ttf-2.0.0.dylib
+10e02c000-10e030000 r-- /usr/local/Cellar/sdl2_ttf/2.0.15/lib/libSDL2_ttf-2.0.0.dylib
+10e030000-10e034000 rw- /usr/local/Cellar/sdl2_ttf/2.0.15/lib/libSDL2_ttf-2.0.0.dylib
+10e034000-10e038000 r-- /usr/local/Cellar/sdl2_ttf/2.0.15/lib/libSDL2_ttf-2.0.0.dylib
+10e038000-10e040000 r-x /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbisfile.3.dylib
+10e040000-10e044000 r-- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbisfile.3.dylib
+10e044000-10e048000 rw- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbisfile.3.dylib
+10e048000-10e04c000 r-- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbisfile.3.dylib
+10e04c000-10e054000 r-x /usr/local/Cellar/libogg/1.3.5/lib/libogg.0.dylib
+10e054000-10e058000 r-- /usr/local/Cellar/libogg/1.3.5/lib/libogg.0.dylib
+10e058000-10e05c000 rw- /usr/local/Cellar/libogg/1.3.5/lib/libogg.0.dylib
+10e05c000-10e060000 r-- /usr/local/Cellar/libogg/1.3.5/lib/libogg.0.dylib
+10e060000-10e062000 r-- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e062000-10e064000 r-- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e064000-10e084000 r-x /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e084000-10e088000 r-- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e088000-10e08c000 rw- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e08c000-10e10c000 rw- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e10c000-10e124000 r-- /usr/local/lib/ruby/gems/3.0.0/gems/ruby-sdl2-0.3.5/lib/sdl2_ext.bundle
+10e124000-10e140000 r-x /usr/local/Cellar/sdl2_image/2.0.5/lib/libSDL2_image-2.0.0.dylib
+10e140000-10e144000 r-- /usr/local/Cellar/sdl2_image/2.0.5/lib/libSDL2_image-2.0.0.dylib
+10e144000-10e148000 rw- /usr/local/Cellar/sdl2_image/2.0.5/lib/libSDL2_image-2.0.0.dylib
+10e148000-10e14c000 r-- /usr/local/Cellar/sdl2_image/2.0.5/lib/libSDL2_image-2.0.0.dylib
+10e14c000-10e164000 r-x /usr/local/Cellar/sdl2_mixer/2.0.4_2/lib/libSDL2_mixer-2.0.0.dylib
+10e164000-10e168000 r-- /usr/local/Cellar/sdl2_mixer/2.0.4_2/lib/libSDL2_mixer-2.0.0.dylib
+10e168000-10e16c000 rw- /usr/local/Cellar/sdl2_mixer/2.0.4_2/lib/libSDL2_mixer-2.0.0.dylib
+10e16c000-10e174000 r-- /usr/local/Cellar/sdl2_mixer/2.0.4_2/lib/libSDL2_mixer-2.0.0.dylib
+10e174000-10e17c000 r-- /private/var/db/analyticsd/events.whitelist
+10e17c000-10e18b000 r-- /private/var/db/analyticsd/events.whitelist
+10e18b000-10e19a000 r-- /private/var/db/analyticsd/events.whitelist
+10e19a000-10e19f000 r-- /private/var/db/analyticsd/events.whitelist
+10e19f000-10e1a0000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a0000-10e1a1000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a1000-10e1a3000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a3000-10e1a4000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a4000-10e1a5000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a5000-10e1a6000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a6000-10e1a7000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1a7000-10e1cb000 r-x /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1cb000-10e1cf000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1cf000-10e1d3000 rw- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1d3000-10e1db000 r-- /usr/local/Cellar/libpng/1.6.37/lib/libpng16.16.dylib
+10e1db000-10e1ff000 r-x /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib
+10e1ff000-10e203000 r-- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib
+10e203000-10e207000 rw- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib
+10e207000-10e20b000 r-- /usr/local/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib
+10e20b000-10e210000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e210000-10e213000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e213000-10e215000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e215000-10e217000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e217000-10e218000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e218000-10e248000 r-x /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e248000-10e24c000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e24c000-10e250000 rw- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e250000-10e258000 r-- /usr/local/Cellar/jpeg/9d/lib/libjpeg.9.dylib
+10e258000-10e26a000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FauxVibrantDark.car
+10e26a000-10e26b000 r-- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e26b000-10e4d7000 r-x /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e4d7000-10e4df000 r-- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e4df000-10e4e3000 rw- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e4e3000-10e4ef000 rw- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e4ef000-10e54f000 r-- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+10e54f000-10e550000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e550000-10e5f1000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e5f1000-10e5f2000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e5f2000-10e693000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e693000-10e694000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e694000-10e735000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e735000-10e736000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e736000-10e7d7000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e7d7000-10e7d8000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e7d8000-10e879000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e879000-10e87a000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e87a000-10e91b000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e91b000-10e91c000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e91c000-10e9bd000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e9bd000-10e9be000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10e9be000-10ea5f000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ea5f000-10ea60000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ea60000-10eb01000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eb01000-10eb02000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eb02000-10eba3000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eba3000-10eba4000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eba4000-10ec45000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ec45000-10ec46000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ec46000-10ece7000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ece7000-10ece8000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ece8000-10ed89000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ed89000-10ed8a000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ed8a000-10ee2b000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ee2b000-10ee2c000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ee2c000-10eecd000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eecd000-10eece000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10eece000-10ef6f000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ef6f000-10ef70000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10ef70000-10f011000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f011000-10f012000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f012000-10f0b3000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f0b3000-10f0b4000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f0b4000-10f155000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f155000-10f156000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f156000-10f1f7000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f1f7000-10f1f8000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f1f8000-10f299000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f299000-10f29a000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f29a000-10f33b000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f33b000-10f33c000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f33c000-10f3dd000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f3dd000-10f3de000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f3de000-10f47f000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f47f000-10f480000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f480000-10f521000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f521000-10f522000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f522000-10f5c3000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f5c3000-10f5c4000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f5c4000-10f665000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f665000-10f666000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f666000-10f707000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f707000-10f708000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f708000-10f7a9000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f7a9000-10f7aa000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f7aa000-10f84b000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f84b000-10f84c000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f84c000-10f8ed000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f8ed000-10f8ee000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f8ee000-10f98f000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f98f000-10f9cf000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f9cf000-10f9f1000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+10f9f1000-10f9f2000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9f2000-10f9f5000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9f5000-10f9f9000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9f9000-10f9fa000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9fa000-10f9fc000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9fc000-10f9fd000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9fd000-10f9fe000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9fe000-10f9ff000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10f9ff000-10fa00000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa00000-10fa02000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa02000-10fa03000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa04000-10fa64000 r-x /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa64000-10fa68000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa68000-10fa6c000 rw- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa6c000-10fa7c000 r-- /usr/local/Cellar/libtiff/4.3.0/lib/libtiff.5.dylib
+10fa7c000-10fad0000 r-x /usr/local/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib
+10fad0000-10fad4000 r-- /usr/local/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib
+10fad4000-10fad8000 rw- /usr/local/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib
+10fad8000-10fae4000 r-- /usr/local/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib
+10fae7000-10fbef000 r-x /usr/local/Cellar/sdl2/2.0.18/lib/libSDL2-2.0.0.dylib
+10fbef000-10fbf7000 r-- /usr/local/Cellar/sdl2/2.0.18/lib/libSDL2-2.0.0.dylib
+10fbf7000-10fc03000 rw- /usr/local/Cellar/sdl2/2.0.18/lib/libSDL2-2.0.0.dylib
+10fc03000-10fc3f000 r-- /usr/local/Cellar/sdl2/2.0.18/lib/libSDL2-2.0.0.dylib
+10fc3f000-10fc7b000 r-x /usr/local/Cellar/libmodplug/0.8.9.0/lib/libmodplug.1.dylib
+10fc7b000-10fc7f000 rw- /usr/local/Cellar/libmodplug/0.8.9.0/lib/libmodplug.1.dylib
+10fc7f000-10fd2b000 rw- /usr/local/Cellar/libmodplug/0.8.9.0/lib/libmodplug.1.dylib
+10fd2b000-10fd37000 r-- /usr/local/Cellar/libmodplug/0.8.9.0/lib/libmodplug.1.dylib
+10fd37000-10fd63000 r-x /usr/local/Cellar/flac/1.3.3/lib/libFLAC.8.dylib
+10fd63000-10fd67000 r-- /usr/local/Cellar/flac/1.3.3/lib/libFLAC.8.dylib
+10fd67000-10fd6b000 rw- /usr/local/Cellar/flac/1.3.3/lib/libFLAC.8.dylib
+10fd6b000-10fd77000 r-- /usr/local/Cellar/flac/1.3.3/lib/libFLAC.8.dylib
+10fd77000-10fdaf000 r-x /usr/local/Cellar/mpg123/1.29.3/lib/libmpg123.0.dylib
+10fdaf000-10fdb3000 r-- /usr/local/Cellar/mpg123/1.29.3/lib/libmpg123.0.dylib
+10fdb3000-10fdb7000 rw- /usr/local/Cellar/mpg123/1.29.3/lib/libmpg123.0.dylib
+10fdb7000-10fdbf000 r-- /usr/local/Cellar/mpg123/1.29.3/lib/libmpg123.0.dylib
+10fdbf000-10fe3f000 r-- /usr/lib/libobjc-trampolines.dylib
+10fe3f000-10fe4f000 r-x /usr/lib/libobjc-trampolines.dylib
+10fe4f000-10fe57000 r-- /usr/lib/libobjc-trampolines.dylib
+10fe5a000-10feda000 r-x /usr/local/Cellar/freetype/2.11.1/lib/libfreetype.6.dylib
+10feda000-10fee2000 r-- /usr/local/Cellar/freetype/2.11.1/lib/libfreetype.6.dylib
+10fee2000-10fef6000 r-- /usr/local/Cellar/freetype/2.11.1/lib/libfreetype.6.dylib
+10fef6000-111b3b000 r-- /usr/share/icu/icudt68l.dat
+111b3b000-111b77000 r-- /private/var/db/timezone/tz/2021a.3.0/icutz/icutz44l.dat
+111b77000-112259000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/DarkAqua.car
+112259000-112842000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/VibrantDark.car
+112842000-113003000 r-- /System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+113003000-1137c4000 r-- /System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+1137c4000-113f85000 r-- /System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+113f85000-114746000 r-- /System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+114746000-11487d000 r-- /System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+11487d000-115012000 rw- /private/var/folders/cl/8mtycfpj7dqdjbv9rynh2d2w0000gn/0/com.apple.LaunchServices.dv/com.apple.LaunchServices-3027-v2.csstore
+115012000-115033000 r-- /System/Library/Caches/com.apple.IntlDataCache.le.kbdx
+115033000-115037000 rw- /usr/lib/libobjc-trampolines.dylib
+115037000-115047000 r-x /usr/lib/libobjc-trampolines.dylib
+115047000-115048000 r-- /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+115048000-11504c000 rw- /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+115056000-11505a000 r-x /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+11505a000-11505e000 r-- /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+11505e000-115062000 rw- /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+115062000-115066000 r-- /System/Library/Extensions/AppleGFXHDA.kext/Contents/PlugIns/AppleGFXHDAHALPlugIn.bundle/Contents/MacOS/AppleGFXHDAHALPlugIn
+115066000-115067000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+115067000-115072000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+115072000-115073000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+115073000-115074000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+115074000-11507f000 rw- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+11507f000-115080000 --- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+115080000-1150ba000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FunctionRowAppearance.car
+1150ba000-1157b6000 r-- /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/Aqua.car
+1157b6000-1157c4000 r-- /usr/local/Cellar/ruby/3.0.3/bin/ruby
+1157c4000-1157d1000 r-- /usr/local/Cellar/ruby/3.0.3/bin/ruby
+1157d1000-115aa6000 r-- /usr/local/Cellar/ruby/3.0.3/lib/libruby.3.0.dylib
+115aa6000-115b14000 r-- /usr/lib/system/libsystem_platform.dylib
+11c981000-11c9ed000 r-x /usr/lib/dyld
+11c9ed000-11c9f9000 r-- /usr/lib/dyld
+11c9f9000-11c9fd000 rw- /usr/lib/dyld
+11c9fd000-11ca2b000 r-- /usr/lib/dyld
+11ca2b000-11ca31000 r--
+600000000000-600008000000 rw-
+600008000000-600010000000 rw-
+600010000000-600018000000 rw-
+600018000000-600020000000 rw-
+700009a54000-700009a55000 ---
+700009a55000-700009ad7000 rw-
+700009ad7000-700009ad8000 ---
+700009ad8000-700009b5a000 rw-
+700009b5a000-700009b5b000 ---
+700009b5b000-700009bdd000 rw-
+700009bdd000-700009bde000 ---
+700009bde000-700009c60000 rw-
+700009c60000-700009c61000 ---
+700009c61000-700009ce3000 rw-
+700009ce3000-700009ce4000 ---
+700009ce4000-700009d66000 rw-
+7fefa5700000-7fefa5800000 rw-
+7fefa5800000-7fefa6000000 rw-
+7fefa6000000-7fefa6800000 rw-
+7fefa6800000-7fefa681b000 rw-
+7fefa681b000-7fefa682b000 rw-
+7fefa682b000-7fefa688b000 rw-
+7fefa688b000-7fefa6897000 rw-
+7fefa6897000-7fefa68af000 rw-
+7fefa68af000-7fefa68be000 rw-
+7fefa68be000-7fefa68db000 rw-
+7fefa68db000-7fefa68f8000 rw-
+7fefa6900000-7fefa6a00000 rw-
+7fefa6a00000-7fefa6b00000 rw-
+7fefa6b00000-7fefa8b00000 rw-
+7fefa8b00000-7fefa8c00000 rw-
+7fefa8c00000-7fefa8d00000 rw-
+7fefa8d00000-7fefa8e00000 rw-
+7fefa8e00000-7fefa8e39000 rw-
+7fefa8e39000-7fefa8e4f000 rw-
+7fefa8e5a000-7fefa8e93000 rw-
+7fefa8e93000-7fefa8ea2000 rw-
+7fefa8ea2000-7fefa8ebf000 rw-
+7fefa8ebf000-7fefa8ef8000 rw-
+7fefa8f00000-7fefa9000000 rw-
+7fefa9000000-7fefa9800000 rw-
+7fefa9800000-7fefaa000000 rw-
+7fefaa000000-7fefaa800000 rw-
+7fefaa800000-7fefab000000 rw-
+7fefab000000-7fefab100000 rw-
+7fefab100000-7fefab200000 rw-
+7fefab200000-7fefab271000 rw-
+7fefab271000-7fefab2af000 rw-
+7fefab2af000-7fefab2ee000 rw-
+7fefab352000-7fefab38f000 rw-
+7fefab513000-7fefab5c9000 rw-
+7fefab5c9000-7fefab5f4000 rw-
+7fefab600000-7fefab700000 rw-
+7fefab700000-7fefab800000 rw-
+7fefab800000-7fefac000000 rw-
+7fefac000000-7fefac800000 rw-
+7fefac800000-7fefac900000 rw-
+7fefac900000-7fefac90b000 rw-
+7fefac917000-7fefac931000 rw-
+7fefac931000-7fefac94d000 rw-
+7fefac956000-7fefac96f000 rw-
+7fefac96f000-7fefac97d000 rw-
+7fefac97d000-7fefac9b7000 rw-
+7fefac9b7000-7fefac9f2000 rw-
+7fefaca00000-7fefacb00000 rw-
+7fefacb00000-7fefacc00000 rw-
+7fefacc00000-7fefacd00000 rw-
+7fefacd00000-7feface00000 rw-
+7feface00000-7feface3c000 rw-
+7fefad000000-7fefad800000 rw-
+7fefad800000-7fefae000000 rw-
+7ff7ae07a000-7ff7b187a000 ---
+7ff7b187a000-7ff7b207a000 rw-
+7ff800000000-7ff840000000 r--
+7ff840000000-7ff85be1c000 r--
+7ff85be1c000-7ff85c000000 rw-
+7ff85c000000-7ff85c200000 rw-
+7ff85c200000-7ff85c400000 rw-
+7ff85c400000-7ff85c600000 rw-
+7ff85c600000-7ff85c800000 rw-
+7ff85c800000-7ff85ca00000 rw-
+7ff85ca00000-7ff85cc00000 rw-
+7ff85cc00000-7ff85d000000 r--
+7ff85d000000-7ff85d200000 rw-
+7ff85d200000-7ff85d800000 r--
+7ff85d800000-7ff85da00000 rw-
+7ff85da00000-7ff880000000 r--
+7ff880000000-7ff940000000 r--
+7ff940000000-7ff95d400000 r--
+7ff95d400000-7ff95d600000 rw-
+7ff95d600000-7ff980000000 r--
+7ff980000000-7ffa40000000 r--
+7ffa40000000-7ffa5be2c000 r--
+7ffa5be2c000-7ffa5c000000 rw-
+7ffa5c000000-7ffa5c200000 r--
+7ffa5c200000-7ffa5c400000 rw-
+7ffa5c400000-7ffa5de00000 r--
+7ffa5de00000-7ffa5e000000 rw-
+7ffa5e000000-7ffa80000000 r--
+7ffa80000000-7ffb40000000 r--
+7ffb40000000-7ffb5c200000 r--
+7ffb5c200000-7ffb5c400000 rw-
+7ffb5c400000-7ffb80000000 r--
+7ffb80000000-7ffffe000000 r--
+7fffffe00000-7fffffe01000 r--
+7ffffff38000-7ffffff39000 r-x
+[IMPORTANT]
+Don't forget to include the Crash Report log file under
+DiagnosticReports directory in bug reports.
+
+rake aborted!
+Command failed with status (): [ruby test6.rb...]
+/Users/eto/Dropbox (個人用)/dev/sgl/work/Rakefile:86:in `block in <top (required)>'
+Tasks: TOP => default => test
+(See full trace by running task with --trace)
