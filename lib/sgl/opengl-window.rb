@@ -90,11 +90,11 @@ module SGL
         SDL2::WM.setCaption("sgl", "sgl")
 =end
         @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)
-        p @sdl_window
+        #p @sdl_window
         sdl_context = SDL2::GL::Context.create(@sdl_window)
-        printf("OpenGL version %d.%d\n",
-               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
-               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION))
+#        printf("OpenGL version %d.%d\n",
+#               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
+#               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION))
         $__sgl_sdl_window_initialized__ = true
       end
 
@@ -194,7 +194,7 @@ module SGL
       glMatrixMode(GL_PROJECTION)
       loadIdentity
       #gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
-      pp GLU.methods
+      #pp GLU.methods
       GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
@@ -219,10 +219,10 @@ module SGL
     private :set_window_position, :set_fullscreen_position
 
     def set_camera_position
-      pp caller
-      exit
+      #pp caller
+      #exit
       glMatrixMode(GL_PROJECTION)
-      exit
+      #exit
       loadIdentity
       glMatrixMode(GL_MODELVIEW)
       gluLookAt(@cameraX, @cameraY, @cameraZ,

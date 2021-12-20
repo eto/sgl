@@ -7,9 +7,9 @@ require "sgl"
 # $__v__ = Video.instance
 
 def setup
-  p "setup start."
+  #p "setup start."
   window 100,100
-  p "setup done."
+  #p "setup done."
 end
 setup
 

@@ -1,6 +1,7 @@
 # Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
 # License: Ruby License
 
+require 'opengl'
 require "opengl"
 include OpenGL
 case OpenGL.get_platform
@@ -16,6 +17,7 @@ end
 
 #require "gl"
 require "glu"
+GLU.load_lib()
 #require "glut"
 #require "mathn"
 #include Gl

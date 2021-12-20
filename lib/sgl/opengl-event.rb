@@ -16,9 +16,9 @@ module SGL
 
   # mainloop
   def mainloop
-    p "setup start at mainloop."
+    #p "setup start at mainloop."
     $__a__.set_setup { setup }
-    p "setup done at mainloop."
+    #p "setup done at mainloop."
     $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
     $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
     $__a__.set_keydown   {|k| onKeyDown(k) }
@@ -143,7 +143,7 @@ module SGL
       cur_color = @cur_color
       @block[:display0].call if @block[:display0]
       color(*cur_color)
-      SDL.GLSwapBuffers
+      #SDL2.GLSwapBuffers
       #GC.start
     end
     private :display_pre, :display_post
@@ -191,7 +191,7 @@ module SGL
     end
 
     def keydown_pre(key)
-      exit if key == SDL::Key::ESCAPE
+      exit if key == SDL2::Key::ESCAPE
     end
     private :keydown_pre
 
@@ -284,24 +284,30 @@ module SGL
 
     # check event
     def check_event
-      x, y, l, m, r = SDL::Mouse.state
+      #x, y, l, m, r = SDL2::Mouse.state
+      s = SDL2::Mouse.state
+      #p s
+      x, y, l, m, r = s.x, s.y, 0,0,0
+      #p [x, y, l, m, r]
       # x pos, y pos, left button, middle button, right button
       @mouseX, @mouseY = calc_mouse_xy(x, y)
       @mouseX0, @mouseY0 = calc_fullscreen_mouse_xy(x, y)
-      event = @sdl_event
-      while event.poll != 0
-	case event.type
-	when SDL::Event::MOUSEBUTTONDOWN
+      #event = @sdl_event
+      while event = SDL2::Event.poll
+	case event
+	when SDL2::Event::MouseButtonDown
 	  do_mousedown
-	when SDL::Event::MOUSEBUTTONUP
+	when SDL2::Event::MouseButtonUp
 	  do_mouseup
-	when SDL::Event::KEYDOWN
-	  @keynum = event.info[2]
+	when SDL2::Event::KeyDown
+	  #@keynum = event.info[2]
+	  @keynum = event.scancode
 	  do_keydown(@keynum)
-	when SDL::Event::KEYUP
-	  @keynum = event.info[2]
+	when SDL2::Event::KeyUp
+	  #@keynum = event.info[2]
+	  @keynum = event.scancode
 	  do_keyup(@keynum)
-	when SDL::Event::QUIT
+	when SDL2::Event::Quit
 	  exit
 	end
       end
