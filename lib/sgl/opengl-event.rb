@@ -283,12 +283,18 @@ module SGL
     end
 
     # check event
+    LEFT_MOUSE_BUTTON   = 1
+    MIDDLE_MOUSE_BUTTON = 2
+    RIGHT_MOUSE_BUTTON  = 3
     def check_event
       #x, y, l, m, r = SDL2::Mouse.state
       s = SDL2::Mouse.state
       #p s
-      x, y, l, m, r = s.x, s.y, 0,0,0
-      #p [x, y, l, m, r]
+      x, y, l, m, r = s.x, s.y, 0, 0, 0
+      l = true if s.pressed?(LEFT_MOUSE_BUTTON)
+      m = true if s.pressed?(MIDDLE_MOUSE_BUTTON)
+      r = true if s.pressed?(RIGHT_MOUSE_BUTTON)
+      p [x, y, l, m, r]
       # x pos, y pos, left button, middle button, right button
       @mouseX, @mouseY = calc_mouse_xy(x, y)
       @mouseX0, @mouseY0 = calc_fullscreen_mouse_xy(x, y)
