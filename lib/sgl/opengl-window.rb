@@ -118,9 +118,9 @@ module SGL
 	set_window_position
       end
       set_camera_position
-      GL.Enable(GL_BLEND)
-      GL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-      GL.ShadeModel(GL_SMOOTH)
+      glEnable(GL_BLEND)
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+      glShadeModel(GL_SMOOTH)
       useDepth(@options[:depth])
       useCulling(@options[:culling])
       useSmooth(@options[:smooth])
@@ -145,18 +145,18 @@ module SGL
 
     def useDepth(a = true)
       @options[:depth] = a
-      @options[:depth] ? GL.Enable(GL_DEPTH_TEST) : GL.Disable(GL_DEPTH_TEST)
+      @options[:depth] ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST)
     end
 
     def useSmooth(a = true)
       @options[:smooth] = a
       @options[:smooth] ?
-      GL.Enable(GL_LINE_SMOOTH) : GL.Disable(GL_LINE_SMOOTH)
+      glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH)
     end
 
     def useCulling(a = true)
       @options[:culling] = a
-      @options[:culling] ? GL.Enable(GL_CULL_FACE) : GL.Disable(GL_CULL_FACE)
+      @options[:culling] ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE)
     end
 
     def useFullscreen(w=DEFAULT_FULLSCREEN_WIDTH, h=DEFAULT_FULLSCREEN_HEIGHT)
@@ -190,10 +190,12 @@ module SGL
       fov = @options[:fov]
       @cameraZ = 1.0 +
 	@height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
-      GL.Viewport(0, 0, @width, @height)
-      GL.MatrixMode(GL_PROJECTION)
+      glViewport(0, 0, @width, @height)
+      glMatrixMode(GL_PROJECTION)
       loadIdentity
-      GLU.Perspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      #gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      pp GLU.methods
+      GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
     def set_fullscreen_position
@@ -206,12 +208,13 @@ module SGL
       bottom = cy - fhh
       right  = cx + fhw
       top    = cy + fhh
-      GL.Viewport(0, 0, w, h)
-      GL.MatrixMode(GL_PROJECTION)
+      glViewport(0, 0, w, h)
+      glMatrixMode(GL_PROJECTION)
       loadIdentity
       fov = @options[:fov]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
-      GLU.Perspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      #gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
     private :set_window_position, :set_fullscreen_position
 
@@ -222,15 +225,15 @@ module SGL
       exit
       loadIdentity
       glMatrixMode(GL_MODELVIEW)
-      GLU.LookAt(@cameraX, @cameraY, @cameraZ,
+      gluLookAt(@cameraX, @cameraY, @cameraZ,
 		 @cameraX, @cameraY, 0,
 		 0, 1, 0)
     end
 
     def set_fullscreen_camera_position
-      GL.MatrixMode(GL_MODELVIEW)
+      glMatrixMode(GL_MODELVIEW)
       loadIdentity
-      GLU.LookAt(0, 0, @cameraZ,
+      gluLookAt(0, 0, @cameraZ,
 		 0, 0, 0,
 		 0, 1, 0)
     end

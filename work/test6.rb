@@ -11,6 +11,7 @@ def setup
   window 100,100
   p "setup done."
 end
+setup
 
 def display
   line 0,0,100,100

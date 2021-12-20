@@ -13,7 +13,14 @@ when :OPENGL_PLATFORM_LINUX
 else
   raise RuntimeError, "Unsupported platform."
 end
-require 'glu'
+
+#require "gl"
+require "glu"
+#require "glut"
+#require "mathn"
+#include Gl
+include GLU
+#include Glut
 
 require "sdl2"
 
