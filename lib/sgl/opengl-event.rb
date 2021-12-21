@@ -16,9 +16,9 @@ module SGL
 
   # mainloop
   def mainloop
-    #p "setup start at mainloop."
+    p "setup start at mainloop."
     $__a__.set_setup { setup }
-    #p "setup done at mainloop."
+    p "setup done at mainloop."
     $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
     $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
     $__a__.set_keydown   {|k| onKeyDown(k) }
@@ -108,14 +108,12 @@ module SGL
     # display
     def set_display(&b)
       return unless block_given?
-      @block[:display] = Proc.new {
-      }
+      @block[:display] = Proc.new { b }
     end
 
     def set_display0(&b)
       return unless block_given?
-      @block[:display0] = Proc.new {
-      }
+      @block[:display0] = Proc.new { b }
     end
 
     def check_display0
@@ -129,11 +127,17 @@ module SGL
     end
 
     def do_display # callback
+      #p "do_display"
       return if @setup_done.nil?
-#      return if @display_drawing
+      #return if @display_drawing
       @display_drawing = true
       display_pre
+      #p "display_pre done"
       @block[:display].call if @block[:display]
+      if $app
+        $app.display
+      end
+      display
       display_post
       @display_drawing = nil
     end
@@ -151,8 +155,7 @@ module SGL
     # mouse events
     def set_mousedown(&b)
       return unless block_given?
-      @block[:mousedown] = Proc.new {
-      }
+      @block[:mousedown] = Proc.new { b }
     end
 
     def do_mousedown
@@ -166,8 +169,7 @@ module SGL
 
     def set_mouseup(&b)
       return unless block_given?
-      @block[:mouseup] = Proc.new {
-      }
+      @block[:mouseup] = Proc.new { b }
     end
 
     def do_mouseup
@@ -178,8 +180,7 @@ module SGL
     # mouse events for fullscreen
     def set_mousedown0(&b)
       return unless block_given?
-      @block[:mousedown0] = Proc.new {
-      }
+      @block[:mousedown0] = Proc.new { b }
     end
 
     def check_mousedown0
@@ -189,8 +190,7 @@ module SGL
     # key events
     def set_keydown(&b)
       return unless block_given?
-      @block[:keydown] = Proc.new {
-      }
+      @block[:keydown] = Proc.new { b }
     end
 
     def keydown_pre(key)
@@ -205,8 +205,7 @@ module SGL
 
     def set_keyup(&b)
       return unless block_given?
-      @block[:keyup] = Proc.new {
-      }
+      @block[:keyup] = Proc.new { b }
     end
 
     def do_keyup(key)
@@ -227,6 +226,7 @@ module SGL
       mainloop_setup
       @starttime = Time.now
       loop {
+        #p "loop of mainloop."
 	@begintime = Time.now
 	do_display
 	delay
@@ -273,8 +273,7 @@ module SGL
     end
 
     def process(&b)
-      block = Proc.new {
-      }
+      block = Proc.new { b }
       @starttime = Time.now
       loop {
 	check_event
@@ -286,17 +285,20 @@ module SGL
     end
 
     # check event
-    LEFT_MOUSE_BUTTON   = 1
-    MIDDLE_MOUSE_BUTTON = 2
-    RIGHT_MOUSE_BUTTON  = 3
+    #LEFT_MOUSE_BUTTON   = 1
+    #MIDDLE_MOUSE_BUTTON = 2
+    #RIGHT_MOUSE_BUTTON  = 3
     def check_event
       #x, y, l, m, r = SDL2::Mouse.state
       s = SDL2::Mouse.state
       #p s
       x, y, l, m, r = s.x, s.y, 0, 0, 0
-      l = true if s.pressed?(LEFT_MOUSE_BUTTON)
-      m = true if s.pressed?(MIDDLE_MOUSE_BUTTON)
-      r = true if s.pressed?(RIGHT_MOUSE_BUTTON)
+      left_mouse_button   = 1
+      middle_mouse_button = 2
+      right_mouse_button  = 3
+      l = true if s.pressed?(left_mouse_button)
+      m = true if s.pressed?(middle_mouse_button)
+      r = true if s.pressed?(right_mouse_button)
       #p [x, y, l, m, r]
       # x pos, y pos, left button, middle button, right button
       @mouseX, @mouseY = calc_mouse_xy(x, y)
@@ -305,6 +307,7 @@ module SGL
       while event = SDL2::Event.poll
 	case event
 	when SDL2::Event::MouseButtonDown
+          #p event
 	  do_mousedown
 	when SDL2::Event::MouseButtonUp
 	  do_mouseup
