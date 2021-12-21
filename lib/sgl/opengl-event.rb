@@ -157,8 +157,11 @@ module SGL
 
     def do_mousedown
       @mouseDown = 1
-      @block[:mousedown].call(@mouseX, @mouseY) if @block[:mousedown]
-      @block[:mousedown0].call(@mouseX0, @mouseY0) if @block[:mousedown0]
+      #@block[:mousedown].call(@mouseX, @mouseY) if @block[:mousedown]
+      #mouseDown(@mouseX, @mouseY) if defined?(:mousedown)
+      mouseDown if defined?(:mousedown)
+      #@block[:mousedown0].call(@mouseX0, @mouseY0) if @block[:mousedown0]
+      #mouseDown0(@mouseX, @mouseY)
     end
 
     def set_mouseup(&b)
@@ -294,7 +297,7 @@ module SGL
       l = true if s.pressed?(LEFT_MOUSE_BUTTON)
       m = true if s.pressed?(MIDDLE_MOUSE_BUTTON)
       r = true if s.pressed?(RIGHT_MOUSE_BUTTON)
-      p [x, y, l, m, r]
+      #p [x, y, l, m, r]
       # x pos, y pos, left button, middle button, right button
       @mouseX, @mouseY = calc_mouse_xy(x, y)
       @mouseX0, @mouseY0 = calc_fullscreen_mouse_xy(x, y)

@@ -102,13 +102,14 @@ module SGL
       if @options[:cursor]
 	# You can use only black and white for cursor image.
 	file = @options[:cursor]
-	bmp = SDL2::Surface.loadBMP(file) # Create surface from bitmap.
-	SDL2::Mouse.setCursor(bmp,		# bitmap
-			     [255, 255, 255],	# white
-			     [  0,   0,   0],	# black
-			     [128, 128, 128],	# transparent
-			     [100, 100, 100],	# inverted
-			     8, 8)		# hot_x, hot_y
+	#bmp = SDL2::Surface.loadBMP(file) # Create surface from bitmap.
+	bmp = SDL2::Surface.load_bmp(file) # Create surface from bitmap.
+#	SDL2::Mouse.setCursor(bmp,		# bitmap
+#			     [255, 255, 255],	# white
+#			     [  0,   0,   0],	# black
+#			     [128, 128, 128],	# transparent
+#			     [100, 100, 100],	# inverted
+#			     8, 8)		# hot_x, hot_y
       end
 
       # gl_init
@@ -150,8 +151,7 @@ module SGL
 
     def useSmooth(a = true)
       @options[:smooth] = a
-      @options[:smooth] ?
-      glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH)
+      #@options[:smooth] ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH)
     end
 
     def useCulling(a = true)

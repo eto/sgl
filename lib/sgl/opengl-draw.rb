@@ -48,111 +48,111 @@ module SGL
 
     # draw primitive
     def beginObj(mode = POLYGON)
-      GL.Begin(mode)
+      glBegin(mode)
     end
 
     def endObj
-      GL.End
+      glEnd
     end
 
     def push
-      GL.PushMatrix
+      glPushMatrix
     end
 
     def pop
-      GL.PopMatrix
+      glPopMatrix
     end
 
     def vertex(a, b = nil, c = nil, d = nil)
-      GL.Vertex(a, b, c, d) if d
-      GL.Vertex(a, b, c) if c
-      GL.Vertex(a, b)
+      glVertex4f(a, b, c, d) if d
+      glVertex3f(a, b, c) if c
+      glVertex2f(a, b)
     end
 
     def normal(a, b = nil, c = nil)
-      GL.Normal(a, b, c)
+      glNormal(a, b, c)
     end
 
     # matrix manipulation
     def translate(a, b, c = 0)
-      GL.Translate(a, b, c)
+      glTranslate(a, b, c)
     end
 
     def rotateX(a)
-      GL.Rotate(a, 1, 0, 0)
+      glRotate(a, 1, 0, 0)
     end
 
     def rotateY(a)
-      GL.Rotate(a, 0, 1, 0)
+      glRotate(a, 0, 1, 0)
     end
 
     def rotateZ(a)
-      GL.Rotate(a, 0, 0, 1)
+      glRotate(a, 0, 0, 1)
     end
 
     def scale(a)
-      GL.Scale(a, a, a)
+      glScalef(a, a, a)
     end
 
     # simple draw
     def point(a, b, c = nil)
-      GL.Begin(OpenGL::GL_POINTS)
+      glBegin(OpenGL::GL_POINTS)
       if c
-	GL.Vertex(a, b, c)
+	glVertex(a, b, c)
       else
-	GL.Vertex(a, b)
+	glVertex(a, b)
       end
-      GL.End
+      glEnd
     end
 
     def lineWidth(w)
-      GL.LineWidth(w)
+      glLineWidth(w)
     end
 
     def line(a, b, c, d, e = nil, f = nil)
-      GL.Begin(OpenGL::GL_LINES) 
+      glBegin(OpenGL::GL_LINES) 
       if e && f
-	GL.Vertex(a, b, c) # 3D
-	GL.Vertex(d, e, f)
+	glVertex(a, b, c) # 3D
+	glVertex(d, e, f)
       else
-	GL.Vertex(a, b) # 2D
-	GL.Vertex(c, d)
+	glVertex(a, b) # 2D
+	glVertex(c, d)
       end
-      GL.End
+      glEnd
     end
 
     def rect(a, b, c, d)
-      GL.Rect(a, b, c, d)
+      glRect(a, b, c, d)
     end
 
     def triangle(a, b, c, d, e, f)
-      GL.Begin(OpenGL::GL_TRIANGLES)
-      GL.Vertex(a, b)
-      GL.Vertex(c, d)
-      GL.Vertex(e, f)
-      GL.End
+      glBegin(OpenGL::GL_TRIANGLES)
+      glVertex(a, b)
+      glVertex(c, d)
+      glVertex(e, f)
+      glEnd
     end
 
     def circleUnit(style = LINE_LOOP, div = nil)
       div = 32 if div.nil?
       e = 2 * Math::PI / div
-      GL.Begin(style)
+      glBegin(style)
       div.times {|i|
 	rad = i * e
 	x = Math.cos(rad)
 	y = Math.sin(rad)
-	GL.Vertex(x, y)
+	glVertex(x, y)
       }
-      GL.End
+      glEnd
     end
     private :circleUnit
 
     def circle(x, y, r, style = LINE_LOOP, div = nil)
-      GL.PushMatrix
-      GL.Translate(x, y, 0)
-      GL.Scale(r, r, r)
+      glPushMatrix
+      glTranslate(x, y, 0)
+      glScalef(r, r, r)
       circleUnit(style, div)
-      GL.PopMatrix
+      glPopMatrix
     end
 
     def box(x1, y1, z1, x2, y2, z2)
@@ -166,32 +166,32 @@ module SGL
 	[x2, y2, z2], # 6 front right top
 	[x1, y2, z2]  # 7 front left top
       ]
-      GL.Begin(OpenGL::GL_QUADS)
-      GL.Vertex(box[1]) # back
-      GL.Vertex(box[0])
-      GL.Vertex(box[3])
-      GL.Vertex(box[2])
-      GL.Vertex(box[0]) # left
-      GL.Vertex(box[4])
-      GL.Vertex(box[7])
-      GL.Vertex(box[3])
-      GL.Vertex(box[4]) # front
-      GL.Vertex(box[5])
-      GL.Vertex(box[6])
-      GL.Vertex(box[7])
-      GL.Vertex(box[5]) # right
-      GL.Vertex(box[1])
-      GL.Vertex(box[2])
-      GL.Vertex(box[6])
-      GL.Vertex(box[7]) # top
-      GL.Vertex(box[6])
-      GL.Vertex(box[2])
-      GL.Vertex(box[3])
-      GL.Vertex(box[0]) # bottom
-      GL.Vertex(box[1])
-      GL.Vertex(box[5])
-      GL.Vertex(box[4])
-      GL.End
+      glBegin(OpenGL::GL_QUADS)
+      glVertex(box[1]) # back
+      glVertex(box[0])
+      glVertex(box[3])
+      glVertex(box[2])
+      glVertex(box[0]) # left
+      glVertex(box[4])
+      glVertex(box[7])
+      glVertex(box[3])
+      glVertex(box[4]) # front
+      glVertex(box[5])
+      glVertex(box[6])
+      glVertex(box[7])
+      glVertex(box[5]) # right
+      glVertex(box[1])
+      glVertex(box[2])
+      glVertex(box[6])
+      glVertex(box[7]) # top
+      glVertex(box[6])
+      glVertex(box[2])
+      glVertex(box[3])
+      glVertex(box[0]) # bottom
+      glVertex(box[1])
+      glVertex(box[5])
+      glVertex(box[4])
+      glEnd
     end
 
     def cube(x, y, z, s)
@@ -217,32 +217,32 @@ module SGL
     end
 
     def self.make_list
-      GL.NewList(1, OpenGL::GL_COMPILE)
+      glNewList(1, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 32)
-      GL.EndList()
-      GL.NewList(2, OpenGL::GL_COMPILE)
+      glEndList()
+      glNewList(2, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 32)
-      GL.EndList()
-      GL.NewList(3, OpenGL::GL_COMPILE)
+      glEndList()
+      glNewList(3, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 6)
-      GL.EndList()
-      GL.NewList(4, OpenGL::GL_COMPILE)
+      glEndList()
+      glNewList(4, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 6)
-      GL.EndList()
+      glEndList()
     end
 
     def self.circleUnitList(style=LINE_LOOP, div=nil)
       if div == 32
 	if style == LINE_LOOP
-	  GL.CallList(1)
+	  glCallList(1)
 	elsif style == POLYGON
-	  GL.CallList(2)
+	  glCallList(2)
 	end
       elsif div == 6
 	if style == LINE_LOOP
-	  GL.CallList(3)
+	  glCallList(3)
 	elsif style == POLYGON
-	  GL.CallList(4)
+	  glCallList(4)
 	end
       end
     end
