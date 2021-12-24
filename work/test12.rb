@@ -10,8 +10,11 @@ include GLFW
 
 class SGLApp
   def initialize
-    #@engine = :sdl
-    @engine = :glfw
+    @engine = :sdl
+    #@engine = :glfw
+    @window_w = 640
+    @window_h = 480
+
     sdl_init  if sdl?
     glfw_init if glfw?
   end
@@ -19,8 +22,6 @@ class SGLApp
   def glfw?; @engine == :glfw; end
 
   def sdl_init
-    window_w = 640
-    window_h = 480
     @shadedCube = true
     SDL2.init(SDL2::INIT_EVERYTHING)
     SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
@@ -28,7 +29,7 @@ class SGLApp
     SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
-    @window = SDL2::Window.create("testgl", 0, 0, window_w, window_h, SDL2::Window::Flags::OPENGL)
+    @window = SDL2::Window.create("testgl", 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
     context = SDL2::GL::Context.create(@window)
     printf("OpenGL version %d.%d\n",
            SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
@@ -70,7 +71,7 @@ class SGLApp
     end
 
     glfwInit()
-    @window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
+    @window = glfwCreateWindow( @window_w, @window_h, "Simple example", nil, nil )
     glfwMakeContextCurrent( @window )
     glfwSetKeyCallback( @window, @key_callback )
   end
