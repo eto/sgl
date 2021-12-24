@@ -8,23 +8,23 @@ GLFW.load_lib()
 include OpenGL
 include GLFW
 
-# Press ESC to exit.
-key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
-  if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
-    glfwSetWindowShouldClose(window_handle, 1)
-  end
-end
-
 class SGLApp
   def initialize
     glfw_init
   end
 
-  def glfw_setup
+  def glfw_init
+    # Press ESC to exit.
+    @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
+      if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
+        glfwSetWindowShouldClose(window_handle, 1)
+      end
+    end
+
     glfwInit()
-    window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
-    glfwMakeContextCurrent( window )
-    glfwSetKeyCallback( window, key_callback )
+    @window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
+    glfwMakeContextCurrent( @window )
+    glfwSetKeyCallback( @window, @key_callback )
   end
 
   def main(argv)
@@ -47,14 +47,14 @@ class SGLApp
   end
 
   def glfw_display
-    close = glfwWindowShouldClose( window )
+    close = glfwWindowShouldClose( @window )
     if close != 0
       return true
     end
 
     width_ptr = ' ' * 8
     height_ptr = ' ' * 8
-    glfwGetFramebufferSize(window, width_ptr, height_ptr)
+    glfwGetFramebufferSize(@window, width_ptr, height_ptr)
     width = width_ptr.unpack('L')[0]
     height = height_ptr.unpack('L')[0]
     ratio = width.to_f / height.to_f
@@ -78,7 +78,7 @@ class SGLApp
     glVertex3f(0.0, 0.6, 0.0)
     glEnd()
 
-    glfwSwapBuffers( window )
+    glfwSwapBuffers( @window )
     glfwPollEvents()
     return false
   end
