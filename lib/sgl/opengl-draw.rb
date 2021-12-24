@@ -75,19 +75,20 @@ module SGL
 
     # matrix manipulation
     def translate(a, b, c = 0)
-      glTranslate(a, b, c)
+      #glTranslate(a, b, c)
+      glTranslatef(a, b, c)
     end
 
     def rotateX(a)
-      glRotate(a, 1, 0, 0)
+      glRotatef(a, 1, 0, 0)
     end
 
     def rotateY(a)
-      glRotate(a, 0, 1, 0)
+      glRotatef(a, 0, 1, 0)
     end
 
     def rotateZ(a)
-      glRotate(a, 0, 0, 1)
+      glRotatef(a, 0, 0, 1)
     end
 
     def scale(a)
@@ -98,9 +99,9 @@ module SGL
     def point(a, b, c = nil)
       glBegin(OpenGL::GL_POINTS)
       if c
-	glVertex(a, b, c)
+	glVertex3f(a, b, c)
       else
-	glVertex(a, b)
+	glVertex2f(a, b)
       end
       glEnd
     end
@@ -112,24 +113,25 @@ module SGL
     def line(a, b, c, d, e = nil, f = nil)
       glBegin(OpenGL::GL_LINES) 
       if e && f
-	glVertex(a, b, c) # 3D
-	glVertex(d, e, f)
+	glVertex3f(a, b, c) # 3D
+	glVertex3f(d, e, f)
       else
-	glVertex(a, b) # 2D
-	glVertex(c, d)
+	glVertex2f(a, b) # 2D
+	glVertex2f(c, d)
       end
       glEnd
     end
 
     def rect(a, b, c, d)
-      glRect(a, b, c, d)
+      #glRect(a, b, c, d)
+      glRectf(a, b, c, d)
     end
 
     def triangle(a, b, c, d, e, f)
       glBegin(OpenGL::GL_TRIANGLES)
-      glVertex(a, b)
-      glVertex(c, d)
-      glVertex(e, f)
+      glVertex2f(a, b)
+      glVertex2f(c, d)
+      glVertex2f(e, f)
       glEnd
     end
 
@@ -141,7 +143,7 @@ module SGL
 	rad = i * e
 	x = Math.cos(rad)
 	y = Math.sin(rad)
-	glVertex(x, y)
+	glVertex2f(x, y)
       }
       glEnd
     end
