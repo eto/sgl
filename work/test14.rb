@@ -8,7 +8,7 @@ GLFW.load_lib()
 include OpenGL
 include GLFW
 
-class SDLEngine
+class OpenGLEngine
   def initialize
   end
 
@@ -16,6 +16,28 @@ class SDLEngine
     @window_w = w
     @window_h = h
     @title = title
+  end
+
+  def pre_display
+  end
+
+  def display
+  end
+
+  def post_display
+  end
+
+  def terminate
+  end
+end
+
+class SDLEngine < OpenGLEngine
+  def initialize
+    super
+  end
+
+  def setup(w, h, title)
+    super
 
     SDL2.init(SDL2::INIT_EVERYTHING)
     SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
@@ -187,16 +209,14 @@ class SDLEngine
   end
 end
 
-class GLFWEngine
+class GLFWEngine < OpenGLEngine
   def initialize
     @window = nil
     @key_callback = nil
   end
 
   def setup(w, h, title)
-    @window_w = w
-    @window_h = h
-    @title = title
+    super
 
     # Press ESC to exit.
     @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
@@ -212,9 +232,7 @@ class GLFWEngine
   end
 
   def pre_display
-    #p "glfw_display"
     close = glfwWindowShouldClose(@window)
-    #p close
     if close != 0
       return true
     end
