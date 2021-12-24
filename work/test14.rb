@@ -11,6 +11,25 @@ include OpenGL
 $engine = :sdl
 #$engine = :glfw
 
+class SGLApp
+  def main(argv)
+    if $engine == :sdl
+      @engine = SDLEngine.new
+    else
+      @engine = GLFWEngine.new
+    end
+    @window_w = 640
+    @window_h = 480
+    @title = "Engine Test"
+
+    @engine.setup(@window_w, @window_h, @title)
+    mainloop
+  end
+  def mainloop
+    @engine.mainloop
+  end
+end
+
 class OpenGLEngine
   def initialize
   end
@@ -253,9 +272,8 @@ class GLFWEngine < OpenGLEngine
 
   def pre_display
     close = GLFW.glfwWindowShouldClose(@window)
-    if close != 0
-      return true
-    end
+    return true if close != 0
+    return false
   end
 
   def display
@@ -294,24 +312,6 @@ class GLFWEngine < OpenGLEngine
   def terminate
     GLFW.glfwDestroyWindow(@window)
     GLFW.glfwTerminate()
-  end
-end
-
-class SGLApp
-  def initialize
-    if $engine == :sdl
-      @engine = SDLEngine.new
-    else
-      @engine = GLFWEngine.new
-    end
-    @window_w = 640
-    @window_h = 480
-    @title = "Engine Test"
-  end
-
-  def main(argv)
-    @engine.setup(@window_w, @window_h, @title)
-    @engine.mainloop
   end
 end
 
