@@ -21,6 +21,18 @@ class OpenGLEngine
     @title = title
   end
 
+  def mainloop
+    loop do
+      ret = pre_display
+      if ret
+        ret = terminate
+        exit
+      end
+      display
+      post_display
+    end
+  end
+
   def pre_display
   end
 
@@ -41,7 +53,6 @@ class SDLEngine < OpenGLEngine
 
   def setup(w, h, title)
     super
-
     SDL2.init(SDL2::INIT_EVERYTHING)
     SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 8)
@@ -56,7 +67,7 @@ class SDLEngine < OpenGLEngine
 
   def init_viewport
     #glViewport( 0, 0, 640, 400 )
-    glViewport( 0, 0, 640, 400 )
+    glViewport(0, 0, @window_w, @window_h)
     glMatrixMode( GL_PROJECTION )
     glLoadIdentity( )
     glMatrixMode( GL_MODELVIEW )
@@ -218,12 +229,14 @@ end
 
 class GLFWEngine < OpenGLEngine
   def initialize
-    @window = nil
-    @key_callback = nil
+    super
   end
 
   def setup(w, h, title)
     super
+
+    @window = nil
+    @key_callback = nil
 
     # Press ESC to exit.
     @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
@@ -294,23 +307,11 @@ class SGLApp
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
-    @engine.setup(@window_w, @window_h, @title)
   end
 
   def main(argv)
-    mainloop
-  end
-
-  def mainloop
-    loop do
-      ret = @engine.pre_display
-      if ret
-        ret = @engine.terminate
-        exit
-      end
-      @engine.display
-      @engine.post_display
-    end
+    @engine.setup(@window_w, @window_h, @title)
+    @engine.mainloop
   end
 end
 
