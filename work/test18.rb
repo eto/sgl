@@ -9,31 +9,32 @@ include OpenGL
 
 class SGLApp
   def main(argv)
-    #@sdl_engine = SDLEngine.new
+    @sdl_engine = SDLEngine.new
     @glfw_engine = GLFWEngine.new
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
 
-    #@sdl_engine.setup(@window_w, @window_h, @title)
+    @sdl_engine.setup(@window_w, @window_h, @title)
     @glfw_engine.setup(@window_w, @window_h, @title)
     mainloop
   end
 
   def mainloop
     loop do
-      sdl_ret = false
-      #sdl_ret = @sdl_engine.pre_display
-      glfw_ret = @glfw_engine.pre_display
+      #sdl_ret = false
+      sdl_ret = @sdl_engine.pre_display
+      glfw_ret = false
+      #glfw_ret = @glfw_engine.pre_display
       if sdl_ret || glfw_ret
-        #@sdl_engine.terminate
-        @glfw_engine.terminate
+        @sdl_engine.terminate
+        #@glfw_engine.terminate
         exit
       end
-      #@sdl_engine.display
-      @glfw_engine.display
-      #@sdl_engine.post_display
-      @glfw_engine.post_display
+      @sdl_engine.display
+      #@glfw_engine.display
+      @sdl_engine.post_display
+      #@glfw_engine.post_display
     end
   end
 end
@@ -230,11 +231,14 @@ class SDLEngine < OpenGLEngine
     init_viewport
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
+    #now = Time.now.to_i
+    #p now
+    glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
+    #glRotated(now * 5.0, 1.0, 1.0, 1.0)
     draw_cube
-    #draw_triangle
+    draw_triangle
     glMatrixMode(GL_MODELVIEW)
-    glRotated(5.0, 1.0, 1.0, 1.0)
+    #glRotated(5.0, 1.0, 1.0, 1.0)
   end
 
   def init_viewport
