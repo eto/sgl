@@ -28,6 +28,7 @@ module SGL
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
       initialize_sdl
+      @window_initialized = true
     end
 
     def initialize_sdl
@@ -218,9 +219,15 @@ module SGL
     end
     private :set_window_position, :set_fullscreen_position
 
+    def sh(cmd); p cmd; system cmd; end
+    def die(msg); puts msg; exit; end
+
     def set_camera_position
       #pp caller
       #exit
+      if ! @window_initialized
+        die "Window is not initialized."
+      end
       glMatrixMode(GL_PROJECTION)
       #exit
       loadIdentity

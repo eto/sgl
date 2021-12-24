@@ -75,6 +75,7 @@ module SGL
       @keynum = 0
 
       @starttime = nil
+      @window_initialized = false
     end
     private :initialize_event
 
@@ -97,7 +98,11 @@ module SGL
     def do_setup
       setup_pre
       @block[:setup].call if @block[:setup]
-      $app.setup if $app && $app.respond_to?(:setup)
+      #$app.setup if $app && $app.respond_to?(:setup)
+      pp Kernel.methods
+      if Kernel.respond_to?(:setup)
+        Kernel.setup
+      end
       setup_post
     end
 

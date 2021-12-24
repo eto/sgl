@@ -8,7 +8,7 @@ require 'cutep'
 require 'autoreload'
 autoreload(:interval=>1, :verbose=>true, :reprime=>true) do
   require "sgl"
-  require "test18"
+  require "test19"
 end
 
 if ARGV[0] == "--test"
@@ -21,5 +21,5 @@ if ARGV[0] == "--test"
     end
   end
 else
-  SGLApp.new.main(ARGV)
+#  SGLApp.new.main(ARGV)
 end
