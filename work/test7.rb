@@ -2,23 +2,32 @@
 # coding: utf-8
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../lib"
-require "sgl"
+# $LOAD_PATH << "../../sgl/lib"
+require 'autoreload'
+#require 'stu/autoreload'
+autoreload(:interval=>1, :verbose=>true) do
+  require "sgl"
+end
 
 # $__v__ = Video.instance
 
-def setup
-  #p "setup start."
-  window 100,100
-  #p "setup done."
-end
-setup
+class SGLApp
+  def setup
+    #window 100,100
+    #window 1000,1000
+    window 900, 900
+  end
 
-def display
-  line 0,0,100,100
-  #rect 20,20,80,80
+  def display
+    p "display"
+    line 0, 0, 1000, 1000
+    rect 200, 200, 800, 800
+  end
 end
 
-mainloop
+$app = SGLApp.new
+#$app.setup
+$app.mainloop
 
 =begin
 class SglTest
