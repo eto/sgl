@@ -1,17 +1,14 @@
 #!/usr/local/opt/ruby/bin/ruby
 # coding: utf-8
-#!/usr/bin/env ruby
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__)+"/../lib")
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 require 'rubygems'
 require 'cutep'
-#pp $LOAD_PATH
 require 'autoreload'
-#pp $"
 autoreload(:interval=>1, :verbose=>true, :reprime=>true) do
   require "sgl"
-  require "test15"
+  require "test16"
 end
 
 if ARGV[0] == "--test"
@@ -25,6 +22,4 @@ if ARGV[0] == "--test"
   end
 else
   SGLApp.new.main(ARGV)
-  #$app = SGLApp.new
-  #$app.main(ARGV)
 end
