@@ -216,9 +216,10 @@ class SGLApp
   def glfw_display
     close = glfwWindowShouldClose( @window )
     p close
-    if close == 0
+    if close != 0
       return true
     end
+
     width_ptr = ' ' * 8
     height_ptr = ' ' * 8
     glfwGetFramebufferSize(window, width_ptr, height_ptr)

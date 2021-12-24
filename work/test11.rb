@@ -15,18 +15,43 @@ key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scanco
   end
 end
 
-#if __FILE__ == $0
-if true
-  
+class SGLApp
+  def initialize
+    glfw_init
+  end
 
+  def glfw_setup
+    glfwInit()
+    window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
+    glfwMakeContextCurrent( window )
+    glfwSetKeyCallback( window, key_callback )
+  end
 
-  glfwInit()
+  def main(argv)
+    mainloop
+  end
 
-  window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
-  glfwMakeContextCurrent( window )
-  glfwSetKeyCallback( window, key_callback )
+  def mainloop
+    loop do
+      ret = display
+      if ret
+        glfwDestroyWindow( @window )
+        glfwTerminate()
+        exit
+      end
+    end
+  end
 
-  while glfwWindowShouldClose( window ) == 0
+  def display
+    glfw_display
+  end
+
+  def glfw_display
+    close = glfwWindowShouldClose( window )
+    if close != 0
+      return true
+    end
+
     width_ptr = ' ' * 8
     height_ptr = ' ' * 8
     glfwGetFramebufferSize(window, width_ptr, height_ptr)
@@ -55,8 +80,19 @@ if true
 
     glfwSwapBuffers( window )
     glfwPollEvents()
+    return false
   end
+end
 
-  glfwDestroyWindow( window )
-  glfwTerminate()
+if ARGV[0] == "--test"
+  ARGV.shift
+  require "test/unit"
+  class TestIt < Test::Unit::TestCase
+    def test_it
+      assert_equal(2, 1+1)
+      #it = SGLApp.new
+    end
+  end
+else
+  SGLApp.new.main(ARGV)
 end
