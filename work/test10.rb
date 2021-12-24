@@ -98,7 +98,8 @@ class SGLApp
     #color 100, 90, 80
     #line 0, 0, 1000, 1000
     #rect 200, 200, 800, 800
-    sdl_display
+    #sdl_display
+    glfw_display
   end
 
   def sdl_display
@@ -213,7 +214,9 @@ class SGLApp
   end
 
   def glfw_display
-    if glfwWindowShouldClose( @window ) == 0
+    close = glfwWindowShouldClose( @window )
+    p close
+    if close == 0
       return true
     end
     width_ptr = ' ' * 8
@@ -244,6 +247,7 @@ class SGLApp
 
     glfwSwapBuffers( window )
     glfwPollEvents()
+    return false
   end
 end
 
