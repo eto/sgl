@@ -7,9 +7,6 @@ OpenGL.load_lib()
 GLFW.load_lib()
 include OpenGL
 
-#$engine = :sdl
-#$engine = :glfw
-
 class SGLApp
   def main(argv)
     @sdl_engine = SDLEngine.new
@@ -22,16 +19,14 @@ class SGLApp
     @glfw_engine.setup(@window_w, @window_h, @title)
     mainloop
   end
+
   def mainloop
     loop do
-      ret = @sdl_engine.pre_display
-      if ret
-        ret = @sdl_engine.terminate
-        exit
-      end
-      ret = @glfw_engine.pre_display
-      if ret
-        ret = @glfw_engine.terminate
+      sdl_ret = @sdl_engine.pre_display
+      glfw_ret = @glfw_engine.pre_display
+      if sdl_ret || glfw_ret
+        @sdl_engine.terminate
+        @glfw_engine.terminate
         exit
       end
       @sdl_engine.display
