@@ -38,9 +38,6 @@ class SGLApp
 end
 
 class OpenGLEngine
-  def initialize
-  end
-
   def setup(w, h, title)
     @window_w = w
     @window_h = h
@@ -203,22 +200,7 @@ class SDLEngine < OpenGLEngine
     @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
     context = SDL2::GL::Context.create(@window)
     #puts get_opengl_version
-    init_viewport
-  end
-
-  def init_viewport
-    #glViewport( 0, 0, 640, 400 )
-    glViewport(0, 0, @window_w, @window_h)
-
-    glMatrixMode( GL_PROJECTION )
-    glLoadIdentity( )
-
-    glMatrixMode( GL_MODELVIEW )
-    glLoadIdentity( )
-
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LESS)
-    glShadeModel(GL_SMOOTH)
+    #init_viewport
   end
 
   def get_opengl_version
@@ -231,7 +213,10 @@ class SDLEngine < OpenGLEngine
     endprocess = false
     while event = SDL2::Event.poll
       case event
-      when SDL2::Event::Quit, SDL2::Event::KeyDown
+      when SDL2::Event::Quit
+        endprocess = true
+      when SDL2::Event::KeyDown
+        SDL2::Event::KeyDown
         endprocess = true
       end
     end
@@ -250,6 +235,21 @@ class SDLEngine < OpenGLEngine
     #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
   end
 
+  def init_viewport
+    #glViewport( 0, 0, 640, 400 )
+    glViewport(0, 0, @window_w, @window_h)
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity( )
+
+    glMatrixMode( GL_MODELVIEW )
+    glLoadIdentity( )
+
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LESS)
+    glShadeModel(GL_SMOOTH)
+  end
+
   def post_display
     @window.gl_swap
   end
@@ -258,9 +258,6 @@ end
 class GLFWEngine < OpenGLEngine
   def setup(w, h, title)
     super
-
-    @window = nil
-    @key_callback = nil
 
     # Press ESC to exit.
     @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
@@ -282,26 +279,33 @@ class GLFWEngine < OpenGLEngine
   end
 
   def display
-    width_ptr = ' ' * 8
-    height_ptr = ' ' * 8
-    GLFW.glfwGetFramebufferSize(@window, width_ptr, height_ptr)
-    width = width_ptr.unpack('L')[0]
-    height = height_ptr.unpack('L')[0]
-    ratio = width.to_f / height.to_f
+    init_viewport
+    glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
+    draw_cube
+    draw_triangle
+  end
 
+  def init_viewport
+    width, height = get_framebuffersize
+    ratio = width.to_f / height.to_f
     glViewport(0, 0, width, height)
     glClear(GL_COLOR_BUFFER_BIT)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-
     glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0)
+
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
+  end
 
-    glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
-    draw_cube
-    draw_triangle
+  def get_framebuffersize
+    width_ptr = ' ' * 8
+    height_ptr = ' ' * 8
+    GLFW.glfwGetFramebufferSize(@window, width_ptr, height_ptr)
+    width = width_ptr.unpack('L')[0]
+    height = height_ptr.unpack('L')[0]
+    return width, height
   end
 
   def post_display
@@ -313,17 +317,4 @@ class GLFWEngine < OpenGLEngine
     GLFW.glfwDestroyWindow(@window)
     GLFW.glfwTerminate()
   end
-end
-
-if ARGV[0] == "--test"
-  ARGV.shift
-  require "test/unit"
-  class TestIt < Test::Unit::TestCase
-    def test_it
-      assert_equal(2, 1+1)
-      #it = SGLApp.new
-    end
-  end
-else
-  SGLApp.new.main(ARGV)
 end
