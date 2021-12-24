@@ -242,7 +242,7 @@ class SDLEngine < OpenGLEngine
     glViewport(0, 0, @window_w, @window_h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity( )
-    glMatrixMode( GL_MODELVIEW )
+    glMatrixMode(GL_MODELVIEW)
     glLoadIdentity( )
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LESS)
@@ -282,7 +282,7 @@ class GLFWEngine < OpenGLEngine
 #    glClearColor(0.0, 0.0, 0.0, 1.0);
 #    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
-    #draw_cube
+    draw_cube
     draw_triangle
   end
 

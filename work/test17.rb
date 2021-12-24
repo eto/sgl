@@ -239,9 +239,9 @@ class SDLEngine < OpenGLEngine
   def init_viewport
     #glViewport( 0, 0, 640, 400 )
     glViewport(0, 0, @window_w, @window_h)
-    glMatrixMode( GL_PROJECTION )
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity( )
-    glMatrixMode( GL_MODELVIEW )
+    glMatrixMode(GL_MODELVIEW)
     glLoadIdentity( )
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LESS)
@@ -250,9 +250,6 @@ class SDLEngine < OpenGLEngine
 
   def post_display
     @window.gl_swap
-  end
-
-  def terminate
   end
 end
 
