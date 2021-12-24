@@ -18,7 +18,10 @@ module SGL
     attr_reader :cur_color # for test
 
     def background(x, y = nil, z = nil, a = nil)
-      glClearColor(*@rgb.norm(x, y, z, a))
+      norm = @rgb.norm(x, y, z, a)
+      p [x, y, z, a, norm]
+      #glClearColor(*norm)
+      glClearColor(0.0, 0.1, 0.2, 1.0)
       clear
     end
 

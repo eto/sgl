@@ -111,7 +111,8 @@ module SGL
     end
 
     def line(a, b, c, d, e = nil, f = nil)
-      glBegin(OpenGL::GL_LINES) 
+      #p [a, b, c, d, e, f]
+      glBegin(OpenGL::GL_LINES)
       if e && f
 	glVertex3f(a, b, c) # 3D
 	glVertex3f(d, e, f)
