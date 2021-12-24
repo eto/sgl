@@ -216,8 +216,10 @@ class SDLEngine < OpenGLEngine
       when SDL2::Event::Quit
         endprocess = true
       when SDL2::Event::KeyDown
-        SDL2::Event::KeyDown
-        endprocess = true
+	keynum = event.scancode
+        if keynum == 41		# Why it's different from SDL2::Key::ESCAPE(27)?
+          endprocess = true
+        end
       end
     end
     return endprocess
