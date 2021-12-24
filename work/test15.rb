@@ -7,25 +7,38 @@ OpenGL.load_lib()
 GLFW.load_lib()
 include OpenGL
 
-$engine = :sdl
+#$engine = :sdl
 #$engine = :glfw
 
 class SGLApp
   def main(argv)
-    if $engine == :sdl
-      @engine = SDLEngine.new
-    else
-      @engine = GLFWEngine.new
-    end
+    @sdl_engine = SDLEngine.new
+    @glfw_engine = GLFWEngine.new
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
 
-    @engine.setup(@window_w, @window_h, @title)
+    @sdl_engine.setup(@window_w, @window_h, @title)
+    @glfw_engine.setup(@window_w, @window_h, @title)
     mainloop
   end
   def mainloop
-o   @engine.mainloop
+    loop do
+      ret = @sdl_engine.pre_display
+      if ret
+        ret = @sdl_engine.terminate
+        exit
+      end
+      ret = @glfw_engine.pre_display
+      if ret
+        ret = @glfw_engine.terminate
+        exit
+      end
+      @sdl_engine.display
+      @glfwdl_engine.display
+      @sdl_engine.post_display
+      @glfw_engine.post_display
+    end
   end
 end
 
@@ -40,15 +53,6 @@ class OpenGLEngine
   end
 
   def mainloop
-    loop do
-      ret = pre_display
-      if ret
-        ret = terminate
-        exit
-      end
-      display
-      post_display
-    end
   end
 
   def pre_display
