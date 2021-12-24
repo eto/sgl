@@ -8,7 +8,7 @@ require 'autoreload'
 autoreload(:interval=>1, :verbose=>true) do
   require "sgl"
   $LOAD_PATH << "."
-  require "test12"
+  require "test13"
 end
 
 # $__v__ = Video.instance

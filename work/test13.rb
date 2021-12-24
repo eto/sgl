@@ -8,20 +8,11 @@ GLFW.load_lib()
 include OpenGL
 include GLFW
 
-class SGLApp
+class SDLEngine
   def initialize
-    @engine = :sdl
-    #@engine = :glfw
-    @window_w = 640
-    @window_h = 480
-
-    sdl_init  if sdl?
-    glfw_init if glfw?
   end
-  def sdl?;  @engine == :sdl;  end
-  def glfw?; @engine == :glfw; end
 
-  def sdl_init
+  def setup
     @shadedCube = true
     SDL2.init(SDL2::INIT_EVERYTHING)
     SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
@@ -62,41 +53,7 @@ class SGLApp
        [-0.5, -0.5,  0.5].pack("D3")]
   end
 
-  def glfw_init
-    # Press ESC to exit.
-    @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
-      if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
-        glfwSetWindowShouldClose(window_handle, 1)
-      end
-    end
-
-    glfwInit()
-    @window = glfwCreateWindow( @window_w, @window_h, "Simple example", nil, nil )
-    glfwMakeContextCurrent( @window )
-    glfwSetKeyCallback( @window, @key_callback )
-  end
-
-  def main(argv)
-    mainloop
-  end
-
-  def mainloop
-    loop do
-      ret = display
-      if ret
-        glfwDestroyWindow( @window ) if glfw?
-        glfwTerminate() if glfw?
-        exit
-      end
-    end
-  end
-
   def display
-    sdl_display  if sdl?
-    glfw_display if glfw?
-  end
-
-  def sdl_display
     endprocess = false
     while event = SDL2::Event.poll
       case event
@@ -207,14 +164,43 @@ class SGLApp
     return endprocess
   end
 
-  def glfw_display
+  def terminate
+  end
+end
+
+class GLFWEngine
+  def initialize
+    @window = nil
+    @key_callback = nil
+  end
+
+  def setup(w, h, title)
+    @window_w = w
+    @window_h = h
+    @title = title
+    # Press ESC to exit.
+    @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
+      if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
+        glfwSetWindowShouldClose(window_handle, 1)
+      end
+    end
+
+    glfwInit()
+    @window = glfwCreateWindow(@window_w, @window_h, @title, nil, nil )
+    glfwMakeContextCurrent(@window)
+    glfwSetKeyCallback(@window, @key_callback)
+  end
+
+  def pre_display
     #p "glfw_display"
-    close = glfwWindowShouldClose( @window )
+    close = glfwWindowShouldClose(@window)
     #p close
     if close != 0
       return true
     end
+  end
 
+  def display
     width_ptr = ' ' * 8
     height_ptr = ' ' * 8
     glfwGetFramebufferSize(@window, width_ptr, height_ptr)
@@ -240,10 +226,44 @@ class SGLApp
     glColor3f(0.0, 0.0, 1.0)
     glVertex3f(0.0, 0.6, 0.0)
     glEnd()
+  end
 
-    glfwSwapBuffers( @window )
+  def post_display
+    glfwSwapBuffers(@window)
     glfwPollEvents()
     return false
+  end
+
+  def terminate
+    glfwDestroyWindow(@window)
+    glfwTerminate()
+  end
+end
+
+class SGLApp
+  def initialize
+    #@engine = SDLEngine.new
+    @engine = GLFWEngine.new
+    @window_w = 640
+    @window_h = 480
+    @title = "Engine Test"
+    @engine.setup(@window_w, @window_h, @title)
+  end
+
+  def main(argv)
+    mainloop
+  end
+
+  def mainloop
+    loop do
+      ret = @engine.pre_display
+      if ret
+        ret = @engine.terminate
+        exit
+      end
+      @engine.display
+      @engine.post_display
+    end
   end
 end
 
