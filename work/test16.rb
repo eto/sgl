@@ -9,29 +9,30 @@ include OpenGL
 
 class SGLApp
   def main(argv)
-    @sdl_engine = SDLEngine.new
+#    @sdl_engine = SDLEngine.new
     @glfw_engine = GLFWEngine.new
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
 
-    @sdl_engine.setup(@window_w, @window_h, @title)
+#    @sdl_engine.setup(@window_w, @window_h, @title)
     @glfw_engine.setup(@window_w, @window_h, @title)
     mainloop
   end
 
   def mainloop
     loop do
-      sdl_ret = @sdl_engine.pre_display
+      sdl_ret = false
+#      sdl_ret = @sdl_engine.pre_display
       glfw_ret = @glfw_engine.pre_display
       if sdl_ret || glfw_ret
-        @sdl_engine.terminate
+#        @sdl_engine.terminate
         @glfw_engine.terminate
         exit
       end
-      @sdl_engine.display
+#      @sdl_engine.display
       @glfwdl_engine.display
-      @sdl_engine.post_display
+#      @sdl_engine.post_display
       @glfw_engine.post_display
     end
   end
@@ -197,7 +198,7 @@ class SDLEngine < OpenGLEngine
     SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
-    @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
+    @window = SDL2::Window.create("SDL: "+@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
     context = SDL2::GL::Context.create(@window)
     #puts get_opengl_version
     #init_viewport
@@ -229,6 +230,7 @@ class SDLEngine < OpenGLEngine
     init_viewport
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
     glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
     draw_cube
     draw_triangle
@@ -269,7 +271,7 @@ class GLFWEngine < OpenGLEngine
     end
 
     GLFW.glfwInit()
-    @window = GLFW.glfwCreateWindow(@window_w, @window_h, @title, nil, nil)
+    @window = GLFW.glfwCreateWindow(@window_w, @window_h, "GLFW: "+@title, nil, nil)
     GLFW.glfwMakeContextCurrent(@window)
     GLFW.glfwSetKeyCallback(@window, @key_callback)
   end
@@ -282,6 +284,9 @@ class GLFWEngine < OpenGLEngine
 
   def display
     init_viewport
+#    glClearColor(0.0, 0.0, 0.0, 1.0);
+#    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
     glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
     draw_cube
     draw_triangle

@@ -7,8 +7,8 @@ OpenGL.load_lib()
 GLFW.load_lib()
 include OpenGL
 
-$engine = :sdl
-#$engine = :glfw
+#$engine = :sdl
+$engine = :glfw
 
 class SGLApp
   def main(argv)
@@ -25,7 +25,7 @@ class SGLApp
     mainloop
   end
   def mainloop
-o   @engine.mainloop
+    @engine.mainloop
   end
 end
 

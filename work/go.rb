@@ -8,7 +8,7 @@ require 'cutep'
 require 'autoreload'
 autoreload(:interval=>1, :verbose=>true, :reprime=>true) do
   require "sgl"
-  require "test16"
+  require "test14"
 end
 
 if ARGV[0] == "--test"
