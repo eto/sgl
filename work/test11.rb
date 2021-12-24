@@ -1,14 +1,10 @@
-#
-# For more samples, visit https://github.com/vaiorabbit/ruby-opengl/tree/master/sample .
-#
-# Ref.: /glfw-3.0.1/examples/simple.c
-#
+#!/usr/bin/env ruby
+# coding: utf-8
+
 require 'opengl'
 require 'glfw'
-
 OpenGL.load_lib()
 GLFW.load_lib()
-
 include OpenGL
 include GLFW
 
@@ -21,6 +17,9 @@ end
 
 #if __FILE__ == $0
 if true
+  
+
+
   glfwInit()
 
   window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
