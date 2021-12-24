@@ -12,19 +12,21 @@ class SDLEngine
   def initialize
   end
 
-  def setup
-    @shadedCube = true
+  def setup(w, h, title)
+    @window_w = w
+    @window_h = h
+    @title = title
+
     SDL2.init(SDL2::INIT_EVERYTHING)
     SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
     SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
-    @window = SDL2::Window.create("testgl", 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
+    @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
     context = SDL2::GL::Context.create(@window)
-    printf("OpenGL version %d.%d\n",
-           SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
-           SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION))
+    puts get_opengl_version
+
     glViewport( 0, 0, 640, 400 )
     glMatrixMode( GL_PROJECTION )
     glLoadIdentity( )
@@ -33,6 +35,36 @@ class SDLEngine
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LESS)
     glShadeModel(GL_SMOOTH)
+  end
+
+  def get_opengl_version
+    major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
+    minor = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION)
+    return "OpenGL version #{major}.#{minor}"
+  end
+
+  def pre_display
+    endprocess = false
+    while event = SDL2::Event.poll
+      case event
+      when SDL2::Event::Quit, SDL2::Event::KeyDown
+        endprocess = true
+      end
+    end
+    return endprocess
+  end
+
+  def display
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glBegin(GL_QUADS)
+    draw_cube
+    glEnd()
+    glMatrixMode(GL_MODELVIEW)
+    glRotated(5.0, 1.0, 1.0, 1.0)
+  end
+
+  def draw_cube
     @color =
       [[ 1.0,  1.0,  0.0].pack("D3"),
        [ 1.0,  0.0,  0.0].pack("D3"),
@@ -51,21 +83,9 @@ class SDLEngine
        [ 0.5,  0.5,  0.5].pack("D3"),
        [ 0.5, -0.5,  0.5].pack("D3"),
        [-0.5, -0.5,  0.5].pack("D3")]
-  end
-
-  def display
-    endprocess = false
-    while event = SDL2::Event.poll
-      case event
-      when SDL2::Event::Quit, SDL2::Event::KeyDown
-        endprocess = true
-      end
-    end
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glBegin(GL_QUADS)
     color = @color
     cube = @cube
+    @shadedCube = true
     if @shadedCube then
       glColor3dv(color[0])
       glVertex3dv(cube[0])
@@ -157,11 +177,10 @@ class SDLEngine
       glVertex3dv(cube[2])
       glVertex3dv(cube[7])
     end
-    glEnd()
-    glMatrixMode(GL_MODELVIEW)
-    glRotated(5.0, 1.0, 1.0, 1.0)
+  end
+
+  def post_display
     @window.gl_swap
-    return endprocess
   end
 
   def terminate
@@ -178,6 +197,7 @@ class GLFWEngine
     @window_w = w
     @window_h = h
     @title = title
+
     # Press ESC to exit.
     @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
       if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
@@ -242,8 +262,8 @@ end
 
 class SGLApp
   def initialize
-    #@engine = SDLEngine.new
-    @engine = GLFWEngine.new
+    @engine = SDLEngine.new
+    #@engine = GLFWEngine.new
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
