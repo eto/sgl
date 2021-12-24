@@ -19,7 +19,8 @@ key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scanco
   end
 end
 
-if __FILE__ == $0
+#if __FILE__ == $0
+if true
   glfwInit()
 
   window = glfwCreateWindow( 640, 480, "Simple example", nil, nil )
