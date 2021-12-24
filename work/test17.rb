@@ -210,18 +210,6 @@ class SDLEngine < OpenGLEngine
     return "OpenGL version #{major}.#{minor}"
   end
 
-  def init_viewport
-    #glViewport( 0, 0, 640, 400 )
-    glViewport(0, 0, @window_w, @window_h)
-    glMatrixMode( GL_PROJECTION )
-    glLoadIdentity( )
-    glMatrixMode( GL_MODELVIEW )
-    glLoadIdentity( )
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LESS)
-    glShadeModel(GL_SMOOTH)
-  end
-
   def pre_display
     endprocess = false
     while event = SDL2::Event.poll
@@ -241,9 +229,23 @@ class SDLEngine < OpenGLEngine
   def display
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
     draw_cube
+    #draw_triangle
     glMatrixMode(GL_MODELVIEW)
     glRotated(5.0, 1.0, 1.0, 1.0)
+  end
+
+  def init_viewport
+    #glViewport( 0, 0, 640, 400 )
+    glViewport(0, 0, @window_w, @window_h)
+    glMatrixMode( GL_PROJECTION )
+    glLoadIdentity( )
+    glMatrixMode( GL_MODELVIEW )
+    glLoadIdentity( )
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LESS)
+    glShadeModel(GL_SMOOTH)
   end
 
   def post_display
