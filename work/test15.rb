@@ -61,66 +61,6 @@ class OpenGLEngine
 
   def terminate
   end
-end
-
-class SDLEngine < OpenGLEngine
-  def initialize
-    super
-  end
-
-  def setup(w, h, title)
-    super
-    SDL2.init(SDL2::INIT_EVERYTHING)
-    SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
-    SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 8)
-    SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
-    SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
-    SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
-    @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
-    context = SDL2::GL::Context.create(@window)
-    #puts get_opengl_version
-    init_viewport
-  end
-
-  def init_viewport
-    #glViewport( 0, 0, 640, 400 )
-    glViewport(0, 0, @window_w, @window_h)
-    glMatrixMode( GL_PROJECTION )
-    glLoadIdentity( )
-    glMatrixMode( GL_MODELVIEW )
-    glLoadIdentity( )
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LESS)
-    glShadeModel(GL_SMOOTH)
-  end
-
-  def get_opengl_version
-    major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
-    minor = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION)
-    return "OpenGL version #{major}.#{minor}"
-  end
-
-  def pre_display
-    endprocess = false
-    while event = SDL2::Event.poll
-      case event
-      when SDL2::Event::Quit, SDL2::Event::KeyDown
-        endprocess = true
-      end
-    end
-    return endprocess
-  end
-
-  def display
-    init_viewport
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glBegin(GL_QUADS)
-    draw_cube
-    glEnd()
-    glMatrixMode(GL_MODELVIEW)
-    glRotated(5.0, 1.0, 1.0, 1.0)
-  end
 
   def draw_cube
     @color =
@@ -144,6 +84,7 @@ class SDLEngine < OpenGLEngine
     color = @color
     cube = @cube
     @shadedCube = true
+    glBegin(GL_QUADS)
     if @shadedCube then
       glColor3dv(color[0])
       glVertex3dv(cube[0])
@@ -235,21 +176,86 @@ class SDLEngine < OpenGLEngine
       glVertex3dv(cube[2])
       glVertex3dv(cube[7])
     end
+    glEnd()
+  end
+
+  def draw_triangle
+    glBegin(GL_TRIANGLES)
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f(-0.6, -0.4, 0.0)
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0.6, -0.4, 0.0)
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f(0.0, 0.6, 0.0)
+    glEnd()
+  end
+end
+
+class SDLEngine < OpenGLEngine
+  def setup(w, h, title)
+    super
+    SDL2.init(SDL2::INIT_EVERYTHING)
+    SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 8)
+    SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 8)
+    SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
+    SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
+    SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
+    @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
+    context = SDL2::GL::Context.create(@window)
+    #puts get_opengl_version
+    init_viewport
+  end
+
+  def init_viewport
+    #glViewport( 0, 0, 640, 400 )
+    glViewport(0, 0, @window_w, @window_h)
+
+    glMatrixMode( GL_PROJECTION )
+    glLoadIdentity( )
+
+    glMatrixMode( GL_MODELVIEW )
+    glLoadIdentity( )
+
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LESS)
+    glShadeModel(GL_SMOOTH)
+  end
+
+  def get_opengl_version
+    major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
+    minor = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION)
+    return "OpenGL version #{major}.#{minor}"
+  end
+
+  def pre_display
+    endprocess = false
+    while event = SDL2::Event.poll
+      case event
+      when SDL2::Event::Quit, SDL2::Event::KeyDown
+        endprocess = true
+      end
+    end
+    return endprocess
+  end
+
+  def display
+    init_viewport
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
+    draw_cube
+    draw_triangle
+    glMatrixMode(GL_MODELVIEW)
+    #glRotated(5.0, 1.0, 1.0, 1.0)
+    #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
   end
 
   def post_display
     @window.gl_swap
   end
-
-  def terminate
-  end
 end
 
 class GLFWEngine < OpenGLEngine
-  def initialize
-    super
-  end
-
   def setup(w, h, title)
     super
 
@@ -285,22 +291,17 @@ class GLFWEngine < OpenGLEngine
 
     glViewport(0, 0, width, height)
     glClear(GL_COLOR_BUFFER_BIT)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
+
     glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0)
     glMatrixMode(GL_MODELVIEW)
-
     glLoadIdentity()
-    glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
 
-    glBegin(GL_TRIANGLES)
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex3f(-0.6, -0.4, 0.0)
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(0.6, -0.4, 0.0)
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(0.0, 0.6, 0.0)
-    glEnd()
+    glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
+    draw_cube
+    draw_triangle
   end
 
   def post_display
