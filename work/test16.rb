@@ -9,13 +9,13 @@ include OpenGL
 
 class SGLApp
   def main(argv)
-#    @sdl_engine = SDLEngine.new
+    #@sdl_engine = SDLEngine.new
     @glfw_engine = GLFWEngine.new
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
 
-#    @sdl_engine.setup(@window_w, @window_h, @title)
+    #@sdl_engine.setup(@window_w, @window_h, @title)
     @glfw_engine.setup(@window_w, @window_h, @title)
     mainloop
   end
@@ -23,16 +23,16 @@ class SGLApp
   def mainloop
     loop do
       sdl_ret = false
-#      sdl_ret = @sdl_engine.pre_display
+      #sdl_ret = @sdl_engine.pre_display
       glfw_ret = @glfw_engine.pre_display
       if sdl_ret || glfw_ret
-#        @sdl_engine.terminate
+        #@sdl_engine.terminate
         @glfw_engine.terminate
         exit
       end
-#      @sdl_engine.display
+      #@sdl_engine.display
       @glfwdl_engine.display
-#      @sdl_engine.post_display
+      #@sdl_engine.post_display
       @glfw_engine.post_display
     end
   end
@@ -286,7 +286,6 @@ class GLFWEngine < OpenGLEngine
     init_viewport
 #    glClearColor(0.0, 0.0, 0.0, 1.0);
 #    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
     glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
     #draw_cube
     draw_triangle
@@ -295,9 +294,9 @@ class GLFWEngine < OpenGLEngine
   def init_viewport
     width, height = get_framebuffersize
     ratio = width.to_f / height.to_f
+
     glViewport(0, 0, width, height)
     glClear(GL_COLOR_BUFFER_BIT)
-
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0)
