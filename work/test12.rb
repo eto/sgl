@@ -82,9 +82,11 @@ class SGLApp
   def mainloop
     loop do
       ret = display
-      glfwDestroyWindow( @window ) if glfw?
-      glfwTerminate() if glfw?
-      exit
+      if ret
+        glfwDestroyWindow( @window ) if glfw?
+        glfwTerminate() if glfw?
+        exit
+      end
     end
   end
 
@@ -205,7 +207,9 @@ class SGLApp
   end
 
   def glfw_display
+    #p "glfw_display"
     close = glfwWindowShouldClose( @window )
+    #p close
     if close != 0
       return true
     end
