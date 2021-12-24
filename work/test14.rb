@@ -6,7 +6,10 @@ require 'glfw'
 OpenGL.load_lib()
 GLFW.load_lib()
 include OpenGL
-include GLFW
+#include GLFW
+
+$engine = :sdl
+#$engine = :glfw
 
 class OpenGLEngine
   def initialize
@@ -47,8 +50,12 @@ class SDLEngine < OpenGLEngine
     SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
     @window = SDL2::Window.create(@title, 0, 0, @window_w, @window_h, SDL2::Window::Flags::OPENGL)
     context = SDL2::GL::Context.create(@window)
-    puts get_opengl_version
+    #puts get_opengl_version
+    init_viewport
+  end
 
+  def init_viewport
+    #glViewport( 0, 0, 640, 400 )
     glViewport( 0, 0, 640, 400 )
     glMatrixMode( GL_PROJECTION )
     glLoadIdentity( )
@@ -220,19 +227,19 @@ class GLFWEngine < OpenGLEngine
 
     # Press ESC to exit.
     @key_callback = GLFW::create_callback(:GLFWkeyfun) do |window_handle, key, scancode, action, mods|
-      if key == GLFW_KEY_ESCAPE && action == GLFW_PRESS
-        glfwSetWindowShouldClose(window_handle, 1)
+      if key == GLFW::GLFW_KEY_ESCAPE && action == GLFW::GLFW_PRESS
+        GLFW.glfwSetWindowShouldClose(window_handle, 1)
       end
     end
 
-    glfwInit()
-    @window = glfwCreateWindow(@window_w, @window_h, @title, nil, nil )
-    glfwMakeContextCurrent(@window)
-    glfwSetKeyCallback(@window, @key_callback)
+    GLFW.glfwInit()
+    @window = GLFW.glfwCreateWindow(@window_w, @window_h, @title, nil, nil)
+    GLFW.glfwMakeContextCurrent(@window)
+    GLFW.glfwSetKeyCallback(@window, @key_callback)
   end
 
   def pre_display
-    close = glfwWindowShouldClose(@window)
+    close = GLFW.glfwWindowShouldClose(@window)
     if close != 0
       return true
     end
@@ -241,7 +248,7 @@ class GLFWEngine < OpenGLEngine
   def display
     width_ptr = ' ' * 8
     height_ptr = ' ' * 8
-    glfwGetFramebufferSize(@window, width_ptr, height_ptr)
+    GLFW.glfwGetFramebufferSize(@window, width_ptr, height_ptr)
     width = width_ptr.unpack('L')[0]
     height = height_ptr.unpack('L')[0]
     ratio = width.to_f / height.to_f
@@ -254,7 +261,7 @@ class GLFWEngine < OpenGLEngine
     glMatrixMode(GL_MODELVIEW)
 
     glLoadIdentity()
-    glRotatef(glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
+    glRotatef(GLFW.glfwGetTime() * 50.0, 0.0, 0.0, 1.0)
 
     glBegin(GL_TRIANGLES)
     glColor3f(1.0, 0.0, 0.0)
@@ -267,21 +274,23 @@ class GLFWEngine < OpenGLEngine
   end
 
   def post_display
-    glfwSwapBuffers(@window)
-    glfwPollEvents()
-    return false
+    GLFW.glfwSwapBuffers(@window)
+    GLFW.glfwPollEvents()
   end
 
   def terminate
-    glfwDestroyWindow(@window)
-    glfwTerminate()
+    GLFW.glfwDestroyWindow(@window)
+    GLFW.glfwTerminate()
   end
 end
 
 class SGLApp
   def initialize
-    @engine = SDLEngine.new
-    #@engine = GLFWEngine.new
+    if $engine == :sdl
+      @engine = SDLEngine.new
+    else
+      @engine = GLFWEngine.new
+    end
     @window_w = 640
     @window_h = 480
     @title = "Engine Test"
