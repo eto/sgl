@@ -116,11 +116,12 @@ module SGL
   def circle(*a)	$__a__.circle(*a)	end
   def box(*a)		$__a__.box(*a)		end
   def cube(*a)		$__a__.cube(*a)		end
+
   def mainloop
     if ! defined?($__sgl_in_mainloop__)
       $__sgl_in_mainloop__ = true
       qp private_methods(false) - $test_basic_private_methods
-      qp respond_to?(:setup)
+      #qp respond_to?(:setup)
       setup
       @starttime = Time.now
       loop {
@@ -149,7 +150,7 @@ module SGL
       initialize_event	# opengl-event.rb
     end
 
-    def default_options
+    private def default_options
       {
 	:fullscreen=>nil,
 	:fov=>45,
@@ -162,7 +163,6 @@ module SGL
 	:runtime=>nil,
       }
     end
-    private :default_options
 
     #====================================================================== from opengl-window.rb
     DEFAULT_WINDOW_WIDTH  = 100
@@ -170,7 +170,7 @@ module SGL
     DEFAULT_FULLSCREEN_WIDTH  = 1024
     DEFAULT_FULLSCREEN_HEIGHT = 768
 
-    def initialize_window
+    private def initialize_window
       @width, @height = DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
@@ -178,7 +178,7 @@ module SGL
       @window_initialized = true
     end
 
-    def initialize_sdl
+    private def initialize_sdl
       SDL2.init(SDL2::INIT_EVERYTHING)
       # Setting color size is important for Mac OS X.
 =begin
@@ -199,8 +199,6 @@ module SGL
 #      @sdl_event = SDL2::Event.new
       @sdl_event = nil
     end
-    private :initialize_window, :initialize_sdl
-
     private def windows?;	r = RUBY_PLATFORM; (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil; end
 
     # create window
@@ -473,7 +471,6 @@ module SGL
       #SDL2.GLSwapBuffers
       #GC.start
     end
-    #private :display_pre, :display_post
 
     # mouse events
 #    def set_mousedown(&b)
@@ -565,7 +562,6 @@ module SGL
 	sleep(delaytime)
       end
     end
-#    private :delay
 
     def check_runtime_finished(starttime)
       runtime = @options[:runtime]
@@ -573,7 +569,6 @@ module SGL
       diff = Time.now - starttime
       return (runtime && runtime < diff)
     end
-#    private :check_runtime_finished
 
     # novice mode
 #    def flip
@@ -609,7 +604,7 @@ module SGL
     #LEFT_MOUSE_BUTTON   = 1
     #MIDDLE_MOUSE_BUTTON = 2
     #RIGHT_MOUSE_BUTTON  = 3
-    def check_event
+    private def check_event
       #x, y, l, m, r = SDL2::Mouse.state
       s = SDL2::Mouse.state
       #p s
@@ -646,7 +641,7 @@ module SGL
       end
     end
 
-    def calc_mouse_xy(x, y)
+    private def calc_mouse_xy(x, y)
       if @options[:fullscreen]
 	w, h = @options[:fullscreen]
 	mx = @cameraX - (w / 2) + x
@@ -658,7 +653,7 @@ module SGL
       return [mx, my]
     end
 
-    def calc_fullscreen_mouse_xy(x, y)
+    private def calc_fullscreen_mouse_xy(x, y)
       if @options[:fullscreen]
 	w, h = @options[:fullscreen]
 	mx = - (w / 2) + x
@@ -669,7 +664,6 @@ module SGL
       end
       return [mx, my]
     end
-    private :check_event, :calc_mouse_xy, :calc_fullscreen_mouse_xy
 
     #====================================================================== from opengl-draw.rb
     # draw primitive
