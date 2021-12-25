@@ -17,7 +17,8 @@ module SGL
   # mainloop
   def mainloop
     #p private_methods(false) - $basic_private_methods	[:setup, :display]
-    p "setup start at mainloop."
+    #qp private_methods(false) - $test_basic_private_methods
+    qp "setup start at mainloop."
 #    $__a__.set_setup { setup }
 #    p "setup done at mainloop."
 #    $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
@@ -32,6 +33,8 @@ module SGL
 
     if ! defined?($__sgl_in_mainloop__)
       $__sgl_in_mainloop__ = true
+      qp private_methods(false) - $test_basic_private_methods
+      qp Object.private_methods(false) - $test_basic_private_methods
       $__a__.mainloop
     else
       # do setup only.
@@ -100,8 +103,9 @@ module SGL
       setup_pre
       #@block[:setup].call if @block[:setup]
       #$app.setup if $app && $app.respond_to?(:setup)
-      if Object.respond_to?(:setup)
-        Object.send(:setup)
+      qp respond_to?(:setup)
+      if respond_to?(:setup)
+        send(:setup)
       end
       setup_post
     end
@@ -144,8 +148,8 @@ module SGL
 #        #p "$app.display"
 #        $app.display
 #      end
-      if Object.respond_to?(:display)
-        Object.send(:display)
+      if respond_to?(:display)
+        send(:display)
       end
       display
       display_post
@@ -157,8 +161,8 @@ module SGL
       cur_color = @cur_color
       @block[:display0].call if @block[:display0]
       #$app.display_post if $app && $app.respond_to?(:display_post)
-      if Object.respond_to?(:display0)
-        Object.send(:display0)
+      if respond_to?(:display0)
+        send(:display0)
       end
       color(*cur_color)
       #SDL2.GLSwapBuffers
@@ -178,8 +182,8 @@ module SGL
       #mouseDown(@mouseX, @mouseY) if defined?(:mousedown)
       #mouseDown if defined?(:mousedown)
       #$app.onMouseDown(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseDown)
-      if Object.respond_to?(:onMouseDown)
-        Object.send(:onMouseDown, @mouseX, @mouseY)
+      if respond_to?(:onMouseDown)
+        send(:onMouseDown, @mouseX, @mouseY)
       end
       #@block[:mousedown0].call(@mouseX0, @mouseY0) if @block[:mousedown0]
       #mouseDown0(@mouseX, @mouseY)
@@ -194,8 +198,8 @@ module SGL
       @mouseDown = 0
       @block[:mouseup].call(@mouseX, @mouseY) if @block[:mouseup]
       #$app.onMouseUp(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseUp)
-      if Object.respond_to?(:onMouseUp)
-        Object.send(:onMouseUp, @mouseX, @mouseY)
+      if respond_to?(:onMouseUp)
+        send(:onMouseUp, @mouseX, @mouseY)
       end
     end
 
@@ -224,8 +228,8 @@ module SGL
       keydown_pre(key)
       @block[:keydown].call(key) if @block[:keydown]
       #$app.onKeyDown(key) if $app && $app.respond_to?(:onKeyDown)
-      if Object.respond_to?(:onKeyDown)
-        Object.send(:onKeyDown, key)
+      if respond_to?(:onKeyDown)
+        send(:onKeyDown, key)
       end
     end
 
@@ -237,8 +241,8 @@ module SGL
     def do_keyup(key)
       @block[:keyup].call(key) if @block[:keyup]
       #$app.onKeyUp(key) if $app && $app.respond_to?(:onKeyUp)
-      if Object.respond_to?(:onKeyUp)
-        Object.send(:onKeyUp, key)
+      if respond_to?(:onKeyUp)
+        send(:onKeyUp, key)
       end
     end
 
@@ -253,9 +257,12 @@ module SGL
     end
 
     def mainloop
-      p $basic_private_methods
-      p Object.private_methods(false)
-      p Object.private_methods(false) - $basic_private_methods
+      qp private_methods(false) - $test_basic_private_methods
+      qp Object.private_methods(false) - $test_basic_private_methods
+      #qp $basic_private_methods
+      #qp Object.private_methods(false)
+      #qp Object.private_methods(false) - $basic_private_methods
+      #qp private_methods(false) - $basic_private_methods
 
       mainloop_setup
       @starttime = Time.now

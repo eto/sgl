@@ -1,8 +1,8 @@
 # Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
 # License: Ruby License
 
-$basic_private_methods = Object.private_methods(false)
-$basic_public_methods = Object.public_methods(false)
+$basic_private_methods = private_methods(false)
+$basic_public_methods = public_methods(false)
 
 require 'opengl'
 require "opengl"
