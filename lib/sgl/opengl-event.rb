@@ -15,6 +15,10 @@ module SGL
 #  def display0()	end
 
   # mainloop
+  def at_exit
+    mainloop
+  end
+
   def mainloop
     #p private_methods(false) - $basic_private_methods	[:setup, :display]
     #qp private_methods(false) - $test_basic_private_methods
@@ -35,10 +39,47 @@ module SGL
       $__sgl_in_mainloop__ = true
       qp private_methods(false) - $test_basic_private_methods
       qp Object.private_methods(false) - $test_basic_private_methods
-      $__a__.mainloop
+      #$__a__.mainloop
+      #qp private_methods(false) - $test_basic_private_methods
+      #qp Object.private_methods(false) - $test_basic_private_methods
+      #qp $basic_private_methods
+      #qp Object.private_methods(false)
+      #qp Object.private_methods(false) - $basic_private_methods
+      #qp private_methods(false) - $basic_private_methods
+
+      $__a__.mainloop_setup
+      @starttime = Time.now
+      loop {
+        p "loop of mainloop."
+	@begintime = Time.now
+	#$__a__.do_display
+        #def do_display # callback
+        #p "do_display"
+        #return if @setup_done.nil?
+        #return if @display_drawing
+        @display_drawing = true
+        $__a__.display_pre
+        #p "display_pre done"
+        #@block[:display].call if @block[:display]
+        #      if $app && $app.respond_to?(:display)
+        #        #p "$app.display"
+        #        $app.display
+        #      end
+        send(:display) if respond_to?(:display)
+        display
+        $__a__.display_post
+        #@display_drawing = nil
+        #end
+	$__a__.delay
+	return if $__a__.check_runtime_finished(@starttime)
+      }
+
     else
       # do setup only.
-      $__a__.mainloop_setup
+      #$__a__.mainloop_setup
+      #def mainloop_setup
+      do_setup
+      #end
 
       # for debug
       # $__a__.mainloop
@@ -110,25 +151,25 @@ module SGL
       setup_post
     end
 
-    def setup_post
-      @setup_done = true
-    end
-    private :setup_pre, :setup_post
+#    def setup_post
+#      @setup_done = true
+#    end
+#    private :setup_pre, :setup_post
 
     # display
-    def set_display(&b)
-      return unless block_given?
-      @block[:display] = Proc.new { b }
-    end
+#    def set_display(&b)
+#      return unless block_given?
+#      @block[:display] = Proc.new { b }
+#    end
 
-    def set_display0(&b)
-      return unless block_given?
-      @block[:display0] = Proc.new { b }
-    end
+#    def set_display0(&b)
+#      return unless block_given?
+#      @block[:display0] = Proc.new { b }
+#    end
 
-    def check_display0
-      return ! @block[:display0].nil?
-    end
+#    def check_display0
+#      return ! @block[:display0].nil?
+#    end
 
     def display_pre
       set_camera_position
@@ -136,45 +177,23 @@ module SGL
       clear
     end
 
-    def do_display # callback
-      #p "do_display"
-      return if @setup_done.nil?
-      #return if @display_drawing
-      @display_drawing = true
-      display_pre
-      #p "display_pre done"
-      @block[:display].call if @block[:display]
-#      if $app && $app.respond_to?(:display)
-#        #p "$app.display"
-#        $app.display
-#      end
-      if respond_to?(:display)
-        send(:display)
-      end
-      display
-      display_post
-      @display_drawing = nil
-    end
-
     def display_post
       set_fullscreen_camera_position
       cur_color = @cur_color
-      @block[:display0].call if @block[:display0]
+      #@block[:display0].call if @block[:display0]
       #$app.display_post if $app && $app.respond_to?(:display_post)
-      if respond_to?(:display0)
-        send(:display0)
-      end
+      #send(:display0) if respond_to?(:display0)
       color(*cur_color)
       #SDL2.GLSwapBuffers
       #GC.start
     end
-    private :display_pre, :display_post
+    #private :display_pre, :display_post
 
     # mouse events
-    def set_mousedown(&b)
-      return unless block_given?
-      @block[:mousedown] = Proc.new { b }
-    end
+#    def set_mousedown(&b)
+#      return unless block_given?
+#      @block[:mousedown] = Proc.new { b }
+#    end
 
     def do_mousedown
       @mouseDown = 1
@@ -189,10 +208,10 @@ module SGL
       #mouseDown0(@mouseX, @mouseY)
     end
 
-    def set_mouseup(&b)
-      return unless block_given?
-      @block[:mouseup] = Proc.new { b }
-    end
+#    def set_mouseup(&b)
+#      return unless block_given?
+#      @block[:mouseup] = Proc.new { b }
+#    end
 
     def do_mouseup
       @mouseDown = 0
@@ -204,20 +223,20 @@ module SGL
     end
 
     # mouse events for fullscreen
-    def set_mousedown0(&b)
-      return unless block_given?
-      @block[:mousedown0] = Proc.new { b }
-    end
+#    def set_mousedown0(&b)
+#      return unless block_given?
+#      @block[:mousedown0] = Proc.new { b }
+#    end
 
-    def check_mousedown0
-      return ! @block[:mousedown0].nil?
-    end
+#    def check_mousedown0
+#      return ! @block[:mousedown0].nil?
+#    end
 
     # key events
-    def set_keydown(&b)
-      return unless block_given?
-      @block[:keydown] = Proc.new { b }
-    end
+#    def set_keydown(&b)
+#      return unless block_given?
+#      @block[:keydown] = Proc.new { b }
+#    end
 
     def keydown_pre(key)
       exit if key == SDL2::Key::ESCAPE
@@ -233,10 +252,10 @@ module SGL
       end
     end
 
-    def set_keyup(&b)
-      return unless block_given?
-      @block[:keyup] = Proc.new { b }
-    end
+#    def set_keyup(&b)
+#      return unless block_given?
+#      @block[:keyup] = Proc.new { b }
+#    end
 
     def do_keyup(key)
       @block[:keyup].call(key) if @block[:keyup]
@@ -252,29 +271,6 @@ module SGL
     end
     private :calc_keynum
 
-    def mainloop_setup
-      do_setup
-    end
-
-    def mainloop
-      qp private_methods(false) - $test_basic_private_methods
-      qp Object.private_methods(false) - $test_basic_private_methods
-      #qp $basic_private_methods
-      #qp Object.private_methods(false)
-      #qp Object.private_methods(false) - $basic_private_methods
-      #qp private_methods(false) - $basic_private_methods
-
-      mainloop_setup
-      @starttime = Time.now
-      loop {
-        p "loop of mainloop."
-	@begintime = Time.now
-	do_display
-	delay
-	return if check_runtime_finished(@starttime)
-      }
-    end
-
     def delay
       if @options[:framerate]
 	sec_per_frame = 1.0 / @options[:framerate]
@@ -285,7 +281,7 @@ module SGL
 	sleep(delaytime)
       end
     end
-    private :delay
+#    private :delay
 
     def check_runtime_finished(starttime)
       runtime = @options[:runtime]
@@ -293,37 +289,37 @@ module SGL
       diff = Time.now - starttime
       return (runtime && runtime < diff)
     end
-    private :check_runtime_finished
+#    private :check_runtime_finished
 
     # novice mode
-    def flip
-      @starttime = Time.now if @starttime.nil?
-      display_post
-      delay
-      display_pre
-     #exit if check_runtime_finished(@starttime)
-    end
+#    def flip
+#      @starttime = Time.now if @starttime.nil?
+#      display_post
+#      delay
+#      display_pre
+#     #exit if check_runtime_finished(@starttime)
+#    end
 
-    def wait
-      #SGL.flip if !$__v__.flipped
-      loop {
-	check_event
-	delay
-	return if check_runtime_finished(@starttime)
-      }
-    end
+#    def wait
+#      #SGL.flip if !$__v__.flipped
+#      loop {
+#	check_event
+#	delay
+#	return if check_runtime_finished(@starttime)
+#      }
+#    end
 
-    def process(&b)
-      block = Proc.new { b }
-      @starttime = Time.now
-      loop {
-	check_event
-	block.call
-	#yield
-	delay
-	return if check_runtime_finished(@starttime)
-      }
-    end
+#    def process(&b)
+#      block = Proc.new { b }
+#      @starttime = Time.now
+#      loop {
+#	check_event
+#	block.call
+#	#yield
+#	delay
+#	return if check_runtime_finished(@starttime)
+#      }
+#    end
 
     # check event
     #LEFT_MOUSE_BUTTON   = 1
