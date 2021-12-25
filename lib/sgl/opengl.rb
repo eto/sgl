@@ -111,7 +111,7 @@ module SGL
   def cube(*a)		$__a__.cube(*a)		end
 
   def mainloop
-    if ! defined?($__sgl_in_mainloop__)
+    if ! defined?($__sgl_in_mainloop__)	# 2回呼ばれないようにしている。
       $__sgl_in_mainloop__ = true
       setup
       $__a__.set_starttime
@@ -163,14 +163,10 @@ module SGL
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
       @window_initialized = false
-      initialize_sdl
-    end
 
-    private def initialize_sdl
-      SDL2.init(SDL2::INIT_EVERYTHING)
-      # Setting color size is important for Mac OS X.
+      SDL2.init(SDL2::INIT_EVERYTHING)	# initialize_sdl
 =begin
-      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)	# 2004年の自分はなぜ5を選んだのか？
+      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)	# Setting color size is important for Mac OS X. But why I choose 5 for color size?
       SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::DEPTH_SIZE, 16)
@@ -181,11 +177,7 @@ module SGL
       SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 8)
       SDL2::GL.set_attribute(SDL2::GL::ALPHA_SIZE, 8)
       SDL2::GL.set_attribute(SDL2::GL::DOUBLEBUFFER, 1)
-#      if !windows?
-#	SDL2.setVideoMode(640, 400, 16, SDL2::OPENGL)
-#      end
-#      @sdl_event = SDL2::Event.new
-      @sdl_event = nil
+      #SDL2.setVideoMode(640, 400, 16, SDL2::OPENGL) if !windows?
     end
     private def windows?;	r = RUBY_PLATFORM; (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil; end
 
@@ -219,7 +211,6 @@ module SGL
 =end
       @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)	# なぜ縦だけ＋1なのか？
       sdl_context = SDL2::GL::Context.create(@sdl_window)
-
       @window_initialized = true
 
       if @options[:cursor]	# setCurosr. You can use only black and white for cursor image.
@@ -461,7 +452,6 @@ module SGL
       # x pos, y pos, left button, middle button, right button
       @mouseX, @mouseY = calc_mouse_xy(x, y)
       @mouseX0, @mouseY0 = calc_fullscreen_mouse_xy(x, y)
-      #event = @sdl_event
       while event = SDL2::Event.poll
 	case event
 	when SDL2::Event::MouseButtonDown
