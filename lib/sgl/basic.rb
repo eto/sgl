@@ -1,10 +1,6 @@
 # coding: utf-8
-#
-# Copyright (C) 2004 Kouichirou Eto, All rights reserved.
-#
-# This is free software with ABSOLUTELY NO WARRANTY.
-# You can redistribute it and/or modify it under the terms of the GNU GPL2.
-#
+# Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
+# License: BSD 3-Clause License
 
 module SGL
   #starttime秒後に始まって、endtime秒後に終る。

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
-# Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
-# License: Ruby License
+# Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
+# License: BSD 3-Clause License
 
 $LOAD_PATH.unshift("..") if !$LOAD_PATH.include?("..")
 
