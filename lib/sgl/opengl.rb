@@ -88,7 +88,7 @@ module SGL
   def mainloop
     #p private_methods(false) - $basic_private_methods	[:setup, :display]
     #qp private_methods(false) - $test_basic_private_methods
-    qp "setup start at mainloop."
+    #qp "setup start at mainloop."
     #    $__a__.set_setup { setup }
     #    p "setup done at mainloop."
     #    $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
@@ -103,7 +103,7 @@ module SGL
 
     if ! defined?($__sgl_in_mainloop__)
       $__sgl_in_mainloop__ = true
-      qp private_methods(false) - $test_basic_private_methods
+      #qp private_methods(false) - $test_basic_private_methods
       #qp Object.private_methods(false) - $test_basic_private_methods
       #$__a__.mainloop
       #qp private_methods(false) - $test_basic_private_methods
