@@ -1,5 +1,7 @@
-# Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
-# License: Ruby License
+#!/usr/bin/env ruby -w
+# coding: utf-8
+# Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
+# License: BSD 3-Clause License
 
 require "Win32API"
 require "singleton"
@@ -47,7 +49,7 @@ module Bass
       @iangle, @oangle, @outvol, @vam, @priority = info.unpack("SSiSSSSffSSSSS")
     end
 
-    # ŠO•””ñŒöŠJ
+    # å¤–éƒ¨éå…¬é–‹
     # freq The sample rate. 100(min)-100000(max), -1 = use sample's default. 
     # volume The volume... 0(silent)-100(max), -1 = use sample's default. 
     # pan The panning position. -100(left)-100(right), -101 = use sample's default. 

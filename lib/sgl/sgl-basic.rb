@@ -1,5 +1,7 @@
-# Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
-# License: Ruby License
+#!/usr/bin/env ruby -w
+# coding: utf-8
+# Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
+# License: BSD 3-Clause License
 
 $LOAD_PATH.unshift '..' if !$LOAD_PATH.include? '..'
 
@@ -14,9 +16,9 @@ module SGL
   end
 
   class Timer
-    # starttime•bŒã‚É‰‚Ü‚Á‚ÄAendtime•bŒã‚ÉI‚éB
+    # starttimeç§’å¾Œã«åˆã¾ã£ã¦ã€endtimeç§’å¾Œã«çµ‚ã‚‹ã€‚
     def initialize(st, et)
-      # begintime¨ŠJnŠÔ
+      # begintimeâ†’é–‹å§‹æ™‚é–“
       @bt = Time.now.to_f
       @st,@et = @bt+st,@bt+et
       @now = 0
@@ -27,7 +29,7 @@ module SGL
       @now = Time.now.to_f
     end
 
-    # ‰‚ß‚Í0‚ÅA‚¾‚ñ‚¾‚ñ1.0‚É‚¿‚©‚Ã‚¢‚Ä‚¢‚­
+    # åˆã‚ã¯0ã§ã€ã ã‚“ã ã‚“1.0ã«ã¡ã‹ã¥ã„ã¦ã„ã
     def ratio
       count
       return 0.0 if ! (@st <= @now)

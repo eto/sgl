@@ -1,12 +1,14 @@
-# Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
-# License: Ruby License
+#!/usr/bin/env ruby -w
+# coding: utf-8
+# Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
+# License: BSD 3-Clause License
 
 module SGL
-  # starttime•bŒã‚Én‚Ü‚Á‚ÄAendtime•bŒã‚ÉI‚éB
+  # starttimeç§’å¾Œã«å§‹ã¾ã£ã¦ã€endtimeç§’å¾Œã«çµ‚ã‚‹ã€‚
   class Timer
     def initialize(st, et)
       @st, @et = st, et
-      revert	# Šª‚«–ß‚µ
+      revert	# å·»ãæˆ»ã—
       count
       @span = (@et - @st).to_f
       #p ['Timer', @bt, @st, @et, @span]
@@ -36,7 +38,7 @@ module SGL
       @bt = Time.now.to_f - @st if ! started?
     end
 
-    # begintime¨ŠJnŠÔ
+    # begintimeâ†’é–‹å§‹æ™‚é–“
     def revert
       @bt = Time.now.to_f
     end
@@ -49,8 +51,8 @@ module SGL
   end
 
   module Fadeout
-    EXISTENCE_TIME = 6 # ¶‘¶ŠÔ
-    FADEOUT_TIME = 2   # fadeout‚·‚éŠÔ
+    EXISTENCE_TIME = 6 # ç”Ÿå­˜æ™‚é–“
+    FADEOUT_TIME = 2   # fadeoutã™ã‚‹æ™‚é–“
 
     def fadeout_initialize
       @timer = Timer.new(EXISTENCE_TIME - FADEOUT_TIME, EXISTENCE_TIME)
