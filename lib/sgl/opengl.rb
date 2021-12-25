@@ -20,13 +20,16 @@ else
 end
 
 #require "gl"
+#include Gl
+
 require "glu"
 GLU.load_lib()
-#require "glut"
-#require "mathn"
-#include Gl
 #include GLU
+
+#require "glut"
 #include Glut
+
+#require "mathn"
 
 require "sdl2"
 require "sgl/sgl-color"
@@ -41,16 +44,16 @@ at_exit {
 
 module SGL
   if ! defined?(LINES)
-  LINES		= OpenGL::GL_LINES	# from opengl-draw.rb
-  POINTS	= OpenGL::GL_POINTS
-  LINE_STRIP	= OpenGL::GL_LINE_STRIP
-  LINE_LOOP	= OpenGL::GL_LINE_LOOP
-  TRIANGLES	= OpenGL::GL_TRIANGLES
-  TRIANGLE_STRIP	= OpenGL::GL_TRIANGLE_STRIP
-  TRIANGLE_FAN	= OpenGL::GL_TRIANGLE_FAN
-  QUADS		= OpenGL::GL_QUADS
-  QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
-  POLYGON	= OpenGL::GL_POLYGON
+    LINES	= OpenGL::GL_LINES	# from opengl-draw.rb
+    POINTS	= OpenGL::GL_POINTS
+    LINE_STRIP	= OpenGL::GL_LINE_STRIP
+    LINE_LOOP	= OpenGL::GL_LINE_LOOP
+    TRIANGLES	= OpenGL::GL_TRIANGLES
+    TRIANGLE_STRIP	= OpenGL::GL_TRIANGLE_STRIP
+    TRIANGLE_FAN	= OpenGL::GL_TRIANGLE_FAN
+    QUADS	= OpenGL::GL_QUADS
+    QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
+    POLYGON	= OpenGL::GL_POLYGON
   end
   def window(*a)	$__a__.window(*a)	end	# window functions
   #def close_window()	$__a__.close_window;	end
@@ -141,15 +144,15 @@ module SGL
 
     private def default_options
       {
-	:fullscreen=>nil,
-	:fov=>45,
-	:cursor=>nil,
-	:depth=>false,
-	:culling=>false,
-	:smooth=>false,
-	:delaytime=>nil,
-	:framerate=>60,
-	:runtime=>nil,
+	:fullscreen	=>nil,
+	:fov	=>45,
+	:cursor	=>nil,
+	:depth	=>false,
+	:culling	=>false,
+	:smooth	=>false,
+	:delaytime	=>nil,
+	:framerate	=>60,
+	:runtime	=>nil,
       }
     end
 
@@ -565,11 +568,7 @@ module SGL
     def scale(a);	OpenGL.glScalef(a, a, a);	end
     def point(a, b, c = nil)	# simple draw
       OpenGL.glBegin(OpenGL::GL_POINTS)
-      if c
-	OpenGL.glVertex3f(a, b, c)
-      else
-	OpenGL.glVertex2f(a, b)
-      end
+      if c; OpenGL.glVertex3f(a, b, c); else; OpenGL.glVertex2f(a, b); end
       OpenGL.glEnd
     end
     def lineWidth(w);	OpenGL.glLineWidth(w);	end
@@ -588,6 +587,7 @@ module SGL
       init_viewport
       draw_triangle
     end
+
     def init_viewport
       #glViewport( 0, 0, 640, 400 )
       glViewport(0, 0, @width, @height)
@@ -599,6 +599,7 @@ module SGL
       glDepthFunc(GL_LESS)
       glShadeModel(GL_SMOOTH)
     end
+
     def draw_triangle
       glBegin(OpenGL::GL_TRIANGLES)
       glColor3f(1.0, 0.0, 0.0)
