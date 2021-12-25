@@ -3,8 +3,6 @@
 # Copyright (C) 2004-2021 Koichiro Eto, All rights reserved.
 # License: BSD 3-Clause License
 
-#require "sgl/opengl-app"
-
 $basic_private_methods = private_methods(false)
 $basic_public_methods = public_methods(false)
 
@@ -45,145 +43,15 @@ require "sgl/sgl-color"
 
 #p private_methods(false) - $basic_private_methods
 
+def sh(cmd); p cmd; system cmd; end
+def die(msg); puts msg; exit; end
+
 at_exit {
   mainloop
 }
 
 module SGL
-  # window functions
-  def window(*a)	$__a__.window(*a)	end
-  def close_window()	$__a__.close_window;	end
-  def width()	$__a__.width;	end
-  def height()	$__a__.height;	end
-
-  # opengl special functions
-  def useFov(*a)	$__a__.useFov(*a);	end
-  def useDepth(*a)	$__a__.useDepth(*a)	end
-  def useSmooth(*a)	$__a__.useSmooth(*a)	end
-  def useCulling(*a)	$__a__.useCulling(*a)	end
-  def useFullscreen(*a)	$__a__.useFullscreen(*a)	end
-  alias useFullScreen useFullscreen
-  def useCursor(*a)	$__a__.useCursor(*a)	end
-
-  # ====================================================================== from opengl-color.rb
-  def background(*a)	$__a__.background(*a)	end
-  def backgroundHSV(*a)	$__a__.backgroundHSV(*a)	end
-  def color(*a)		$__a__.color(*a)	end
-  def colorHSV(*a)	$__a__.colorHSV(*a)	end
-
-  # ====================================================================== from opengl-event.rb
-  # callback functions
-  #def setup()		end
-  #def onMouseDown(x,y)	end
-  #def onMouseUp(x,y)	end
-  #def onKeyDown(k)	end
-  #def onKeyUp(k)	end
-  #def display()		end
-
-  # callback functions for fullscreen
-  #def onMouseDown0(x,y)	end
-  #def display0()	end
-
-  # mainloop
-  def mainloop
-    #p private_methods(false) - $basic_private_methods	[:setup, :display]
-    #qp private_methods(false) - $test_basic_private_methods
-    #qp "setup start at mainloop."
-    #    $__a__.set_setup { setup }
-    #    p "setup done at mainloop."
-    #    $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
-    #    $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
-    #    $__a__.set_keydown   {|k| onKeyDown(k) }
-    #    $__a__.set_keyup     {|k| onKeyUp(k) }
-    #    if ! $__a__.check_display0
-    #      $__a__.set_display0 { display0 }
-    #      $__a__.set_mousedown0 {|x, y| onMouseDown0(x, y) }
-    #    end
-    #    $__a__.set_display { display }
-
-    if ! defined?($__sgl_in_mainloop__)
-      $__sgl_in_mainloop__ = true
-      #qp private_methods(false) - $test_basic_private_methods
-      #qp Object.private_methods(false) - $test_basic_private_methods
-      #$__a__.mainloop
-      #qp private_methods(false) - $test_basic_private_methods
-      #qp Object.private_methods(false) - $test_basic_private_methods
-      #qp $basic_private_methods
-      #qp Object.private_methods(false)
-      #qp Object.private_methods(false) - $basic_private_methods
-      #qp private_methods(false) - $basic_private_methods
-
-      #$__a__.mainloop_setup
-      #do_setup
-      qp private_methods(false) - $test_basic_private_methods
-      qp respond_to?(:setup)
-      setup
-#      if respond_to?(:setup)
-#        qp private_methods(false) - $test_basic_private_methods
-#        send(:setup)
-#      end
-      @starttime = Time.now
-      loop {
-        p "loop of mainloop."
-	@begintime = Time.now
-	#$__a__.do_display
-        #def do_display # callback
-        #p "do_display"
-        #return if @setup_done.nil?
-        #return if @display_drawing
-        @display_drawing = true
-        $__a__.display_pre
-        #p "display_pre done"
-        #@block[:display].call if @block[:display]
-        #      if $app && $app.respond_to?(:display)
-        #        #p "$app.display"
-        #        $app.display
-        #      end
-        send(:display) if respond_to?(:display)
-        display
-        $__a__.display_post
-        #@display_drawing = nil
-        #end
-	$__a__.delay
-	return if $__a__.check_runtime_finished(@starttime)
-      }
-
-    else
-      # do setup only.
-      #$__a__.mainloop_setup
-      #def mainloop_setup
-      #do_setup
-      send(:setup) if respond_to?(:setup)
-      #end
-
-      # for debug
-      # $__a__.mainloop
-    end
-  end
-
-  # novice mode
-  #def flip(*a)	$__a__.flip(*a)	end
-  #def wait(*a)	$__a__.wait(*a)	end
-  #def process(&b)	$__a__.process(&b)	end
-
-  # get status functions
-  def mouseX()	$__a__.mouseX;	end
-  def mouseY()	$__a__.mouseY;	end
-  def mouseDown()	$__a__.mouseDown;	end
-  def key(k)	$__a__.key[k];	end
-  def keynum()	$__a__.keynum;	end
-
-  # get status functions for fullscreen
-  def mouseX0()	$__a__.mouseX0;	end
-  def mouseY0()	$__a__.mouseY0;	end
-
-  # event control
-  def useDelay(*a)	$__a__.useDelay(*a)	end
-  def useFramerate(*a)	$__a__.useFramerate(*a)	end
-  def useRuntime(*a)	$__a__.useRuntime(*a)	end
-
-  #====================================================================== from opengl-draw.rb
-  LINES		= OpenGL::GL_LINES
+  LINES		= OpenGL::GL_LINES	# from opengl-draw.rb
   POINTS	= OpenGL::GL_POINTS
   LINE_STRIP	= OpenGL::GL_LINE_STRIP
   LINE_LOOP	= OpenGL::GL_LINE_LOOP
@@ -193,9 +61,43 @@ module SGL
   QUADS		= OpenGL::GL_QUADS
   QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
   POLYGON	= OpenGL::GL_POLYGON
-
-  # draw
-  def beginObj(*a)	$__a__.beginObj(*a)	end
+  def window(*a)	$__a__.window(*a)	end	# window functions
+  #def close_window()	$__a__.close_window;	end
+  def width()	$__a__.width;	end
+  def height()	$__a__.height;	end
+  def useFov(*a)	$__a__.useFov(*a);	end	# opengl specific functions
+  def useDepth(*a)	$__a__.useDepth(*a)	end
+  def useSmooth(*a)	$__a__.useSmooth(*a)	end
+  def useCulling(*a)	$__a__.useCulling(*a)	end
+  def useFullscreen(*a)	$__a__.useFullscreen(*a)	end
+  alias useFullScreen useFullscreen
+  def useCursor(*a)	$__a__.useCursor(*a)	end
+  def background(*a)	$__a__.background(*a)	end	# from opengl-color.rb
+  def backgroundHSV(*a)	$__a__.backgroundHSV(*a)	end
+  def color(*a)		$__a__.color(*a)	end
+  def colorHSV(*a)	$__a__.colorHSV(*a)	end
+  #def setup()		end	# callback functions from opengl-event.rb
+  #def onMouseDown(x,y)	end
+  #def onMouseUp(x,y)	end
+  #def onKeyDown(k)	end
+  #def onKeyUp(k)	end
+  #def display()		end
+  #def onMouseDown0(x,y)	end	# callback functions for fullscreen
+  #def display0()	end
+  #def flip(*a)	$__a__.flip(*a)	end	# novice mode
+  #def wait(*a)	$__a__.wait(*a)	end
+  #def process(&b)	$__a__.process(&b)	end
+  def mouseX()	$__a__.mouseX;	end	# get status functions
+  def mouseY()	$__a__.mouseY;	end
+  def mouseDown()	$__a__.mouseDown;	end
+  def key(k)	$__a__.key[k];	end
+  def keynum()	$__a__.keynum;	end
+  def mouseX0()	$__a__.mouseX0;	end	# get status functions for fullscreen
+  def mouseY0()	$__a__.mouseY0;	end
+  def useDelay(*a)	$__a__.useDelay(*a)	end	# event control
+  def useFramerate(*a)	$__a__.useFramerate(*a)	end
+  def useRuntime(*a)	$__a__.useRuntime(*a)	end
+  def beginObj(*a)	$__a__.beginObj(*a)	end	# from opengl-draw.rb
   def endObj(*a)	$__a__.endObj(*a)	end
   def push(*a)		$__a__.push(*a)		end
   def pop(*a)		$__a__.pop(*a)		end
@@ -214,6 +116,28 @@ module SGL
   def circle(*a)	$__a__.circle(*a)	end
   def box(*a)		$__a__.box(*a)		end
   def cube(*a)		$__a__.cube(*a)		end
+  def mainloop
+    if ! defined?($__sgl_in_mainloop__)
+      $__sgl_in_mainloop__ = true
+      qp private_methods(false) - $test_basic_private_methods
+      qp respond_to?(:setup)
+      setup
+      @starttime = Time.now
+      loop {
+        p "loop of mainloop."
+	@begintime = Time.now
+        @display_drawing = true
+        $__a__.display_pre
+        send(:display) if respond_to?(:display)
+        display
+        $__a__.display_post
+	$__a__.delay
+	return if $__a__.check_runtime_finished(@starttime)
+      }
+    else
+      send(:setup) if respond_to?(:setup)
+    end
+  end
 
   # ====================================================================== opengl-app.rb
   class Application
@@ -277,11 +201,7 @@ module SGL
     end
     private :initialize_window, :initialize_sdl
 
-    def windows?
-      r = RUBY_PLATFORM
-      (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil
-    end
-    private :windows?
+    private def windows?;	r = RUBY_PLATFORM; (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil; end
 
     # create window
     def window(*a)
@@ -356,17 +276,9 @@ module SGL
       check_event
     end
 
-    def close_window
-      # do nothing for now
-    end
+    attr_reader :width, :height	# get window size
 
-    # get window size
-    attr_reader :width, :height
-
-    # world control methods
-    def useFov(f = 45)
-      @options[:fov] = f
-    end
+    def useFov(f = 45);	@options[:fov] = f;	end	# world control methods
 
     def useDepth(a = true)
       @options[:depth] = a
@@ -389,31 +301,16 @@ module SGL
       end
     end
 
-    def useCursor(bmpfile)
-      @options[:cursor] = bmpfile
-    end
+    def useCursor(bmpfile);	@options[:cursor] = bmpfile;	end
+    def useDelay(sec);		@options[:delaytime] = sec;	end
+    def useFramerate(f);	@options[:framerate] = f;	end
+    def useRuntime(r);		@options[:runtime] = r;	end
+    def runtime=(r);		useRuntime(r);	end
 
-    def useDelay(sec)
-      @options[:delaytime] = sec
-    end
-
-    def useFramerate(f)
-      @options[:framerate] = f
-    end
-
-    def useRuntime(r)
-      @options[:runtime] = r
-    end
-
-    def runtime=(r)
-      useRuntime(r)
-    end
-
-    def set_window_position
+    private def set_window_position
       @cameraX, @cameraY = ((@left + @right)/2), ((@bottom + @top)/2)
       fov = @options[:fov]
-      @cameraZ = 1.0 +
-	@height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
+      @cameraZ = 1.0 + @height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
       #OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
@@ -423,7 +320,7 @@ module SGL
       GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
-    def set_fullscreen_position
+    private def set_fullscreen_position
       cx, cy = ((@left + @right)/2), ((@bottom + @top)/2)
       @cameraX, @cameraY = cx, cy
       w, h = @options[:fullscreen]
@@ -441,47 +338,37 @@ module SGL
       #gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
       GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
-    private :set_window_position, :set_fullscreen_position
 
-    def sh(cmd); p cmd; system cmd; end
-    def die(msg); puts msg; exit; end
-
-    def set_camera_position
-      #pp caller
-      #exit
+    private def set_camera_position
       if ! @window_initialized
         die "Window is not initialized."
       end
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      #exit
       loadIdentity
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
-		 @cameraX, @cameraY, 0,
-		 0, 1, 0)
+		    @cameraX, @cameraY, 0,
+		    0, 1, 0)
     end
 
-    def set_fullscreen_camera_position
+    private def set_fullscreen_camera_position
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       loadIdentity
       GLU.gluLookAt(0, 0, @cameraZ,
 		 0, 0, 0,
 		 0, 1, 0)
     end
-    private :set_camera_position, :set_fullscreen_camera_position
 
-    def loadIdentity;	OpenGL.glLoadIdentity;	end
-    private :loadIdentity
+    private def loadIdentity;	OpenGL.glLoadIdentity;	end
 
     #====================================================================== from opengl-color.rb
-    def initialize_color
+    private def initialize_color
       @bg_color = @cur_color = nil
       @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
       @hsv = ColorTranslatorHSV.new(100, 100, 100, 100)
     end
-    private :initialize_color
 
-    attr_reader :cur_color # for test
+    #attr_reader :cur_color # for test
 
     def background(x, y = nil, z = nil, a = nil)
       norm = @rgb.norm(x, y, z, a)
@@ -496,10 +383,9 @@ module SGL
       clear
     end
 
-    def clear
+    private def clear
       OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT)
     end
-    private :clear
 
     def color(x, y = nil, z = nil, a = nil)
       @cur_color = [x, y, z, a]
@@ -511,7 +397,7 @@ module SGL
     end
 
     #====================================================================== from opengl-event.rb
-    def initialize_event
+    private def initialize_event
       @setup_done = nil
       @display_drawing = nil
       @block = {}
@@ -525,7 +411,6 @@ module SGL
       @starttime = nil
       @window_initialized = false
     end
-    private :initialize_event
 
     # get status
     attr_reader :mouseX, :mouseY
@@ -639,10 +524,9 @@ module SGL
 #      @block[:keydown] = Proc.new { b }
 #    end
 
-    def keydown_pre(key)
+    private def keydown_pre(key)
       exit if key == SDL2::Key::ESCAPE
     end
-    private :keydown_pre
 
     def do_keydown(key)
       keydown_pre(key)
@@ -666,11 +550,10 @@ module SGL
       end
     end
 
-    def calc_keynum(e)
+    private def calc_keynum(e)
       input = e.characters
       @keynum = input.to_s[0]
     end
-    private :calc_keynum
 
     def delay
       if @options[:framerate]
@@ -794,7 +677,6 @@ module SGL
     def endObj;	OpenGL.glEnd;	end
     def push;	OpenGL.glPushMatrix;	end
     def pop;	OpenGL.glPopMatrix;	end
-
     def vertex(a, b = nil, c = nil, d = nil)
       OpenGL.glVertex4f(a, b, c, d) if d
       OpenGL.glVertex3f(a, b, c) if c
@@ -806,9 +688,7 @@ module SGL
     def rotateY(a);	OpenGL.glRotatef(a, 0, 1, 0);	end
     def rotateZ(a);	OpenGL.glRotatef(a, 0, 0, 1);	end
     def scale(a);	OpenGL.glScalef(a, a, a);	end
-
-    # simple draw
-    def point(a, b, c = nil)
+    def point(a, b, c = nil)	# simple draw
       OpenGL.glBegin(OpenGL::GL_POINTS)
       if c
 	OpenGL.glVertex3f(a, b, c)
@@ -817,9 +697,7 @@ module SGL
       end
       OpenGL.glEnd
     end
-
     def lineWidth(w);	OpenGL.glLineWidth(w);	end
-
     def line(a, b, c, d, e = nil, f = nil)
       #p [a, b, c, d, e, f]
       OpenGL.glBegin(OpenGL::GL_LINES)
@@ -832,9 +710,7 @@ module SGL
       end
       OpenGL.glEnd
     end
-
     def rect(a, b, c, d);	OpenGL.glRectf(a, b, c, d);	end
-
     def triangle(a, b, c, d, e, f)
       OpenGL.glBegin(OpenGL::GL_TRIANGLES)
       OpenGL.glVertex2f(a, b)
@@ -842,8 +718,14 @@ module SGL
       OpenGL.glVertex2f(e, f)
       OpenGL.glEnd
     end
-
-    def circleUnit(style = LINE_LOOP, div = nil)
+    def circle(x, y, r, style = LINE_LOOP, div = nil)
+      OpenGL.glPushMatrix
+      OpenGL.glTranslate(x, y, 0)
+      OpenGL.glScalef(r, r, r)
+      circleUnit(style, div)
+      OpenGL.glPopMatrix
+    end
+    private def circleUnit(style = LINE_LOOP, div = nil)
       div = 32 if div.nil?
       e = 2 * Math::PI / div
       OpenGL.glBegin(style)
@@ -855,16 +737,6 @@ module SGL
       }
       OpenGL.glEnd
     end
-    private :circleUnit
-
-    def circle(x, y, r, style = LINE_LOOP, div = nil)
-      OpenGL.glPushMatrix
-      OpenGL.glTranslate(x, y, 0)
-      OpenGL.glScalef(r, r, r)
-      circleUnit(style, div)
-      OpenGL.glPopMatrix
-    end
-
     def box(x1, y1, z1, x2, y2, z2)
       box = [
 	[x1, y1, z1], # 0 back left bottom
@@ -903,67 +775,9 @@ module SGL
       OpenGL.glVertex(box[4])
       OpenGL.glEnd
     end
-
     def cube(x, y, z, s)
       s = s / 2
       box(x - s, y - s, z - s, x + s, y + s, z + s)
-    end
-  end
-
-  # This class is not used for now.
-  class NotUseFasterCircle
-    # circle
-    def self.circleUnit(style=LINE_LOOP, div=nil)
-      div = 32 if div == nil
-      e = 2 * Math::PI / div
-      beginObj(style)
-      div.times {|i|
-	rad = i * e
-	x = Math.cos(rad)
-	y = Math.sin(rad)
-	vertex(x, y)
-      }
-      endObj()
-    end
-
-    def self.make_list
-      OpenGL.glNewList(1, OpenGL::GL_COMPILE)
-      self.circleUnit(LINE_LOOP, 32)
-      OpenGL.glEndList()
-      OpenGL.glNewList(2, OpenGL::GL_COMPILE)
-      self.circleUnit(POLYGON, 32)
-      OpenGL.glEndList()
-      OpenGL.glNewList(3, OpenGL::GL_COMPILE)
-      self.circleUnit(LINE_LOOP, 6)
-      OpenGL.glEndList()
-      OpenGL.glNewList(4, OpenGL::GL_COMPILE)
-      self.circleUnit(POLYGON, 6)
-      OpenGL.glEndList()
-    end
-
-    def self.circleUnitList(style=LINE_LOOP, div=nil)
-      if div == 32
-	if style == LINE_LOOP
-	  OpenGL.glCallList(1)
-	elsif style == POLYGON
-	  OpenGL.glCallList(2)
-	end
-      elsif div == 6
-	if style == LINE_LOOP
-	  OpenGL.glCallList(3)
-	elsif style == POLYGON
-	  OpenGL.glCallList(4)
-	end
-      end
-    end
-
-    def self.circle(x, y, r, style=LINE_LOOP, div=nil)
-      push()
-      translate(x, y)
-      scale(r)
-      #circleUnit(style, div)
-      self.circleUnitList(style, div)
-      pop()
     end
   end
 end
