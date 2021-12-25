@@ -3,31 +3,32 @@
 
 module SGL
   # callback functions
-  def setup()		end
-  def onMouseDown(x,y)	end
-  def onMouseUp(x,y)	end
-  def onKeyDown(k)	end
-  def onKeyUp(k)	end
-  def display()		end
+#  def setup()		end
+#  def onMouseDown(x,y)	end
+#  def onMouseUp(x,y)	end
+#  def onKeyDown(k)	end
+#  def onKeyUp(k)	end
+#  def display()		end
 
   # callback functions for fullscreen
-  def onMouseDown0(x,y)	end
-  def display0()	end
+#  def onMouseDown0(x,y)	end
+#  def display0()	end
 
   # mainloop
   def mainloop
-    #p "setup start at mainloop."
-    $__a__.set_setup { setup }
-    #p "setup done at mainloop."
-    $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
-    $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
-    $__a__.set_keydown   {|k| onKeyDown(k) }
-    $__a__.set_keyup     {|k| onKeyUp(k) }
-    if ! $__a__.check_display0
-      $__a__.set_display0 { display0 }
-      $__a__.set_mousedown0 {|x, y| onMouseDown0(x, y) }
-    end
-    $__a__.set_display { display }
+    #p private_methods(false) - $basic_private_methods	[:setup, :display]
+    p "setup start at mainloop."
+#    $__a__.set_setup { setup }
+#    p "setup done at mainloop."
+#    $__a__.set_mousedown {|x, y| onMouseDown(x, y) }
+#    $__a__.set_mouseup   {|x, y| onMouseUp(x, y) }
+#    $__a__.set_keydown   {|k| onKeyDown(k) }
+#    $__a__.set_keyup     {|k| onKeyUp(k) }
+#    if ! $__a__.check_display0
+#      $__a__.set_display0 { display0 }
+#      $__a__.set_mousedown0 {|x, y| onMouseDown0(x, y) }
+#    end
+#    $__a__.set_display { display }
 
     if ! defined?($__sgl_in_mainloop__)
       $__sgl_in_mainloop__ = true
@@ -97,11 +98,10 @@ module SGL
 
     def do_setup
       setup_pre
-      @block[:setup].call if @block[:setup]
+      #@block[:setup].call if @block[:setup]
       #$app.setup if $app && $app.respond_to?(:setup)
-      pp Kernel.methods
-      if Kernel.respond_to?(:setup)
-        Kernel.setup
+      if Object.respond_to?(:setup)
+        Object.send(:setup)
       end
       setup_post
     end
@@ -140,9 +140,12 @@ module SGL
       display_pre
       #p "display_pre done"
       @block[:display].call if @block[:display]
-      if $app && $app.respond_to?(:display)
-        #p "$app.display"
-        $app.display
+#      if $app && $app.respond_to?(:display)
+#        #p "$app.display"
+#        $app.display
+#      end
+      if Object.respond_to?(:display)
+        Object.send(:display)
       end
       display
       display_post
@@ -153,7 +156,10 @@ module SGL
       set_fullscreen_camera_position
       cur_color = @cur_color
       @block[:display0].call if @block[:display0]
-      $app.display_post if $app && $app.respond_to?(:display_post)
+      #$app.display_post if $app && $app.respond_to?(:display_post)
+      if Object.respond_to?(:display0)
+        Object.send(:display0)
+      end
       color(*cur_color)
       #SDL2.GLSwapBuffers
       #GC.start
@@ -170,8 +176,11 @@ module SGL
       @mouseDown = 1
       #@block[:mousedown].call(@mouseX, @mouseY) if @block[:mousedown]
       #mouseDown(@mouseX, @mouseY) if defined?(:mousedown)
-      mouseDown if defined?(:mousedown)
-      $app.onMouseDown(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseDown)
+      #mouseDown if defined?(:mousedown)
+      #$app.onMouseDown(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseDown)
+      if Object.respond_to?(:onMouseDown)
+        Object.send(:onMouseDown, @mouseX, @mouseY)
+      end
       #@block[:mousedown0].call(@mouseX0, @mouseY0) if @block[:mousedown0]
       #mouseDown0(@mouseX, @mouseY)
     end
@@ -184,7 +193,10 @@ module SGL
     def do_mouseup
       @mouseDown = 0
       @block[:mouseup].call(@mouseX, @mouseY) if @block[:mouseup]
-      $app.onMouseUp(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseUp)
+      #$app.onMouseUp(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseUp)
+      if Object.respond_to?(:onMouseUp)
+        Object.send(:onMouseUp, @mouseX, @mouseY)
+      end
     end
 
     # mouse events for fullscreen
@@ -211,7 +223,10 @@ module SGL
     def do_keydown(key)
       keydown_pre(key)
       @block[:keydown].call(key) if @block[:keydown]
-      $app.onKeyDown(key) if $app && $app.respond_to?(:onKeyDown)
+      #$app.onKeyDown(key) if $app && $app.respond_to?(:onKeyDown)
+      if Object.respond_to?(:onKeyDown)
+        Object.send(:onKeyDown, key)
+      end
     end
 
     def set_keyup(&b)
@@ -221,7 +236,10 @@ module SGL
 
     def do_keyup(key)
       @block[:keyup].call(key) if @block[:keyup]
-      $app.onKeyUp(key) if $app && $app.respond_to?(:onKeyUp)
+      #$app.onKeyUp(key) if $app && $app.respond_to?(:onKeyUp)
+      if Object.respond_to?(:onKeyUp)
+        Object.send(:onKeyUp, key)
+      end
     end
 
     def calc_keynum(e)
@@ -235,10 +253,14 @@ module SGL
     end
 
     def mainloop
+      p $basic_private_methods
+      p Object.private_methods(false)
+      p Object.private_methods(false) - $basic_private_methods
+
       mainloop_setup
       @starttime = Time.now
       loop {
-        #p "loop of mainloop."
+        p "loop of mainloop."
 	@begintime = Time.now
 	do_display
 	delay

@@ -7,6 +7,7 @@ require "sgl"
 
 #class App
 def setup
+  qp "setup"
   window 100, 100
 end
 

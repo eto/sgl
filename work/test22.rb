@@ -39,6 +39,11 @@ class SomeClass
     #Object.explicit_private_method
     #Object.implicit_private_method	# これを呼び出したい。
     Object.explicit_public_method
+    Object.send(:explicit_private_method)
+    Object.send(:implicit_private_method)
+    if Object.respond_to?(:implicit_private_method)
+      Object.send(:implicit_private_method)
+    end
   end
 end
 it = SomeClass.new

@@ -1,6 +1,9 @@
 # Copyright (C) 2004-2007 Kouichirou Eto, All rights reserved.
 # License: Ruby License
 
+$basic_private_methods = Object.private_methods(false)
+$basic_public_methods = Object.public_methods(false)
+
 require 'opengl'
 require "opengl"
 include OpenGL
@@ -15,6 +18,8 @@ else
   raise RuntimeError, "Unsupported platform."
 end
 
+#p private_methods(false) - $basic_private_methods
+
 #require "gl"
 require "glu"
 GLU.load_lib()
@@ -24,6 +29,8 @@ GLU.load_lib()
 include GLU
 #include Glut
 
+#p private_methods(false) - $basic_private_methods
+
 require "sdl2"
 
 require "sgl/sgl-color"
@@ -32,6 +39,8 @@ require "sgl/opengl-color"
 require "sgl/opengl-event"
 require "sgl/opengl-draw"
 #require "sgl/sgl-sound"
+
+#p private_methods(false) - $basic_private_methods
 
 module SGL
   class Application
