@@ -19,8 +19,6 @@ else
   raise RuntimeError, "Unsupported platform."
 end
 
-#p private_methods(false) - $basic_private_methods
-
 #require "gl"
 require "glu"
 GLU.load_lib()
@@ -30,18 +28,9 @@ GLU.load_lib()
 #include GLU
 #include Glut
 
-#p private_methods(false) - $basic_private_methods
-
 require "sdl2"
-
 require "sgl/sgl-color"
-#require "sgl/opengl-window"
-#require "sgl/opengl-color"
-#require "sgl/opengl-event"
-#require "sgl/opengl-draw"
 #require "sgl/sgl-sound"
-
-#p private_methods(false) - $basic_private_methods
 
 def sh(cmd); p cmd; system cmd; end
 def die(msg); puts msg; exit; end
@@ -76,17 +65,19 @@ module SGL
   def backgroundHSV(*a)	$__a__.backgroundHSV(*a)	end
   def color(*a)		$__a__.color(*a)	end
   def colorHSV(*a)	$__a__.colorHSV(*a)	end
-  #def setup()		end	# callback functions from opengl-event.rb
-  #def onMouseDown(x,y)	end
-  #def onMouseUp(x,y)	end
-  #def onKeyDown(k)	end
-  #def onKeyUp(k)	end
-  #def display()		end
-  #def onMouseDown0(x,y)	end	# callback functions for fullscreen
-  #def display0()	end
+
+  def setup()		end	# callback functions from opengl-event.rb
+  def onMouseDown(x,y)	end
+  def onMouseUp(x,y)	end
+  def onKeyDown(k)	end
+  def onKeyUp(k)	end
+  def display()		end
+  def onMouseDown0(x,y)	end	# callback functions for fullscreen
+  def display0()	end
   #def flip(*a)	$__a__.flip(*a)	end	# novice mode
   #def wait(*a)	$__a__.wait(*a)	end
   #def process(&b)	$__a__.process(&b)	end
+
   def mouseX()	$__a__.mouseX;	end	# get status functions
   def mouseY()	$__a__.mouseY;	end
   def mouseDown()	$__a__.mouseDown;	end
@@ -120,23 +111,19 @@ module SGL
   def mainloop
     if ! defined?($__sgl_in_mainloop__)
       $__sgl_in_mainloop__ = true
-      qp private_methods(false) - $test_basic_private_methods
-      #qp respond_to?(:setup)
       setup
-      @starttime = Time.now
+      $__a__.set_starttime
       loop {
-        p "loop of mainloop."
-	@begintime = Time.now
+        $__a__.set_begintime
         @display_drawing = true
         $__a__.display_pre
-        send(:display) if respond_to?(:display)
         display
         $__a__.display_post
 	$__a__.delay
-	return if $__a__.check_runtime_finished(@starttime)
+	return if $__a__.check_runtime_finished
       }
     else
-      send(:setup) if respond_to?(:setup)
+      setup
     end
   end
 
@@ -158,8 +145,8 @@ module SGL
 	:depth=>false,
 	:culling=>false,
 	:smooth=>false,
-	:delaytime=>1.0/60,
-	:framerate=>nil,
+	:delaytime=>nil,
+	:framerate=>60,
 	:runtime=>nil,
       }
     end
@@ -175,7 +162,6 @@ module SGL
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
       initialize_sdl
-      @window_initialized = true
     end
 
     private def initialize_sdl
@@ -272,49 +258,41 @@ module SGL
       color(100)
 
       check_event
+      #@window_initialized = true
     end
 
     attr_reader :width, :height	# get window size
 
     def useFov(f = 45);	@options[:fov] = f;	end	# world control methods
-
     def useDepth(a = true)
       @options[:depth] = a
       @options[:depth] ? OpenGL.glEnable(OpenGL::GL_DEPTH_TEST) : OpenGL.glDisable(OpenGL::GL_DEPTH_TEST)
     end
-
     def useSmooth(a = true)
       @options[:smooth] = a
       #@options[:smooth] ? OpenGL.glEnable(OpenGL::GL_LINE_SMOOTH) : OpenGL.glDisable(OpenGL::GL_LINE_SMOOTH)
     end
-
     def useCulling(a = true)
       @options[:culling] = a
       @options[:culling] ? OpenGL.glEnable(OpenGL::GL_CULL_FACE) : OpenGL.glDisable(OpenGL::GL_CULL_FACE)
     end
-
     def useFullscreen(w=DEFAULT_FULLSCREEN_WIDTH, h=DEFAULT_FULLSCREEN_HEIGHT)
       if @options[:fullscreen].nil?
         @options[:fullscreen] = (w.nil? || h.nil?) ? nil : [w, h]
       end
     end
-
     def useCursor(bmpfile);	@options[:cursor] = bmpfile;	end
     def useDelay(sec);		@options[:delaytime] = sec;	end
     def useFramerate(f);	@options[:framerate] = f;	end
     def useRuntime(r);		@options[:runtime] = r;	end
     def runtime=(r);		useRuntime(r);	end
-
     private def set_window_position
       @cameraX, @cameraY = ((@left + @right)/2), ((@bottom + @top)/2)
       fov = @options[:fov]
       @cameraZ = 1.0 + @height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
-      #OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       loadIdentity
-      #gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
-      #pp GLU.methods
       GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
@@ -333,14 +311,11 @@ module SGL
       loadIdentity
       fov = @options[:fov]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
-      #gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
       GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
     private def set_camera_position
-      if ! @window_initialized
-        die "Window is not initialized."
-      end
+      die "Window is not initialized." if ! $__sgl_sdl_window_initialized__
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       loadIdentity
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
@@ -353,26 +328,25 @@ module SGL
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       loadIdentity
       GLU.gluLookAt(0, 0, @cameraZ,
-		 0, 0, 0,
-		 0, 1, 0)
+		    0, 0, 0,
+		    0, 1, 0)
     end
 
     private def loadIdentity;	OpenGL.glLoadIdentity;	end
 
-    #====================================================================== from opengl-color.rb
+    # ====================================================================== from opengl-color.rb
     private def initialize_color
       @bg_color = @cur_color = nil
       @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
       @hsv = ColorTranslatorHSV.new(100, 100, 100, 100)
     end
-
     #attr_reader :cur_color # for test
 
     def background(x, y = nil, z = nil, a = nil)
       norm = @rgb.norm(x, y, z, a)
       p [x, y, z, a, norm]
-      #glClearColor(*norm)
-      OpenGL.glClearColor(0.0, 0.1, 0.2, 1.0)
+      OpenGL.glClearColor(*norm)
+      #OpenGL.glClearColor(0.0, 0.1, 0.2, 1.0)
       clear
     end
 
@@ -399,15 +373,11 @@ module SGL
       @setup_done = nil
       @display_drawing = nil
       @block = {}
-
-      # status setting
-      @mouseX, @mouseY = 0, 0
+      @starttime = nil
+      @mouseX, @mouseY = 0, 0	# status setting
       @mouseX0, @mouseY0 = 0, 0
       @mouseDown = 0
       @keynum = 0
-
-      @starttime = nil
-      @window_initialized = false
     end
 
     # get status
@@ -415,45 +385,6 @@ module SGL
     attr_reader :mouseX0, :mouseY0
     attr_reader :mouseDown
     attr_reader :keynum
-
-    # setup
-#    def set_setup(&b)
-#      return unless block_given?
-#      @block[:setup] = Proc.new { b }
-#    end
-
-#    def setup_pre
-#      # do nothing
-#    end
-
-#    def do_setup
-#      #setup_pre
-#      #@block[:setup].call if @block[:setup]
-#      #$app.setup if $app && $app.respond_to?(:setup)
-#      #qp respond_to?(:setup)
-#      send(:setup) if respond_to?(:setup)
-#      #setup_post
-#    end
-
-#    def setup_post
-#      @setup_done = true
-#    end
-#    private :setup_pre, :setup_post
-
-    # display
-#    def set_display(&b)
-#      return unless block_given?
-#      @block[:display] = Proc.new { b }
-#    end
-
-#    def set_display0(&b)
-#      return unless block_given?
-#      @block[:display0] = Proc.new { b }
-#    end
-
-#    def check_display0
-#      return ! @block[:display0].nil?
-#    end
 
     def display_pre
       set_camera_position
@@ -464,8 +395,6 @@ module SGL
     def display_post
       set_fullscreen_camera_position
       cur_color = @cur_color
-      #@block[:display0].call if @block[:display0]
-      #$app.display_post if $app && $app.respond_to?(:display_post)
       #send(:display0) if respond_to?(:display0)
       color(*cur_color)
       #SDL2.GLSwapBuffers
@@ -473,78 +402,33 @@ module SGL
     end
 
     # mouse events
-#    def set_mousedown(&b)
-#      return unless block_given?
-#      @block[:mousedown] = Proc.new { b }
-#    end
-
     def do_mousedown
       @mouseDown = 1
-      #@block[:mousedown].call(@mouseX, @mouseY) if @block[:mousedown]
-      #mouseDown(@mouseX, @mouseY) if defined?(:mousedown)
-      #mouseDown if defined?(:mousedown)
-      #$app.onMouseDown(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseDown)
-      if respond_to?(:onMouseDown)
-        send(:onMouseDown, @mouseX, @mouseY)
-      end
-      #@block[:mousedown0].call(@mouseX0, @mouseY0) if @block[:mousedown0]
+      #if respond_to?(:onMouseDown)
+      onMouseDown(@mouseX, @mouseY)
       #mouseDown0(@mouseX, @mouseY)
     end
 
-#    def set_mouseup(&b)
-#      return unless block_given?
-#      @block[:mouseup] = Proc.new { b }
-#    end
-
     def do_mouseup
       @mouseDown = 0
-      @block[:mouseup].call(@mouseX, @mouseY) if @block[:mouseup]
-      #$app.onMouseUp(@mouseX, @mouseY) if $app && $app.respond_to?(:onMouseUp)
-      if respond_to?(:onMouseUp)
-        send(:onMouseUp, @mouseX, @mouseY)
-      end
+      #if respond_to?(:onMouseUp)
+      onMouseUp(@mouseX, @mouseY)
     end
 
-    # mouse events for fullscreen
-#    def set_mousedown0(&b)
-#      return unless block_given?
-#      @block[:mousedown0] = Proc.new { b }
-#    end
-
-#    def check_mousedown0
-#      return ! @block[:mousedown0].nil?
-#    end
-
     # key events
-#    def set_keydown(&b)
-#      return unless block_given?
-#      @block[:keydown] = Proc.new { b }
-#    end
-
     private def keydown_pre(key)
       exit if key == SDL2::Key::ESCAPE
     end
 
     def do_keydown(key)
       keydown_pre(key)
-      @block[:keydown].call(key) if @block[:keydown]
-      #$app.onKeyDown(key) if $app && $app.respond_to?(:onKeyDown)
-      if respond_to?(:onKeyDown)
-        send(:onKeyDown, key)
-      end
+      #if respond_to?(:onKeyDown)
+      onKeyDown(key)
     end
 
-#    def set_keyup(&b)
-#      return unless block_given?
-#      @block[:keyup] = Proc.new { b }
-#    end
-
     def do_keyup(key)
-      @block[:keyup].call(key) if @block[:keyup]
-      #$app.onKeyUp(key) if $app && $app.respond_to?(:onKeyUp)
-      if respond_to?(:onKeyUp)
-        send(:onKeyUp, key)
-      end
+      #if respond_to?(:onKeyUp)
+      onKeyUp(key)
     end
 
     private def calc_keynum(e)
@@ -552,6 +436,8 @@ module SGL
       @keynum = input.to_s[0]
     end
 
+    def set_starttime;	@starttime = Time.now;	end
+    def set_begintime;	@begintime = Time.now;	end
     def delay
       if @options[:framerate]
 	sec_per_frame = 1.0 / @options[:framerate]
@@ -563,7 +449,8 @@ module SGL
       end
     end
 
-    def check_runtime_finished(starttime)
+    def check_runtime_finished
+      starttime = @starttime
       runtime = @options[:runtime]
       return false if runtime.nil?
       diff = Time.now - starttime
@@ -666,8 +553,7 @@ module SGL
     end
 
     #====================================================================== from opengl-draw.rb
-    # draw primitive
-    def beginObj(mode = POLYGON);	OpenGL.glBegin(mode);	end
+    def beginObj(mode = POLYGON);	OpenGL.glBegin(mode);	end	# draw primitive
     def endObj;	OpenGL.glEnd;	end
     def push;	OpenGL.glPushMatrix;	end
     def pop;	OpenGL.glPopMatrix;	end
