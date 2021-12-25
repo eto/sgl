@@ -18,5 +18,7 @@ end
 def display
   #line 0, 0, 100, 100
   line 0, 0, 500, 500
+  color 100, 0, 0
+  rect 100, 200, 300, 400
 end
 qp private_methods(false) - $test_basic_private_methods

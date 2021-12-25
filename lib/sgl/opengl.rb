@@ -79,9 +79,6 @@ module SGL
   def display()		end
   def onMouseDown0(x,y)	end	# callback functions for fullscreen
   def display0()	end
-  #def flip(*a)	$__a__.flip(*a)	end	# novice mode
-  #def wait(*a)	$__a__.wait(*a)	end
-  #def process(&b)	$__a__.process(&b)	end
 
   def mouseX()	$__a__.mouseX;	end	# get status functions
   def mouseY()	$__a__.mouseY;	end
@@ -165,6 +162,7 @@ module SGL
       @width, @height = @default_window_width, @default_window_height
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
+      @window_initialized = false
       initialize_sdl
     end
 
@@ -191,8 +189,9 @@ module SGL
     end
     private def windows?;	r = RUBY_PLATFORM; (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil; end
 
-    # create window
-    def window(*a)
+    def window(*a)	# create window
+      return if @window_initialized
+
       @options.update(a.pop) if a.last.is_a? Hash
 
       if a.length == 4
@@ -206,9 +205,6 @@ module SGL
 
       @width, @height = (@right - @left), (@top - @bottom)
 
-      # Do not initialize twice.
-      if ! defined?($__sgl_sdl_window_initialized__)
-        # sdl_window_init
 =begin
         mode =  SDL2::OPENGL
         if @options[:fullscreen]
@@ -221,18 +217,13 @@ module SGL
         GC.start
         SDL2::WM.setCaption("sgl", "sgl")
 =end
-        @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)	# なぜ縦だけ＋1なのか？
-        #p @sdl_window
-        sdl_context = SDL2::GL::Context.create(@sdl_window)
-        puts get_opengl_version
-        $__sgl_sdl_window_initialized__ = true
-      end
+      @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)	# なぜ縦だけ＋1なのか？
+      sdl_context = SDL2::GL::Context.create(@sdl_window)
 
-      # setCurosr
-      if @options[:cursor]
-	# You can use only black and white for cursor image.
+      @window_initialized = true
+
+      if @options[:cursor]	# setCurosr. You can use only black and white for cursor image.
 	file = @options[:cursor]
-	#bmp = SDL2::Surface.loadBMP(file) # Create surface from bitmap.
 	bmp = SDL2::Surface.load_bmp(file) # Create surface from bitmap.
 #	SDL2::Mouse.setCursor(bmp,		# bitmap
 #			     [255, 255, 255],	# white
@@ -242,7 +233,7 @@ module SGL
 #			     8, 8)		# hot_x, hot_y
       end
 
-      # gl_init
+=begin
       if @options[:fullscreen]
 	set_fullscreen_position
       else
@@ -259,8 +250,9 @@ module SGL
       background(0)
       color(100)
 
+      #display_pre
       check_event
-      #@window_initialized = true
+=end
     end
 
     def get_opengl_version
@@ -300,7 +292,7 @@ module SGL
       @cameraZ = 1.0 + @height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
       OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      loadIdentity
+      OpenGL.glLoadIdentity
       GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
@@ -316,16 +308,16 @@ module SGL
       top    = cy + fhh
       OpenGL.glViewport(0, 0, w, h)
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      loadIdentity
+      OpenGL.glLoadIdentity
       fov = @options[:fov]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
       GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
 
     private def set_camera_position
-      die "Window is not initialized." if ! $__sgl_sdl_window_initialized__
+      die "Window is not initialized." if ! @window_initialized
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      loadIdentity
+      OpenGL.glLoadIdentity
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
 		    @cameraX, @cameraY, 0,
@@ -334,13 +326,13 @@ module SGL
 
     private def set_fullscreen_camera_position
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      loadIdentity
+      OpenGL.glLoadIdentity
       GLU.gluLookAt(0, 0, @cameraZ,
 		    0, 0, 0,
 		    0, 1, 0)
     end
 
-    private def loadIdentity;	OpenGL.glLoadIdentity;	end
+    #private def loadIdentity;	OpenGL.glLoadIdentity;	end
 
     # ====================================================================== from opengl-color.rb
     private def initialize_color
@@ -348,13 +340,11 @@ module SGL
       @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
       @hsv = ColorTranslatorHSV.new(100, 100, 100, 100)
     end
-    #attr_reader :cur_color # for test
 
     def background(x, y = nil, z = nil, a = nil)
       norm = @rgb.norm(x, y, z, a)
       p [x, y, z, a, norm]
       OpenGL.glClearColor(*norm)
-      #OpenGL.glClearColor(0.0, 0.1, 0.2, 1.0)
       clear
     end
     def backgroundHSV(x, y = nil, z = nil, a = nil);	OpenGL.glClearColor(*@hsv.norm(x, y, z, a));	clear;	end
@@ -395,6 +385,7 @@ module SGL
       cur_color = @cur_color
       #send(:display0) if respond_to?(:display0)
       color(*cur_color)
+      @sdl_window.gl_swap
       #SDL2.GLSwapBuffers
       #GC.start
     end
@@ -455,41 +446,7 @@ module SGL
       return (runtime && runtime < diff)
     end
 
-    # novice mode
-#    def flip
-#      @starttime = Time.now if @starttime.nil?
-#      display_post
-#      delay
-#      display_pre
-#     #exit if check_runtime_finished(@starttime)
-#    end
-
-#    def wait
-#      #SGL.flip if !$__v__.flipped
-#      loop {
-#	check_event
-#	delay
-#	return if check_runtime_finished(@starttime)
-#      }
-#    end
-
-#    def process(&b)
-#      block = Proc.new { b }
-#      @starttime = Time.now
-#      loop {
-#	check_event
-#	block.call
-#	#yield
-#	delay
-#	return if check_runtime_finished(@starttime)
-#      }
-#    end
-
-    # check event
-    #LEFT_MOUSE_BUTTON   = 1
-    #MIDDLE_MOUSE_BUTTON = 2
-    #RIGHT_MOUSE_BUTTON  = 3
-    private def check_event
+    private def check_event	# check event
       #x, y, l, m, r = SDL2::Mouse.state
       s = SDL2::Mouse.state
       #p s
@@ -574,7 +531,7 @@ module SGL
     def lineWidth(w);	OpenGL.glLineWidth(w);	end
     def line(a, b, c, d, e = nil, f = nil)
       #p [a, b, c, d, e, f]
-      color 100
+      #color 100
       OpenGL.glBegin(OpenGL::GL_LINES)
       if e && f
 	OpenGL.glVertex3f(a, b, c) # 3D
@@ -584,31 +541,58 @@ module SGL
 	OpenGL.glVertex2f(c, d)
       end
       OpenGL.glEnd
+      test_display
+    end
+
+    def test_display
       init_viewport
+      OpenGL.glClearColor(0.0, 0.0, 0.0, 1.0);
+      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT);
+      #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
+      now = (Time.now.to_f * 1000.0).to_i
+      #p now
+      OpenGL.glRotated(now * 5.0, 1.0, 1.0, 1.0)
+      #draw_cube
       draw_triangle
+      draw_triangle2
+      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      #glRotated(5.0, 1.0, 1.0, 1.0)
     end
 
     def init_viewport
       #glViewport( 0, 0, 640, 400 )
-      glViewport(0, 0, @width, @height)
-      glMatrixMode(GL_PROJECTION)
-      glLoadIdentity( )
-      glMatrixMode(GL_MODELVIEW)
-      glLoadIdentity( )
-      glEnable(GL_DEPTH_TEST)
-      glDepthFunc(GL_LESS)
-      glShadeModel(GL_SMOOTH)
+      OpenGL.glViewport(0, 0, @width, @height)
+      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
+      OpenGL.glLoadIdentity
+      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      OpenGL.glLoadIdentity
+      OpenGL.glEnable(OpenGL::GL_DEPTH_TEST)
+      OpenGL.glDepthFunc(OpenGL::GL_LESS)
+      OpenGL.glShadeModel(OpenGL::GL_SMOOTH)
     end
 
     def draw_triangle
-      glBegin(OpenGL::GL_TRIANGLES)
-      glColor3f(1.0, 0.0, 0.0)
-      glVertex3f(-0.6, -0.4, 0.0)
-      glColor3f(0.0, 1.0, 0.0)
-      glVertex3f(0.6, -0.4, 0.0)
-      glColor3f(0.0, 0.0, 1.0)
-      glVertex3f(0.0, 0.6, 0.0)
-      glEnd()
+      OpenGL.glBegin(OpenGL::GL_TRIANGLES)
+      OpenGL.glColor3f(1.0, 0.0, 0.0)
+      OpenGL.glVertex3f(-0.6, -0.4, 0.0)
+      OpenGL.glColor3f(0.0, 1.0, 0.0)
+      OpenGL.glVertex3f(0.6, -0.4, 0.0)
+      OpenGL.glColor3f(0.0, 0.0, 1.0)
+      OpenGL.glVertex3f(0.0, 0.6, 0.0)
+      OpenGL.glEnd()
+    end
+
+    def draw_triangle2
+      s = 2.0
+      #qp s
+      OpenGL.glBegin(OpenGL::GL_TRIANGLES)
+      OpenGL.glColor3f(1.0, 0.0, 0.0)
+      OpenGL.glVertex3f(-0.6 * s, -0.4 * s, 0.0 * s)
+      OpenGL.glColor3f(0.0, 1.0, 0.0)
+      OpenGL.glVertex3f(0.6 * s, -0.4 * s, 0.0 * s)
+      OpenGL.glColor3f(0.0, 0.0, 1.0)
+      OpenGL.glVertex3f(0.0 * s, 0.6 * s, 0.0 * s)
+      OpenGL.glEnd()
     end
 
     def rect(a, b, c, d);	OpenGL.glRectf(a, b, c, d);	end
