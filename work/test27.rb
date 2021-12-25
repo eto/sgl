@@ -5,12 +5,12 @@ $test_basic_private_methods = private_methods(false)
 #p $test_basic_private_methods
 #$basic_public_methods = public_methods(false)
 require "cutep"
+require "autoreload"
 #qp private_methods(false)
 qp private_methods(false) - $test_basic_private_methods; $test_basic_private_methods = private_methods(false)
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__)+"/../lib")
 require "sgl"
-require "autoreload"
 qp private_methods(false) - $test_basic_private_methods; $test_basic_private_methods = private_methods(false)
 
 def setup
@@ -30,4 +30,4 @@ qp private_methods(false) - $test_basic_private_methods
 #qp Object.private_methods(false) - $test_basic_private_methods	# [:autoreload, :qp, :display, :setup, :tp]
 #p public_methods(false) - basic_public_methods		# []
 
-mainloop
+#mainloop
