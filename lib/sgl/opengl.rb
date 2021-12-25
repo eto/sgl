@@ -9,7 +9,7 @@ $basic_private_methods = private_methods(false)
 $basic_public_methods = public_methods(false)
 
 require "opengl"
-#include OpenGL
+include OpenGL
 case OpenGL.get_platform
 when :OPENGL_PLATFORM_WINDOWS
   OpenGL.load_lib('opengl32.dll', 'C:/Windows/System32')
@@ -114,6 +114,14 @@ module SGL
       #qp private_methods(false) - $basic_private_methods
 
       #$__a__.mainloop_setup
+      #do_setup
+      qp private_methods(false) - $test_basic_private_methods
+      qp respond_to?(:setup)
+      setup
+#      if respond_to?(:setup)
+#        qp private_methods(false) - $test_basic_private_methods
+#        send(:setup)
+#      end
       @starttime = Time.now
       loop {
         p "loop of mainloop."
@@ -144,7 +152,8 @@ module SGL
       # do setup only.
       #$__a__.mainloop_setup
       #def mainloop_setup
-      do_setup
+      #do_setup
+      send(:setup) if respond_to?(:setup)
       #end
 
       # for debug
@@ -405,6 +414,7 @@ module SGL
       fov = @options[:fov]
       @cameraZ = 1.0 +
 	@height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
+      #OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glViewport(0, 0, @width, @height)
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       loadIdentity
@@ -460,9 +470,7 @@ module SGL
     end
     private :set_camera_position, :set_fullscreen_camera_position
 
-    def loadIdentity
-      OpenGL.glLoadIdentity
-    end
+    def loadIdentity;	OpenGL.glLoadIdentity;	end
     private :loadIdentity
 
     #====================================================================== from opengl-color.rb
@@ -526,25 +534,23 @@ module SGL
     attr_reader :keynum
 
     # setup
-    def set_setup(&b)
-      return unless block_given?
-      @block[:setup] = Proc.new { b }
-    end
+#    def set_setup(&b)
+#      return unless block_given?
+#      @block[:setup] = Proc.new { b }
+#    end
 
-    def setup_pre
-      # do nothing
-    end
+#    def setup_pre
+#      # do nothing
+#    end
 
-    def do_setup
-      setup_pre
-      #@block[:setup].call if @block[:setup]
-      #$app.setup if $app && $app.respond_to?(:setup)
-      qp respond_to?(:setup)
-      if respond_to?(:setup)
-        send(:setup)
-      end
-      setup_post
-    end
+#    def do_setup
+#      #setup_pre
+#      #@block[:setup].call if @block[:setup]
+#      #$app.setup if $app && $app.respond_to?(:setup)
+#      #qp respond_to?(:setup)
+#      send(:setup) if respond_to?(:setup)
+#      #setup_post
+#    end
 
 #    def setup_post
 #      @setup_done = true
@@ -784,53 +790,22 @@ module SGL
 
     #====================================================================== from opengl-draw.rb
     # draw primitive
-    def beginObj(mode = POLYGON)
-      OpenGL.glBegin(mode)
-    end
-
-    def endObj
-      OpenGL.glEnd
-    end
-
-    def push
-      OpenGL.glPushMatrix
-    end
-
-    def pop
-      OpenGL.glPopMatrix
-    end
+    def beginObj(mode = POLYGON);	OpenGL.glBegin(mode);	end
+    def endObj;	OpenGL.glEnd;	end
+    def push;	OpenGL.glPushMatrix;	end
+    def pop;	OpenGL.glPopMatrix;	end
 
     def vertex(a, b = nil, c = nil, d = nil)
       OpenGL.glVertex4f(a, b, c, d) if d
       OpenGL.glVertex3f(a, b, c) if c
       OpenGL.glVertex2f(a, b)
     end
-
-    def normal(a, b = nil, c = nil)
-      OpenGL.glNormal(a, b, c)
-    end
-
-    # matrix manipulation
-    def translate(a, b, c = 0)
-      #OpenGL.glTranslate(a, b, c)
-      OpenGL.glTranslatef(a, b, c)
-    end
-
-    def rotateX(a)
-      OpenGL.glRotatef(a, 1, 0, 0)
-    end
-
-    def rotateY(a)
-      OpenGL.glRotatef(a, 0, 1, 0)
-    end
-
-    def rotateZ(a)
-      OpenGL.glRotatef(a, 0, 0, 1)
-    end
-
-    def scale(a)
-      OpenGL.glScalef(a, a, a)
-    end
+    def normal(a, b = nil, c = nil);	OpenGL.glNormal(a, b, c);	end
+    def translate(a, b, c = 0);	OpenGL.glTranslatef(a, b, c);	end	# matrix manipulation
+    def rotateX(a);	OpenGL.glRotatef(a, 1, 0, 0);	end
+    def rotateY(a);	OpenGL.glRotatef(a, 0, 1, 0);	end
+    def rotateZ(a);	OpenGL.glRotatef(a, 0, 0, 1);	end
+    def scale(a);	OpenGL.glScalef(a, a, a);	end
 
     # simple draw
     def point(a, b, c = nil)
@@ -843,9 +818,7 @@ module SGL
       OpenGL.glEnd
     end
 
-    def lineWidth(w)
-      OpenGL.glLineWidth(w)
-    end
+    def lineWidth(w);	OpenGL.glLineWidth(w);	end
 
     def line(a, b, c, d, e = nil, f = nil)
       #p [a, b, c, d, e, f]
@@ -860,10 +833,7 @@ module SGL
       OpenGL.glEnd
     end
 
-    def rect(a, b, c, d)
-      #glRect(a, b, c, d)
-      OpenGL.glRectf(a, b, c, d)
-    end
+    def rect(a, b, c, d);	OpenGL.glRectf(a, b, c, d);	end
 
     def triangle(a, b, c, d, e, f)
       OpenGL.glBegin(OpenGL::GL_TRIANGLES)
@@ -941,7 +911,7 @@ module SGL
   end
 
   # This class is not used for now.
-  class FasterCircle
+  class NotUseFasterCircle
     # circle
     def self.circleUnit(style=LINE_LOOP, div=nil)
       div = 32 if div == nil
