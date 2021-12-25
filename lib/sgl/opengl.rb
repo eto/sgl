@@ -9,7 +9,7 @@ $basic_private_methods = private_methods(false)
 $basic_public_methods = public_methods(false)
 
 require "opengl"
-include OpenGL
+#include OpenGL
 case OpenGL.get_platform
 when :OPENGL_PLATFORM_WINDOWS
   OpenGL.load_lib('opengl32.dll', 'C:/Windows/System32')
@@ -29,7 +29,7 @@ GLU.load_lib()
 #require "glut"
 #require "mathn"
 #include Gl
-include GLU
+#include GLU
 #include Glut
 
 #p private_methods(false) - $basic_private_methods
@@ -65,24 +65,24 @@ module SGL
   alias useFullScreen useFullscreen
   def useCursor(*a)	$__a__.useCursor(*a)	end
 
-  #====================================================================== from opengl-color.rb
+  # ====================================================================== from opengl-color.rb
   def background(*a)	$__a__.background(*a)	end
   def backgroundHSV(*a)	$__a__.backgroundHSV(*a)	end
   def color(*a)		$__a__.color(*a)	end
   def colorHSV(*a)	$__a__.colorHSV(*a)	end
 
-  #====================================================================== from opengl-event.rb
+  # ====================================================================== from opengl-event.rb
   # callback functions
-  #  def setup()		end
-  #  def onMouseDown(x,y)	end
-  #  def onMouseUp(x,y)	end
-  #  def onKeyDown(k)	end
-  #  def onKeyUp(k)	end
-  #  def display()		end
+  #def setup()		end
+  #def onMouseDown(x,y)	end
+  #def onMouseUp(x,y)	end
+  #def onKeyDown(k)	end
+  #def onKeyUp(k)	end
+  #def display()		end
 
   # callback functions for fullscreen
-  #  def onMouseDown0(x,y)	end
-  #  def display0()	end
+  #def onMouseDown0(x,y)	end
+  #def display0()	end
 
   # mainloop
   def mainloop
@@ -334,9 +334,9 @@ module SGL
 	set_window_position
       end
       set_camera_position
-      glEnable(GL_BLEND)
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-      glShadeModel(GL_SMOOTH)
+      OpenGL.glEnable(OpenGL::GL_BLEND)
+      OpenGL.glBlendFunc(OpenGL::GL_SRC_ALPHA, OpenGL::GL_ONE_MINUS_SRC_ALPHA)
+      OpenGL.glShadeModel(OpenGL::GL_SMOOTH)
       useDepth(@options[:depth])
       useCulling(@options[:culling])
       useSmooth(@options[:smooth])
@@ -361,17 +361,17 @@ module SGL
 
     def useDepth(a = true)
       @options[:depth] = a
-      @options[:depth] ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST)
+      @options[:depth] ? OpenGL.glEnable(OpenGL::GL_DEPTH_TEST) : OpenGL.glDisable(OpenGL::GL_DEPTH_TEST)
     end
 
     def useSmooth(a = true)
       @options[:smooth] = a
-      #@options[:smooth] ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH)
+      #@options[:smooth] ? OpenGL.glEnable(OpenGL::GL_LINE_SMOOTH) : OpenGL.glDisable(OpenGL::GL_LINE_SMOOTH)
     end
 
     def useCulling(a = true)
       @options[:culling] = a
-      @options[:culling] ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE)
+      @options[:culling] ? OpenGL.glEnable(OpenGL::GL_CULL_FACE) : OpenGL.glDisable(OpenGL::GL_CULL_FACE)
     end
 
     def useFullscreen(w=DEFAULT_FULLSCREEN_WIDTH, h=DEFAULT_FULLSCREEN_HEIGHT)
@@ -405,8 +405,8 @@ module SGL
       fov = @options[:fov]
       @cameraZ = 1.0 +
 	@height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
-      glViewport(0, 0, @width, @height)
-      glMatrixMode(GL_PROJECTION)
+      OpenGL.glViewport(0, 0, @width, @height)
+      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       loadIdentity
       #gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
       #pp GLU.methods
@@ -423,13 +423,13 @@ module SGL
       bottom = cy - fhh
       right  = cx + fhw
       top    = cy + fhh
-      glViewport(0, 0, w, h)
-      glMatrixMode(GL_PROJECTION)
+      OpenGL.glViewport(0, 0, w, h)
+      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       loadIdentity
       fov = @options[:fov]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
       #gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
-      gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
     private :set_window_position, :set_fullscreen_position
 
@@ -442,26 +442,26 @@ module SGL
       if ! @window_initialized
         die "Window is not initialized."
       end
-      glMatrixMode(GL_PROJECTION)
+      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       #exit
       loadIdentity
-      glMatrixMode(GL_MODELVIEW)
-      gluLookAt(@cameraX, @cameraY, @cameraZ,
+      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
 		 @cameraX, @cameraY, 0,
 		 0, 1, 0)
     end
 
     def set_fullscreen_camera_position
-      glMatrixMode(GL_MODELVIEW)
+      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       loadIdentity
-      gluLookAt(0, 0, @cameraZ,
+      GLU.gluLookAt(0, 0, @cameraZ,
 		 0, 0, 0,
 		 0, 1, 0)
     end
     private :set_camera_position, :set_fullscreen_camera_position
 
     def loadIdentity
-      glLoadIdentity
+      OpenGL.glLoadIdentity
     end
     private :loadIdentity
 
@@ -479,27 +479,27 @@ module SGL
       norm = @rgb.norm(x, y, z, a)
       p [x, y, z, a, norm]
       #glClearColor(*norm)
-      glClearColor(0.0, 0.1, 0.2, 1.0)
+      OpenGL.glClearColor(0.0, 0.1, 0.2, 1.0)
       clear
     end
 
     def backgroundHSV(x, y = nil, z = nil, a = nil)
-      glClearColor(*@hsv.norm(x, y, z, a))
+      OpenGL.glClearColor(*@hsv.norm(x, y, z, a))
       clear
     end
 
     def clear
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT)
     end
     private :clear
 
     def color(x, y = nil, z = nil, a = nil)
       @cur_color = [x, y, z, a]
-      glColor4f(*@rgb.norm(x, y, z, a))
+      OpenGL.glColor4f(*@rgb.norm(x, y, z, a))
     end
 
     def colorHSV(x, y = nil, z = nil, a = nil)
-      glColor4f(*@hsv.norm(x, y, z, a))
+      OpenGL.glColor4f(*@hsv.norm(x, y, z, a))
     end
 
     #====================================================================== from opengl-event.rb
@@ -785,114 +785,114 @@ module SGL
     #====================================================================== from opengl-draw.rb
     # draw primitive
     def beginObj(mode = POLYGON)
-      glBegin(mode)
+      OpenGL.glBegin(mode)
     end
 
     def endObj
-      glEnd
+      OpenGL.glEnd
     end
 
     def push
-      glPushMatrix
+      OpenGL.glPushMatrix
     end
 
     def pop
-      glPopMatrix
+      OpenGL.glPopMatrix
     end
 
     def vertex(a, b = nil, c = nil, d = nil)
-      glVertex4f(a, b, c, d) if d
-      glVertex3f(a, b, c) if c
-      glVertex2f(a, b)
+      OpenGL.glVertex4f(a, b, c, d) if d
+      OpenGL.glVertex3f(a, b, c) if c
+      OpenGL.glVertex2f(a, b)
     end
 
     def normal(a, b = nil, c = nil)
-      glNormal(a, b, c)
+      OpenGL.glNormal(a, b, c)
     end
 
     # matrix manipulation
     def translate(a, b, c = 0)
-      #glTranslate(a, b, c)
-      glTranslatef(a, b, c)
+      #OpenGL.glTranslate(a, b, c)
+      OpenGL.glTranslatef(a, b, c)
     end
 
     def rotateX(a)
-      glRotatef(a, 1, 0, 0)
+      OpenGL.glRotatef(a, 1, 0, 0)
     end
 
     def rotateY(a)
-      glRotatef(a, 0, 1, 0)
+      OpenGL.glRotatef(a, 0, 1, 0)
     end
 
     def rotateZ(a)
-      glRotatef(a, 0, 0, 1)
+      OpenGL.glRotatef(a, 0, 0, 1)
     end
 
     def scale(a)
-      glScalef(a, a, a)
+      OpenGL.glScalef(a, a, a)
     end
 
     # simple draw
     def point(a, b, c = nil)
-      glBegin(OpenGL::GL_POINTS)
+      OpenGL.glBegin(OpenGL::GL_POINTS)
       if c
-	glVertex3f(a, b, c)
+	OpenGL.glVertex3f(a, b, c)
       else
-	glVertex2f(a, b)
+	OpenGL.glVertex2f(a, b)
       end
-      glEnd
+      OpenGL.glEnd
     end
 
     def lineWidth(w)
-      glLineWidth(w)
+      OpenGL.glLineWidth(w)
     end
 
     def line(a, b, c, d, e = nil, f = nil)
       #p [a, b, c, d, e, f]
-      glBegin(OpenGL::GL_LINES)
+      OpenGL.glBegin(OpenGL::GL_LINES)
       if e && f
-	glVertex3f(a, b, c) # 3D
-	glVertex3f(d, e, f)
+	OpenGL.glVertex3f(a, b, c) # 3D
+	OpenGL.glVertex3f(d, e, f)
       else
-	glVertex2f(a, b) # 2D
-	glVertex2f(c, d)
+	OpenGL.glVertex2f(a, b) # 2D
+	OpenGL.glVertex2f(c, d)
       end
-      glEnd
+      OpenGL.glEnd
     end
 
     def rect(a, b, c, d)
       #glRect(a, b, c, d)
-      glRectf(a, b, c, d)
+      OpenGL.glRectf(a, b, c, d)
     end
 
     def triangle(a, b, c, d, e, f)
-      glBegin(OpenGL::GL_TRIANGLES)
-      glVertex2f(a, b)
-      glVertex2f(c, d)
-      glVertex2f(e, f)
-      glEnd
+      OpenGL.glBegin(OpenGL::GL_TRIANGLES)
+      OpenGL.glVertex2f(a, b)
+      OpenGL.glVertex2f(c, d)
+      OpenGL.glVertex2f(e, f)
+      OpenGL.glEnd
     end
 
     def circleUnit(style = LINE_LOOP, div = nil)
       div = 32 if div.nil?
       e = 2 * Math::PI / div
-      glBegin(style)
+      OpenGL.glBegin(style)
       div.times {|i|
 	rad = i * e
 	x = Math.cos(rad)
 	y = Math.sin(rad)
-	glVertex2f(x, y)
+	OpenGL.glVertex2f(x, y)
       }
-      glEnd
+      OpenGL.glEnd
     end
     private :circleUnit
 
     def circle(x, y, r, style = LINE_LOOP, div = nil)
-      glPushMatrix
-      glTranslate(x, y, 0)
-      glScalef(r, r, r)
+      OpenGL.glPushMatrix
+      OpenGL.glTranslate(x, y, 0)
+      OpenGL.glScalef(r, r, r)
       circleUnit(style, div)
-      glPopMatrix
+      OpenGL.glPopMatrix
     end
 
     def box(x1, y1, z1, x2, y2, z2)
@@ -906,32 +906,32 @@ module SGL
 	[x2, y2, z2], # 6 front right top
 	[x1, y2, z2]  # 7 front left top
       ]
-      glBegin(OpenGL::GL_QUADS)
-      glVertex(box[1]) # back
-      glVertex(box[0])
-      glVertex(box[3])
-      glVertex(box[2])
-      glVertex(box[0]) # left
-      glVertex(box[4])
-      glVertex(box[7])
-      glVertex(box[3])
-      glVertex(box[4]) # front
-      glVertex(box[5])
-      glVertex(box[6])
-      glVertex(box[7])
-      glVertex(box[5]) # right
-      glVertex(box[1])
-      glVertex(box[2])
-      glVertex(box[6])
-      glVertex(box[7]) # top
-      glVertex(box[6])
-      glVertex(box[2])
-      glVertex(box[3])
-      glVertex(box[0]) # bottom
-      glVertex(box[1])
-      glVertex(box[5])
-      glVertex(box[4])
-      glEnd
+      OpenGL.glBegin(OpenGL::GL_QUADS)
+      OpenGL.glVertex(box[1]) # back
+      OpenGL.glVertex(box[0])
+      OpenGL.glVertex(box[3])
+      OpenGL.glVertex(box[2])
+      OpenGL.glVertex(box[0]) # left
+      OpenGL.glVertex(box[4])
+      OpenGL.glVertex(box[7])
+      OpenGL.glVertex(box[3])
+      OpenGL.glVertex(box[4]) # front
+      OpenGL.glVertex(box[5])
+      OpenGL.glVertex(box[6])
+      OpenGL.glVertex(box[7])
+      OpenGL.glVertex(box[5]) # right
+      OpenGL.glVertex(box[1])
+      OpenGL.glVertex(box[2])
+      OpenGL.glVertex(box[6])
+      OpenGL.glVertex(box[7]) # top
+      OpenGL.glVertex(box[6])
+      OpenGL.glVertex(box[2])
+      OpenGL.glVertex(box[3])
+      OpenGL.glVertex(box[0]) # bottom
+      OpenGL.glVertex(box[1])
+      OpenGL.glVertex(box[5])
+      OpenGL.glVertex(box[4])
+      OpenGL.glEnd
     end
 
     def cube(x, y, z, s)
@@ -957,32 +957,32 @@ module SGL
     end
 
     def self.make_list
-      glNewList(1, OpenGL::GL_COMPILE)
+      OpenGL.glNewList(1, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 32)
-      glEndList()
-      glNewList(2, OpenGL::GL_COMPILE)
+      OpenGL.glEndList()
+      OpenGL.glNewList(2, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 32)
-      glEndList()
-      glNewList(3, OpenGL::GL_COMPILE)
+      OpenGL.glEndList()
+      OpenGL.glNewList(3, OpenGL::GL_COMPILE)
       self.circleUnit(LINE_LOOP, 6)
-      glEndList()
-      glNewList(4, OpenGL::GL_COMPILE)
+      OpenGL.glEndList()
+      OpenGL.glNewList(4, OpenGL::GL_COMPILE)
       self.circleUnit(POLYGON, 6)
-      glEndList()
+      OpenGL.glEndList()
     end
 
     def self.circleUnitList(style=LINE_LOOP, div=nil)
       if div == 32
 	if style == LINE_LOOP
-	  glCallList(1)
+	  OpenGL.glCallList(1)
 	elsif style == POLYGON
-	  glCallList(2)
+	  OpenGL.glCallList(2)
 	end
       elsif div == 6
 	if style == LINE_LOOP
-	  glCallList(3)
+	  OpenGL.glCallList(3)
 	elsif style == POLYGON
-	  glCallList(4)
+	  OpenGL.glCallList(4)
 	end
       end
     end
