@@ -40,6 +40,7 @@ at_exit {
 }
 
 module SGL
+  if ! defined?(LINES)
   LINES		= OpenGL::GL_LINES	# from opengl-draw.rb
   POINTS	= OpenGL::GL_POINTS
   LINE_STRIP	= OpenGL::GL_LINE_STRIP
@@ -50,6 +51,7 @@ module SGL
   QUADS		= OpenGL::GL_QUADS
   QUAD_STRIP	= OpenGL::GL_QUAD_STRIP
   POLYGON	= OpenGL::GL_POLYGON
+  end
   def window(*a)	$__a__.window(*a)	end	# window functions
   #def close_window()	$__a__.close_window;	end
   def width()	$__a__.width;	end
@@ -152,13 +154,12 @@ module SGL
     end
 
     #====================================================================== from opengl-window.rb
-    DEFAULT_WINDOW_WIDTH  = 100
-    DEFAULT_WINDOW_HEIGHT = 100
-    DEFAULT_FULLSCREEN_WIDTH  = 1024
-    DEFAULT_FULLSCREEN_HEIGHT = 768
-
     private def initialize_window
-      @width, @height = DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT
+      @default_window_width  = 100
+      @default_window_height = 100
+      @default_fullscreen_width  = 1024
+      @default_fullscreen_height = 768
+      @width, @height = @default_window_width, @default_window_height
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
       initialize_sdl
@@ -168,7 +169,7 @@ module SGL
       SDL2.init(SDL2::INIT_EVERYTHING)
       # Setting color size is important for Mac OS X.
 =begin
-      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)
+      SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)	# 2004年の自分はなぜ5を選んだのか？
       SDL2::GL.set_attribute(SDL2::GL::GREEN_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::BLUE_SIZE, 5)
       SDL2::GL.set_attribute(SDL2::GL::DEPTH_SIZE, 16)
@@ -217,12 +218,10 @@ module SGL
         GC.start
         SDL2::WM.setCaption("sgl", "sgl")
 =end
-        @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)
+        @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)	# なぜ縦だけ＋1なのか？
         #p @sdl_window
         sdl_context = SDL2::GL::Context.create(@sdl_window)
-#        printf("OpenGL version %d.%d\n",
-#               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION),
-#               SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION))
+        puts get_opengl_version
         $__sgl_sdl_window_initialized__ = true
       end
 
@@ -261,6 +260,12 @@ module SGL
       #@window_initialized = true
     end
 
+    def get_opengl_version
+      major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
+      minor = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION)
+      return "OpenGL version #{major}.#{minor}"
+    end
+
     attr_reader :width, :height	# get window size
 
     def useFov(f = 45);	@options[:fov] = f;	end	# world control methods
@@ -276,7 +281,7 @@ module SGL
       @options[:culling] = a
       @options[:culling] ? OpenGL.glEnable(OpenGL::GL_CULL_FACE) : OpenGL.glDisable(OpenGL::GL_CULL_FACE)
     end
-    def useFullscreen(w=DEFAULT_FULLSCREEN_WIDTH, h=DEFAULT_FULLSCREEN_HEIGHT)
+    def useFullscreen(w = @default_fullscreen_width, h = @default_fullscreen_height)
       if @options[:fullscreen].nil?
         @options[:fullscreen] = (w.nil? || h.nil?) ? nil : [w, h]
       end
@@ -349,24 +354,15 @@ module SGL
       #OpenGL.glClearColor(0.0, 0.1, 0.2, 1.0)
       clear
     end
-
-    def backgroundHSV(x, y = nil, z = nil, a = nil)
-      OpenGL.glClearColor(*@hsv.norm(x, y, z, a))
-      clear
-    end
-
-    private def clear
-      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT)
-    end
-
+    def backgroundHSV(x, y = nil, z = nil, a = nil);	OpenGL.glClearColor(*@hsv.norm(x, y, z, a));	clear;	end
+    private def clear;	OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT);	end
     def color(x, y = nil, z = nil, a = nil)
       @cur_color = [x, y, z, a]
-      OpenGL.glColor4f(*@rgb.norm(x, y, z, a))
+      norm = @rgb.norm(x, y, z, a)
+      #p [x, y, z, a, norm]
+      OpenGL.glColor4f(*norm)
     end
-
-    def colorHSV(x, y = nil, z = nil, a = nil)
-      OpenGL.glColor4f(*@hsv.norm(x, y, z, a))
-    end
+    def colorHSV(x, y = nil, z = nil, a = nil);	OpenGL.glColor4f(*@hsv.norm(x, y, z, a));	end
 
     #====================================================================== from opengl-event.rb
     private def initialize_event
@@ -379,7 +375,6 @@ module SGL
       @mouseDown = 0
       @keynum = 0
     end
-
     # get status
     attr_reader :mouseX, :mouseY
     attr_reader :mouseX0, :mouseY0
@@ -580,6 +575,7 @@ module SGL
     def lineWidth(w);	OpenGL.glLineWidth(w);	end
     def line(a, b, c, d, e = nil, f = nil)
       #p [a, b, c, d, e, f]
+      color 100
       OpenGL.glBegin(OpenGL::GL_LINES)
       if e && f
 	OpenGL.glVertex3f(a, b, c) # 3D
@@ -589,7 +585,31 @@ module SGL
 	OpenGL.glVertex2f(c, d)
       end
       OpenGL.glEnd
+      init_viewport
+      draw_triangle
     end
+    def init_viewport
+      #glViewport( 0, 0, 640, 400 )
+      glViewport(0, 0, @width, @height)
+      glMatrixMode(GL_PROJECTION)
+      glLoadIdentity( )
+      glMatrixMode(GL_MODELVIEW)
+      glLoadIdentity( )
+      glEnable(GL_DEPTH_TEST)
+      glDepthFunc(GL_LESS)
+      glShadeModel(GL_SMOOTH)
+    end
+    def draw_triangle
+      glBegin(OpenGL::GL_TRIANGLES)
+      glColor3f(1.0, 0.0, 0.0)
+      glVertex3f(-0.6, -0.4, 0.0)
+      glColor3f(0.0, 1.0, 0.0)
+      glVertex3f(0.6, -0.4, 0.0)
+      glColor3f(0.0, 0.0, 1.0)
+      glVertex3f(0.0, 0.6, 0.0)
+      glEnd()
+    end
+
     def rect(a, b, c, d);	OpenGL.glRectf(a, b, c, d);	end
     def triangle(a, b, c, d, e, f)
       OpenGL.glBegin(OpenGL::GL_TRIANGLES)
@@ -663,4 +683,4 @@ module SGL
 end
 
 include SGL
-$__a__ = SGL::Application.new
+$__a__ = SGL::Application.new if ! defined?($__a__)
