@@ -111,29 +111,38 @@ module SGL
   def cube(*a)		$__a__.cube(*a)		end
 
   def mainloop
-    if ! defined?($__sgl_in_mainloop__)	# 2回呼ばれないようにしている。
-      $__sgl_in_mainloop__ = true
+    if defined?($__sgl_in_mainloop__)	# 2回呼ばれないようにしている。
       setup
-      $__a__.set_starttime
-      loop {
-        $__a__.set_begintime
-        $__a__.display_pre
-        display
-        $__a__.display_post
-	$__a__.delay
-	return if $__a__.check_runtime_finished
-      }
-    else
-      setup
+      return
     end
+    $__sgl_in_mainloop__ = true
+    setup	# 通常、この中でwindowが呼ばれる。
+    $__a__.set_starttime
+    loop {
+      $__a__.set_begintime
+      $__a__.display_pre
+      display
+      $__a__.display_post
+      $__a__.delay
+      return if $__a__.check_runtime_finished
+    }
   end
 
   # ====================================================================== opengl-app.rb
   class Application
     def initialize
       Thread.abort_on_exception = true
-      @options = default_options
-      initialize_window	# opengl-window.rb
+      @options = {
+	:fullscreen	=>nil,
+	:fov		=>45,
+	:cursor		=>nil,
+	:depth		=>true,
+	:culling	=>false,
+	:smooth		=>false,
+	:delaytime	=>nil,
+	:framerate	=>60,
+	:runtime	=>nil,
+      }
       #initialize_color	# opengl-color.rb
       @bg_color = @cur_color = nil
       @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
@@ -146,24 +155,7 @@ module SGL
       @mouseX0, @mouseY0 = 0, 0
       @mouseDown = 0
       @keynum = 0
-    end
-
-    private def default_options
-      {
-	:fullscreen	=>nil,
-	:fov	=>45,
-	:cursor	=>nil,
-	:depth	=>false,
-	:culling	=>false,
-	:smooth	=>false,
-	:delaytime	=>nil,
-	:framerate	=>60,
-	:runtime	=>nil,
-      }
-    end
-
-    #====================================================================== from opengl-window.rb
-    private def initialize_window
+      #initialize_window	# opengl-window.rb
       @default_window_width  = 100
       @default_window_height = 100
       @default_fullscreen_width  = 1024
@@ -171,8 +163,7 @@ module SGL
       @width, @height = @default_window_width, @default_window_height
       @left, @bottom, @right, @top = 0, 0, @width, @height
       @cameraX, @cameraY, @cameraZ = 0, 0, 5
-      @window_initialized = false
-
+      @sdl_window = nil
       SDL2.init(SDL2::INIT_EVERYTHING)	# initialize_sdl
 =begin
       SDL2::GL.set_attribute(SDL2::GL::RED_SIZE, 5)	# Setting color size is important for Mac OS X. But why I choose 5 for color size?
@@ -191,8 +182,7 @@ module SGL
     private def windows?;	r = RUBY_PLATFORM; (r.index("cygwin") || r.index("mswin32") || r.index("mingw32")) != nil; end
 
     def window(*a)	# create window
-      return if @window_initialized
-
+      return if @sdl_window
       @options.update(a.pop) if a.last.is_a? Hash
 
       if a.length == 4
@@ -203,24 +193,21 @@ module SGL
       else
 	raise "error"
       end
-
       @width, @height = (@right - @left), (@top - @bottom)
-
 =begin
-        mode =  SDL2::OPENGL
-        if @options[:fullscreen]
-          mode |= SDL2::FULLSCREEN
-          w, h = @options[:fullscreen]
-          SDL2.setVideoMode(w, h, 0, mode)
-        else
-          SDL2.setVideoMode(@width, @height + 1, 0, mode) # why +1?
-        end
-        GC.start
-        SDL2::WM.setCaption("sgl", "sgl")
+      mode =  SDL2::OPENGL
+      if @options[:fullscreen]
+        mode |= SDL2::FULLSCREEN
+        w, h = @options[:fullscreen]
+        SDL2.setVideoMode(w, h, 0, mode)
+      else
+        SDL2.setVideoMode(@width, @height + 1, 0, mode) # why +1?
+      end
+      GC.start
+      SDL2::WM.setCaption("sgl", "sgl")
 =end
       @sdl_window = SDL2::Window.create("sgl", 0, 0, @width, @height + 1, SDL2::Window::Flags::OPENGL)	# なぜ縦だけ＋1なのか？
       sdl_context = SDL2::GL::Context.create(@sdl_window)
-      @window_initialized = true
 
       if @options[:cursor]	# setCurosr. You can use only black and white for cursor image.
 	file = @options[:cursor]
@@ -233,26 +220,162 @@ module SGL
 #			     8, 8)		# hot_x, hot_y
       end
 
-=begin
-      if @options[:fullscreen]
-	set_fullscreen_position
-      else
-	set_window_position
-      end
-      set_camera_position
+#=begin
+#      set_window_position
+#      set_camera_position
       OpenGL.glEnable(OpenGL::GL_BLEND)
       OpenGL.glBlendFunc(OpenGL::GL_SRC_ALPHA, OpenGL::GL_ONE_MINUS_SRC_ALPHA)
       OpenGL.glShadeModel(OpenGL::GL_SMOOTH)
       useDepth(@options[:depth])
       useCulling(@options[:culling])
       useSmooth(@options[:smooth])
-
       background(0)
       color(100)
-
       #display_pre
       check_event
-=end
+#=end
+    end
+
+    def display_pre
+      set_window_position
+      set_camera_position
+      check_event
+      clear
+    end
+    private def set_window_position
+      cx, cy = ((@left + @right)/2), ((@bottom + @top)/2)
+      @cameraX, @cameraY = cx, cy
+      w, h = @width, @height
+      w, h = @options[:fullscreen] if @options[:fullscreen]
+      OpenGL.glViewport(0, 0, w, h)
+      #qp 0, 0, w, h
+      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
+      OpenGL.glLoadIdentity
+      #/* スクリーン上の表示領域をビューポートの大きさに比例させる */
+      #glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
+      #OpenGL.glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
+      #OpenGL.glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
+      #OpenGL.glOrtho(-w / 20.0, w / 20.0, -h / 20.0, h / 20.0, -100.0, 100.0);
+      OpenGL.glOrtho(-w / 2.0, w / 2.0, -h / 2.0, h / 2.0, -100.0, 100.0);
+      #OpenGL.glOrtho(-w / 20.0, w / 20.0, -h / 20.0, h / 20.0, -1.0, 1.0);
+      fov = @options[:fov]
+      h = @height if @options[:fullscreen]
+      @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
+      #GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)	# [45, 1.0, 60.45533905932737, 6045.533905932736]
+      #qp fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0
+
+      #GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.001, @cameraZ * 100.0)
+    end
+    private def set_camera_position
+      die "Window is not initialized." if ! @sdl_window
+      if @options[:fullscreen]
+        OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+        OpenGL.glLoadIdentity
+        GLU.gluLookAt(0, 0, @cameraZ,
+                      0, 0, 0,
+                      0, 1, 0)
+        return
+      end
+      #OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
+      #OpenGL.glLoadIdentity
+      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      OpenGL.glLoadIdentity
+#      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
+#                    @cameraX, @cameraY, 0,
+#                    0, 1, 0)
+      #GLU.gluLookAt(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)	# [250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0]
+      #qp(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)
+
+      #GLU.gluLookAt(3.0, 4.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+      #GLU.gluLookAt(250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0)
+      #GLU.gluLookAt(250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0)
+      #GLU.gluLookAt(25, 25, 60, 25, 25, 0, 0, 1, 0)
+      #GLU.gluLookAt(2, 2, 6, 2, 2, 0, 0, 1, 0)
+      #GLU.gluLookAt(0, 0, 6, 0, 0, 0, 0, 1, 0)
+    end
+
+    def display_post
+      #test_display
+      #color 10, 10, 50
+      #rect -1, -1, 0, 0
+
+      #set_fullscreen_camera_position	# why?
+      #set_camera_position
+      cur_color = @cur_color
+      #send(:display0) if respond_to?(:display0)
+      color(*cur_color)
+      @sdl_window.gl_swap
+      #SDL2.GLSwapBuffers
+      #GC.start
+    end
+    def test_display
+#      set_window_position
+
+#      OpenGL.glViewport(0, 0, @width, @height)
+      #qp 0, 0, @width, @height
+#      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
+#      OpenGL.glLoadIdentity
+
+      #OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      #OpenGL.glLoadIdentity
+
+      #OpenGL.glEnable(OpenGL::GL_DEPTH_TEST)
+#      OpenGL.glDepthFunc(OpenGL::GL_LESS)
+#      OpenGL.glShadeModel(OpenGL::GL_SMOOTH)
+#      set_camera_position
+
+      #set_window_position
+      #set_camera_position
+      OpenGL.glClearColor(0.0, 0.0, 0.0, 1.0);
+      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT);
+     #OpenGL.glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
+      #now = (Time.now.to_f * 1000.0).to_i
+      #now = (Time.now.to_f * 1.0).to_i
+      now = (Time.now.to_f * 1.0)
+      deg = now % 360
+      #p now
+      #OpenGL.glRotated(now * 5.0, 1.0, 1.0, 1.0)
+      #OpenGL.glRotatef(now * 5.0, 1.0, 1.0, 1.0)
+      #OpenGL.glRotatef(now * 5.0, 1.0, 0.0, 0.0)
+      #OpenGL.glRotatef(now * 5.0, 0.0, 1.0, 0.0)
+      OpenGL.glRotatef(deg * 5.0, 0.0, 0.0, 1.0)
+      #draw_cube
+      draw_triangle
+      #OpenGL.glRotatef(now * 5.0, 1.0, 1.0, 1.0)
+      OpenGL.glRotatef(deg * 5.0, 0.0, 0.0, 1.0)
+      draw_triangle2
+      #OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
+      #glRotated(5.0, 1.0, 1.0, 1.0)
+
+      #triangle -0.6, -0.4, 0.6, -0.4, 0.0, 0.6
+      color 50, 50, 70
+      #triangle -1.6, -1.4, 1.6, -1.4, 0.0, 0.6
+      #line 0, 0, 1, 1
+      color 0, 50, 70
+      OpenGL.glRotatef(deg * 5.0, 0.0, 0.0, 1.0)
+      rect 0, 0, 10, 10
+      line 0, 0, 100, 100
+    end
+
+    def set_starttime;	@starttime = Time.now;	end
+    def set_begintime;	@begintime = Time.now;	end
+    def delay
+      if @options[:framerate]
+	sec_per_frame = 1.0 / @options[:framerate]
+	diff = sec_per_frame - (Time.now - @begintime)
+        #qp sec_per_frame, diff
+	sleep(diff) if 0 < diff
+      else
+        delaytime = @options[:delaytime]
+        sleep(delaytime)
+      end
+    end
+    def check_runtime_finished
+      starttime = @starttime
+      runtime = @options[:runtime]
+      return false if runtime.nil?
+      diff = Time.now - starttime
+      return (runtime && runtime < diff)
     end
     def get_opengl_version
       major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
@@ -283,50 +406,12 @@ module SGL
     def useDelay(sec);		@options[:delaytime] = sec;	end
     def useFramerate(f);	@options[:framerate] = f;	end
     def useRuntime(r);		@options[:runtime] = r;	end
-    def runtime=(r);		useRuntime(r);	end
-    private def set_window_position
-      @cameraX, @cameraY = ((@left + @right)/2), ((@bottom + @top)/2)
-      fov = @options[:fov]
-      @cameraZ = 1.0 + @height / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0))
-      OpenGL.glViewport(0, 0, @width, @height)
-      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      OpenGL.glLoadIdentity
-      GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
-    end
-    private def set_fullscreen_position
-      cx, cy = ((@left + @right)/2), ((@bottom + @top)/2)
-      @cameraX, @cameraY = cx, cy
-      w, h = @options[:fullscreen]
-      fhw = w / 2 #fullscreen half width
-      fhh = h / 2 #fullscreen half height
-      left   = cx - fhw
-      bottom = cy - fhh
-      right  = cx + fhw
-      top    = cy + fhh
-      OpenGL.glViewport(0, 0, w, h)
-      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      OpenGL.glLoadIdentity
-      fov = @options[:fov]
-      @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
-      GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
-    end
-    private def set_camera_position
-      die "Window is not initialized." if ! @window_initialized
-      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      OpenGL.glLoadIdentity
-      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)
-    end
-    private def set_fullscreen_camera_position
-      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      OpenGL.glLoadIdentity
-      GLU.gluLookAt(0, 0, @cameraZ, 0, 0, 0, 0, 1, 0)
-    end
+    #def runtime=(r);		useRuntime(r);	end
 
     # ====================================================================== from opengl-color.rb
     def background(x, y = nil, z = nil, a = nil)
       norm = @rgb.norm(x, y, z, a)
-      p [x, y, z, a, norm]
+      #p [x, y, z, a, norm]
       OpenGL.glClearColor(*norm)
       clear
     end
@@ -348,22 +433,6 @@ module SGL
     attr_reader :mouseDown
     attr_reader :keynum
 
-    def display_pre
-      set_camera_position
-      check_event
-      clear
-    end
-
-    def display_post
-      set_fullscreen_camera_position
-      cur_color = @cur_color
-      #send(:display0) if respond_to?(:display0)
-      color(*cur_color)
-      @sdl_window.gl_swap
-      #SDL2.GLSwapBuffers
-      #GC.start
-    end
-
     def do_mousedown	# mouse events
       @mouseDown = 1
       onMouseDown(@mouseX, @mouseY)	#if respond_to?(:onMouseDown)
@@ -382,27 +451,6 @@ module SGL
 
     def do_keyup(key)
       onKeyUp(key)	#if respond_to?(:onKeyUp)
-    end
-
-    def set_starttime;	@starttime = Time.now;	end
-    def set_begintime;	@begintime = Time.now;	end
-    def delay
-      if @options[:framerate]
-	sec_per_frame = 1.0 / @options[:framerate]
-	diff = sec_per_frame - (Time.now - @begintime)
-	sleep(diff) if 0 < diff
-      else
-        delaytime = @options[:delaytime]
-        sleep(delaytime)
-      end
-    end
-
-    def check_runtime_finished
-      starttime = @starttime
-      runtime = @options[:runtime]
-      return false if runtime.nil?
-      diff = Time.now - starttime
-      return (runtime && runtime < diff)
     end
 
     private def check_event	# check event
@@ -499,34 +547,6 @@ module SGL
 	OpenGL.glVertex2f(c, d)
       end
       OpenGL.glEnd
-      test_display
-    end
-
-    def test_display
-      init_viewport
-      OpenGL.glClearColor(0.0, 0.0, 0.0, 1.0);
-      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT);
-      #glRotated(GLFW.glfwGetTime() * 5.0, 1.0, 1.0, 1.0)
-      now = (Time.now.to_f * 1000.0).to_i
-      #p now
-      OpenGL.glRotated(now * 5.0, 1.0, 1.0, 1.0)
-      #draw_cube
-      draw_triangle
-      draw_triangle2
-      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      #glRotated(5.0, 1.0, 1.0, 1.0)
-    end
-
-    def init_viewport
-      #glViewport( 0, 0, 640, 400 )
-      OpenGL.glViewport(0, 0, @width, @height)
-      OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
-      OpenGL.glLoadIdentity
-      OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      OpenGL.glLoadIdentity
-      OpenGL.glEnable(OpenGL::GL_DEPTH_TEST)
-      OpenGL.glDepthFunc(OpenGL::GL_LESS)
-      OpenGL.glShadeModel(OpenGL::GL_SMOOTH)
     end
 
     def draw_triangle
@@ -541,8 +561,7 @@ module SGL
     end
 
     def draw_triangle2
-      s = 2.0
-      #qp s
+      s = 1.2
       OpenGL.glBegin(OpenGL::GL_TRIANGLES)
       OpenGL.glColor3f(1.0, 0.0, 0.0)
       OpenGL.glVertex3f(-0.6 * s, -0.4 * s, 0.0 * s)
