@@ -117,7 +117,6 @@ module SGL
       $__a__.set_starttime
       loop {
         $__a__.set_begintime
-        @display_drawing = true
         $__a__.display_pre
         display
         $__a__.display_post
@@ -135,8 +134,18 @@ module SGL
       Thread.abort_on_exception = true
       @options = default_options
       initialize_window	# opengl-window.rb
-      initialize_color	# opengl-color.rb
-      initialize_event	# opengl-event.rb
+      #initialize_color	# opengl-color.rb
+      @bg_color = @cur_color = nil
+      @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
+      @hsv = ColorTranslatorHSV.new(100, 100, 100, 100)
+      #initialize_event	# opengl-event.rb
+      @setup_done = nil
+      @block = {}
+      @starttime = nil
+      @mouseX, @mouseY = 0, 0	# status setting
+      @mouseX0, @mouseY0 = 0, 0
+      @mouseDown = 0
+      @keynum = 0
     end
 
     private def default_options
@@ -245,13 +254,11 @@ module SGL
       check_event
 =end
     end
-
     def get_opengl_version
       major = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MAJOR_VERSION)
       minor = SDL2::GL.get_attribute(SDL2::GL::CONTEXT_MINOR_VERSION)
       return "OpenGL version #{major}.#{minor}"
     end
-
     attr_reader :width, :height	# get window size
 
     def useFov(f = 45);	@options[:fov] = f;	end	# world control methods
@@ -286,7 +293,6 @@ module SGL
       OpenGL.glLoadIdentity
       GLU.gluPerspective(fov, @width/@height.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
-
     private def set_fullscreen_position
       cx, cy = ((@left + @right)/2), ((@bottom + @top)/2)
       @cameraX, @cameraY = cx, cy
@@ -304,34 +310,20 @@ module SGL
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
       GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
-
     private def set_camera_position
       die "Window is not initialized." if ! @window_initialized
       OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       OpenGL.glLoadIdentity
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
-      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
-		    @cameraX, @cameraY, 0,
-		    0, 1, 0)
+      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)
     end
-
     private def set_fullscreen_camera_position
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       OpenGL.glLoadIdentity
-      GLU.gluLookAt(0, 0, @cameraZ,
-		    0, 0, 0,
-		    0, 1, 0)
+      GLU.gluLookAt(0, 0, @cameraZ, 0, 0, 0, 0, 1, 0)
     end
-
-    #private def loadIdentity;	OpenGL.glLoadIdentity;	end
 
     # ====================================================================== from opengl-color.rb
-    private def initialize_color
-      @bg_color = @cur_color = nil
-      @rgb = ColorTranslatorRGB.new(100, 100, 100, 100)
-      @hsv = ColorTranslatorHSV.new(100, 100, 100, 100)
-    end
-
     def background(x, y = nil, z = nil, a = nil)
       norm = @rgb.norm(x, y, z, a)
       p [x, y, z, a, norm]
@@ -339,7 +331,9 @@ module SGL
       clear
     end
     def backgroundHSV(x, y = nil, z = nil, a = nil);	OpenGL.glClearColor(*@hsv.norm(x, y, z, a));	clear;	end
-    private def clear;	OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT);	end
+    private def clear
+      OpenGL.glClear(OpenGL::GL_COLOR_BUFFER_BIT | OpenGL::GL_DEPTH_BUFFER_BIT)
+    end
     def color(x, y = nil, z = nil, a = nil)
       @cur_color = [x, y, z, a]
       norm = @rgb.norm(x, y, z, a)
@@ -349,18 +343,7 @@ module SGL
     def colorHSV(x, y = nil, z = nil, a = nil);	OpenGL.glColor4f(*@hsv.norm(x, y, z, a));	end
 
     #====================================================================== from opengl-event.rb
-    private def initialize_event
-      @setup_done = nil
-      @display_drawing = nil
-      @block = {}
-      @starttime = nil
-      @mouseX, @mouseY = 0, 0	# status setting
-      @mouseX0, @mouseY0 = 0, 0
-      @mouseDown = 0
-      @keynum = 0
-    end
-    # get status
-    attr_reader :mouseX, :mouseY
+    attr_reader :mouseX, :mouseY	# get status
     attr_reader :mouseX0, :mouseY0
     attr_reader :mouseDown
     attr_reader :keynum
@@ -381,39 +364,24 @@ module SGL
       #GC.start
     end
 
-    # mouse events
-    def do_mousedown
+    def do_mousedown	# mouse events
       @mouseDown = 1
-      #if respond_to?(:onMouseDown)
-      onMouseDown(@mouseX, @mouseY)
+      onMouseDown(@mouseX, @mouseY)	#if respond_to?(:onMouseDown)
       #mouseDown0(@mouseX, @mouseY)
     end
 
     def do_mouseup
       @mouseDown = 0
-      #if respond_to?(:onMouseUp)
-      onMouseUp(@mouseX, @mouseY)
+      onMouseUp(@mouseX, @mouseY)	#if respond_to?(:onMouseUp)
     end
 
-    # key events
-    private def keydown_pre(key)
+    def do_keydown(key)	# key events
       exit if key == SDL2::Key::ESCAPE
-    end
-
-    def do_keydown(key)
-      keydown_pre(key)
-      #if respond_to?(:onKeyDown)
-      onKeyDown(key)
+      onKeyDown(key)	#if respond_to?(:onKeyDown)
     end
 
     def do_keyup(key)
-      #if respond_to?(:onKeyUp)
-      onKeyUp(key)
-    end
-
-    private def calc_keynum(e)
-      input = e.characters
-      @keynum = input.to_s[0]
+      onKeyUp(key)	#if respond_to?(:onKeyUp)
     end
 
     def set_starttime;	@starttime = Time.now;	end
@@ -424,8 +392,8 @@ module SGL
 	diff = sec_per_frame - (Time.now - @begintime)
 	sleep(diff) if 0 < diff
       else
-	delaytime = @options[:delaytime]
-	sleep(delaytime)
+        delaytime = @options[:delaytime]
+        sleep(delaytime)
       end
     end
 
