@@ -661,7 +661,7 @@ module SGL
     end
     def circle(x, y, r, style = LINE_LOOP, div = nil)
       OpenGL.glPushMatrix
-      OpenGL.glTranslate(x, y, 0)
+      OpenGL.glTranslatef(x, y, 0)
       OpenGL.glScalef(r, r, r)
       circleUnit(style, div)
       OpenGL.glPopMatrix
@@ -690,30 +690,30 @@ module SGL
 	[x1, y2, z2]  # 7 front left top
       ]
       OpenGL.glBegin(OpenGL::GL_QUADS)
-      OpenGL.glVertex(box[1]) # back
-      OpenGL.glVertex(box[0])
-      OpenGL.glVertex(box[3])
-      OpenGL.glVertex(box[2])
-      OpenGL.glVertex(box[0]) # left
-      OpenGL.glVertex(box[4])
-      OpenGL.glVertex(box[7])
-      OpenGL.glVertex(box[3])
-      OpenGL.glVertex(box[4]) # front
-      OpenGL.glVertex(box[5])
-      OpenGL.glVertex(box[6])
-      OpenGL.glVertex(box[7])
-      OpenGL.glVertex(box[5]) # right
-      OpenGL.glVertex(box[1])
-      OpenGL.glVertex(box[2])
-      OpenGL.glVertex(box[6])
-      OpenGL.glVertex(box[7]) # top
-      OpenGL.glVertex(box[6])
-      OpenGL.glVertex(box[2])
-      OpenGL.glVertex(box[3])
-      OpenGL.glVertex(box[0]) # bottom
-      OpenGL.glVertex(box[1])
-      OpenGL.glVertex(box[5])
-      OpenGL.glVertex(box[4])
+      OpenGL.glVertex3f(*box[1]) # back
+      OpenGL.glVertex3f(*box[0])
+      OpenGL.glVertex3f(*box[3])
+      OpenGL.glVertex3f(*box[2])
+      OpenGL.glVertex3f(*box[0]) # left
+      OpenGL.glVertex3f(*box[4])
+      OpenGL.glVertex3f(*box[7])
+      OpenGL.glVertex3f(*box[3])
+      OpenGL.glVertex3f(*box[4]) # front
+      OpenGL.glVertex3f(*box[5])
+      OpenGL.glVertex3f(*box[6])
+      OpenGL.glVertex3f(*box[7])
+      OpenGL.glVertex3f(*box[5]) # right
+      OpenGL.glVertex3f(*box[1])
+      OpenGL.glVertex3f(*box[2])
+      OpenGL.glVertex3f(*box[6])
+      OpenGL.glVertex3f(*box[7]) # top
+      OpenGL.glVertex3f(*box[6])
+      OpenGL.glVertex3f(*box[2])
+      OpenGL.glVertex3f(*box[3])
+      OpenGL.glVertex3f(*box[0]) # bottom
+      OpenGL.glVertex3f(*box[1])
+      OpenGL.glVertex3f(*box[5])
+      OpenGL.glVertex3f(*box[4])
       OpenGL.glEnd
     end
     def cube(x, y, z, s)
