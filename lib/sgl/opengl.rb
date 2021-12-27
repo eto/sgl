@@ -22,14 +22,18 @@ end
 #require "gl"
 #include Gl
 
-require "glu"
-GLU.load_lib()
+#require "glu"
+#GLU.load_lib()
 #include GLU
 
 #require "glut"
 #include Glut
 
 #require "mathn"
+require 'rmath3d/rmath3d'
+#require 'rmath3d/rmath3d_plain'
+# gem install rmath3d
+# gem install rmath3d_plain
 
 require "sdl2"
 require "sgl/sgl-color"
@@ -257,42 +261,116 @@ module SGL
       #OpenGL.glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
       #OpenGL.glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
       #OpenGL.glOrtho(-w / 20.0, w / 20.0, -h / 20.0, h / 20.0, -100.0, 100.0);
-      OpenGL.glOrtho(-w / 2.0, w / 2.0, -h / 2.0, h / 2.0, -100.0, 100.0);
       #OpenGL.glOrtho(-w / 20.0, w / 20.0, -h / 20.0, h / 20.0, -1.0, 1.0);
+      #OpenGL.glOrtho(-w / 2.0, w / 2.0, 2-h / 2.0, h / 2.0, -100.0, 100.0);
+      OpenGL.glOrtho(-w / 1.0, w / 1.0, 2-h / 1.0, h / 1.0, -100.0, 100.0);
       fov = @options[:fov]
       h = @height if @options[:fullscreen]
       @cameraZ = 1.0 + h / (2.0 * Math.tan(Math::PI * (fov/2.0) / 180.0));
       #GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)	# [45, 1.0, 60.45533905932737, 6045.533905932736]
-      #qp fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0
-
       #GLU.gluPerspective(fov, w/h.to_f, @cameraZ * 0.001, @cameraZ * 100.0)
+      #qp fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0
+      alternativePerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
+      #rmathPerspective(fov, w/h.to_f, @cameraZ * 0.1, @cameraZ * 10.0)
     end
+
+    private def rmathPerspective(fovy, aspect, znear, zfar)	# gluPerspectiveと同じ。
+      eye = RMath3D::RVec3.new(0.0, 15.0, 15.0)
+      at  = RMath3D::RVec3.new(0.0,  0.0,  0.0)
+      up  = RMath3D::RVec3.new(0.0,  1.0,  0.0)
+      mtxLookAt = RMath3D::RMtx4.new.lookAtRH( eye, at, up )
+      glMatrixMode( GL_PROJECTION )
+      #p @mtxProj
+      #OpenGL.glLoadMatrixf( @mtxProj )
+      OpenGL.glLoadMatrixf( mtxLookAt )
+    end
+
+    private def alternativePerspective(fovy, aspect, znear, zfar)	# gluPerspectiveと同じ。
+      radian = 2 * Math::PI * fovy / 360.0
+      t = 1.0 / Math.tan(radian / 2.0)
+      m = [t / aspect, 0, 0, 0,
+           0, t, 0, 0,
+           0, 0, (zfar + znear) / (znear - zfar), -1,
+           0, 0, (2 * zfar * znear) / (znear - zfar), 0]
+      OpenGL.glLoadMatrixf(m.to_a.pack('F16'))
+    end
+
     private def set_camera_position
       die "Window is not initialized." if ! @sdl_window
       if @options[:fullscreen]
         OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
         OpenGL.glLoadIdentity
-        GLU.gluLookAt(0, 0, @cameraZ,
-                      0, 0, 0,
-                      0, 1, 0)
+        GLU.gluLookAt(0, 0, @cameraZ,     0, 0, 0,     0, 1, 0)
         return
       end
       #OpenGL.glMatrixMode(OpenGL::GL_PROJECTION)
       #OpenGL.glLoadIdentity
       OpenGL.glMatrixMode(OpenGL::GL_MODELVIEW)
       OpenGL.glLoadIdentity
-#      GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,
-#                    @cameraX, @cameraY, 0,
-#                    0, 1, 0)
+      #GLU.gluLookAt(@cameraX, @cameraY, @cameraZ,     @cameraX, @cameraY, 0,     0, 1, 0)
       #GLU.gluLookAt(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)	# [250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0]
+      alternativeLookAt(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)
       #qp(@cameraX, @cameraY, @cameraZ, @cameraX, @cameraY, 0, 0, 1, 0)
-
       #GLU.gluLookAt(3.0, 4.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
       #GLU.gluLookAt(250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0)
       #GLU.gluLookAt(250, 250, 604.5533905932737, 250, 250, 0, 0, 1, 0)
       #GLU.gluLookAt(25, 25, 60, 25, 25, 0, 0, 1, 0)
       #GLU.gluLookAt(2, 2, 6, 2, 2, 0, 0, 1, 0)
       #GLU.gluLookAt(0, 0, 6, 0, 0, 0, 0, 1, 0)
+    end
+
+    private def normalize(v)	# 正規化
+      m = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2])
+      if m > 0.0 then m = 1.0 / m else m = 0.0 end
+      nv = []
+      nv[0] = v[0] * m
+      nv[1] = v[1] * m
+      nv[2] = v[2] * m
+      return nv
+    end
+
+    private def cross(src1, src2)	# 外積
+      dst = []
+      dst[0] = src1[1]*src2[2] - src1[2]*src2[1]
+      dst[1] = src1[2]*src2[0] - src1[0]*src2[2]
+      dst[2] = src1[0]*src2[1] - src1[1]*src2[0]
+      return dst
+    end
+
+    private def multiplication(src1, src2)	# 合成 glMultMatrixfの代わり
+      dst = []
+      (0..3).each {|y|
+        (0..3).each {|x|
+          dst[y*4+x] = src2[y*4] * src1[x] + src2[y*4+1] * src1[x+4] + src2[y*4+2] * src1[x+8] + src2[y*4+3] *src1[x+12]
+        }
+      }
+      return dst
+    end
+
+    private def alternativeLookAt(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz)	# gluLookAtと同じ。
+      forward = []
+      forward[0] = centerx - eyex
+      forward[1] = centery - eyey
+      forward[2] = centerz - eyez
+      side = []
+      up = []
+      up[0] = upx
+      up[1] = upy
+      up[2] = upz
+      forward = normalize(forward)
+      side = cross(forward, up)
+      side = normalize(side)
+      up = cross(side, forward)
+      m = [side[0], up[0], -forward[0], 0,
+           side[1], up[1], -forward[1], 0,
+           side[2], up[2], -forward[2], 0,
+           0, 0, 0, 1]
+      mov = [1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1, 0,
+             -eyex, -eyey, -eyez, 1]
+      multi = multiplication(m, mov)
+      OpenGL.glLoadMatrixf(multi.to_a.pack('F16'))
     end
 
     def display_post
