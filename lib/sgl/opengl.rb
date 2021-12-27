@@ -243,6 +243,7 @@ module SGL
       clear
     end
     private def set_window_position
+      die "Window is not initialized." if ! @sdl_window
       cx, cy = ((@left + @right)/2), ((@bottom + @top)/2)
       @cameraX, @cameraY = cx, cy
       w, h = @width, @height
