@@ -4,7 +4,7 @@
 # License: BSD 3-Clause License
 
 #require 'sgl/bass'
-require 'sgl/fmod'
+require 'sgl/sgl-fmod'
 
 module SGL
   def useSound()	$__a__.useSound;	end
