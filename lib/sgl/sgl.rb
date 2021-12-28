@@ -5,3 +5,4 @@
 
 require "sgl/version"
 require "sgl/opengl"
+require "sgl/sgl-sound"
