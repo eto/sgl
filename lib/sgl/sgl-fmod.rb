@@ -9,12 +9,16 @@ class FMODSystem
   def initialize
     FMOD.load_library
     @system = FMOD::System.create
+    @sounds = []
   end
   def get_version
   end
   def load_sound(file)
-    sound = @system.create_sound("pi.wav")
+    #qp file
+    sound = @system.create_sound(file)
     fmodsound = FMODSound.new(sound)
+    @sounds << fmodsound
+    #qp @sounds.length
     return fmodsound
   end
 end
@@ -33,7 +37,7 @@ class FMODSound
     sfreq = midi_note_to_frequency(note) * org_freq / midi_note_to_frequency(@base_note)
     @channel.frequency = sfreq
     @channel.volume = volume if volume
-    @channel.pan = pan if pan
+    #s@channel.pan = pan if pan
   end
   def midi_note_to_frequency(note)
     note = 0   if note < 0
